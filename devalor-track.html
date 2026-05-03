@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Devalor Track</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Mono','Courier New',monospace;background:#080810;min-height:100vh;color:#e8e4d9}
+  input[type=number]{-moz-appearance:textfield;-webkit-appearance:none}
+  input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+  select,button{font-family:inherit;cursor:pointer}
+  .header{border-bottom:1px solid #1c1c2c;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;background:#080810;z-index:100}
+  .logo{font-family:'Syne',sans-serif;font-size:19px;font-weight:800}
+  .logo span{color:#b4f040}
+  .logo-sub{font-size:9px;color:#1a1a1a;letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+  .nav{display:flex;gap:0}
+  .tab{padding:8px 14px;border:1px solid #1c1c2c;background:transparent;color:#444;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .2s}
+  .tab.active{background:#b4f040;color:#080810;border-color:#b4f040}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:14px 20px 0}
+  .month-sel{background:#10101c;border:1px solid #1c1c2c;color:#e8e4d9;font-family:inherit;font-size:11px;padding:7px 12px;border-radius:2px;outline:none}
+  .content{max-width:960px;margin:0 auto;padding:16px 18px}
+  .card{background:#10101c;border:1px solid #1c1c2c;border-radius:3px;padding:18px;margin-bottom:12px}
+  .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#444;margin-bottom:6px;display:block}
+  .big{font-family:'Syne',sans-serif;font-weight:800;line-height:1}
+  .inp{width:100%;background:#080810;border:1px solid #1c1c2c;color:#e8e4d9;font-family:inherit;font-size:22px;padding:12px 6px;text-align:center;border-radius:2px;outline:none}
+  .inp.accent{border-color:#b4f040}
+  .btn-save{width:100%;padding:14px;background:#b4f040;color:#080810;border:none;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;border-radius:2px;margin-top:12px;transition:all .2s}
+  .btn-save.saved{background:#1a3a1a;color:#6bda6b}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .worker-sel{width:100%;background:#080810;border:1px solid #1c1c2c;color:#e8e4d9;font-size:14px;padding:10px 14px;border-radius:2px;outline:none;margin-bottom:10px}
+  .note-box{padding:10px 12px;background:#080810;border:1px solid #1c1c2c;border-radius:2px;font-size:11px;color:#444}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:10px}
+  .stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;line-height:1}
+  .stat-lbl{font-size:10px;color:#444;margin-top:5px;letter-spacing:2px;text-transform:uppercase}
+  .stat-sub{font-size:11px;margin-top:4px}
+  .up{color:#6bda6b}.dn{color:#da6b6b}.mu{color:#444}
+  .row-item{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid #1c1c2c}
+  .row-label{font-size:12px;color:#444}
+  .row-sub{font-size:10px;color:#1a1a1a;margin-top:2px}
+  .row-val{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
+  .section-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;padding-top:4px}
+  .bar-wrap{display:flex;align-items:flex-end;gap:3px;height:55px;margin-top:10px}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .bar-fill{width:100%;border-radius:2px;transition:height .3s}
+  .bar-date{font-size:8px;color:#1a1a1a}
+  .day-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .day-date{width:55px;font-size:11px;color:#444}
+  .day-bar-wrap{flex:1;height:3px;background:#1c1c2c;border-radius:2px;overflow:hidden}
+  .day-bar{height:100%;background:#b4f040;border-radius:2px}
+  .day-val{width:75px;text-align:right;font-size:12px;font-family:'Syne',sans-serif;font-weight:700}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px}
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .filter-btn{padding:7px 14px;border:1px solid #1c1c2c;background:transparent;color:#444;font-size:11px;letter-spacing:2px;text-transform:uppercase;border-radius:2px;transition:all .15s}
+  .filter-btn.active{background:#1a2a08;color:#b4f040;border-color:#b4f040}
+  .pl-section{margin-bottom:6px}
+  .total-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+  .total-card{background:#10101c;border:1px solid #1c1c2c;border-radius:3px;padding:14px}
+  .error-msg{color:#da6b6b;font-size:11px;text-align:center;margin-top:6px}
+  .today-saved{background:#0a180a;border:1px solid #1a2a1a;border-radius:2px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#444}
+  .today-val{color:#b4f040;font-weight:700}
+  @media(max-width:500px){.stat-grid{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.total-bar{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">DEVALOR<span>.</span>TRACK</div>
+    <div class="logo-sub">🇬🇧 FP75LSC · KN26ERR · 🇫🇮 JMU-617</div>
+  </div>
+  <div class="nav">
+    <button class="tab active" onclick="setView('entry')">Kirjaus</button>
+    <button class="tab" onclick="setView('worker')">Tekijä</button>
+    <button class="tab" onclick="setView('owner')">Omistaja</button>
+  </div>
+</div>
+
+<div class="controls">
+  <select class="month-sel" onchange="setMonth(this.value)">
+    <option value="2026-04">Huhtikuu 2026</option>
+    <option value="2026-05">Toukokuu 2026</option>
+  </select>
+</div>
+
+<div class="content" id="app"></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const WORKERS = [
+  {id:"kimmo",  name:"Kimmo Kaukinen", country:"uk", car:"UK autot",    model:"owner",    note:"Omistaja — 10% katteesta Devalorille"},
+  {id:"shohid", name:"Abdul Shohid",   country:"uk", car:"FP75LSC (B)", model:"operator", dailyRate:140, bonusTiers:[{min:100000,rate:0.02}], note:"Lead Operator — £140/pv + 2% bonus jos ≥ £100k/kk"},
+  {id:"hannan", name:"Abdul Hannan",   country:"uk", car:"FP75LSC (C)", model:"operator", dailyRate:100, bonusTiers:[{min:100000,rate:0.02},{min:150000,rate:0.035}], note:"Operator — £100/pv + kk-bonus"},
+  {id:"rizwan", name:"Rizwan Patel",   country:"uk", car:"KN26ERR",     model:"billable", dailyRateIn:150, dailyRateOut:100, bonusTiers:[{min:100000,rate:0.02},{min:150000,rate:0.035}], note:"Operator — £150 laskutus / £100 palkka"},
+  {id:"paige",  name:"Paige James",    country:"uk", car:"FP75LSC",     model:"billable", dailyRateIn:150, dailyRateOut:80, note:"Assistant — £150 laskutus / £80 palkka"},
+  {id:"aki",    name:"Aki Kultanen",   country:"fi", car:"JMU-617",     model:"sub",      rate:0.075, note:"Alihankkija — 7,5% provisio"},
+  {id:"julius", name:"Julius Tiihonen",country:"fi", car:"JMU-617",     model:"sub",      rate:0.05,  note:"Alihankkija — 5,0% provisio"},
+];
+
+const FIXED_DAYS = {
+  "2026-04": {paige:14, rizwan:10},
+  "2026-05": {paige:0,  rizwan:2},
+};
+
+const HIST = [
+  {date:"2026-04-02",workerId:"aki",ke:202},{date:"2026-04-03",workerId:"aki",ke:4286},{date:"2026-04-04",workerId:"aki",ke:4400},
+  {date:"2026-04-05",workerId:"aki",ke:1423},{date:"2026-04-06",workerId:"aki",ke:11879},{date:"2026-04-07",workerId:"aki",ke:2770},
+  {date:"2026-04-08",workerId:"aki",ke:3251},{date:"2026-04-09",workerId:"aki",ke:3590},{date:"2026-04-10",workerId:"aki",ke:4069},
+  {date:"2026-04-11",workerId:"aki",ke:633},{date:"2026-04-23",workerId:"aki",ke:7578},{date:"2026-04-24",workerId:"aki",ke:2034},
+  {date:"2026-04-25",workerId:"aki",ke:3334},{date:"2026-04-26",workerId:"aki",ke:3115},{date:"2026-04-27",workerId:"aki",ke:5379},
+  {date:"2026-04-28",workerId:"aki",ke:438},{date:"2026-04-29",workerId:"aki",ke:5574},{date:"2026-04-30",workerId:"aki",ke:1331},
+  {date:"2026-04-01",workerId:"julius",ke:6112},{date:"2026-04-02",workerId:"julius",ke:5927},{date:"2026-04-12",workerId:"julius",ke:2698},
+  {date:"2026-04-13",workerId:"julius",ke:4227},{date:"2026-04-14",workerId:"julius",ke:7076},{date:"2026-04-15",workerId:"julius",ke:1882},
+  {date:"2026-04-16",workerId:"julius",ke:4311},{date:"2026-04-17",workerId:"julius",ke:3006},{date:"2026-04-18",workerId:"julius",ke:3952},
+  {date:"2026-04-19",workerId:"julius",ke:3112},{date:"2026-04-20",workerId:"julius",ke:9590},{date:"2026-04-21",workerId:"julius",ke:1225},
+  {date:"2026-04-22",workerId:"julius",ke:7565},
+  {date:"2026-04-01",workerId:"kimmo",ke:1846},{date:"2026-04-02",workerId:"kimmo",ke:571},{date:"2026-04-04",workerId:"kimmo",ke:4316},
+  {date:"2026-04-06",workerId:"kimmo",ke:2582},{date:"2026-04-07",workerId:"kimmo",ke:2451},{date:"2026-04-11",workerId:"kimmo",ke:332},
+  {date:"2026-04-12",workerId:"kimmo",ke:2120},{date:"2026-04-14",workerId:"kimmo",ke:730},{date:"2026-04-15",workerId:"kimmo",ke:4669},
+  {date:"2026-04-16",workerId:"kimmo",ke:1622},{date:"2026-04-17",workerId:"kimmo",ke:460},{date:"2026-04-18",workerId:"kimmo",ke:749},
+  {date:"2026-04-19",workerId:"kimmo",ke:1045},{date:"2026-04-21",workerId:"kimmo",ke:953},{date:"2026-04-22",workerId:"kimmo",ke:726},
+  {date:"2026-04-25",workerId:"kimmo",ke:245},{date:"2026-04-26",workerId:"kimmo",ke:10391},{date:"2026-04-27",workerId:"kimmo",ke:595},
+  {date:"2026-04-28",workerId:"kimmo",ke:8673},{date:"2026-04-29",workerId:"kimmo",ke:2262},
+  {date:"2026-04-03",workerId:"shohid",ke:7458},{date:"2026-04-05",workerId:"shohid",ke:950},{date:"2026-04-08",workerId:"shohid",ke:128},
+  {date:"2026-04-09",workerId:"shohid",ke:787},{date:"2026-04-10",workerId:"shohid",ke:2866},{date:"2026-04-13",workerId:"shohid",ke:1032},
+  {date:"2026-04-15",workerId:"shohid",ke:1344},{date:"2026-04-16",workerId:"shohid",ke:5512},{date:"2026-04-17",workerId:"shohid",ke:3918},
+  {date:"2026-04-20",workerId:"shohid",ke:1149},{date:"2026-04-23",workerId:"shohid",ke:1578},{date:"2026-04-24",workerId:"shohid",ke:4481},
+  {date:"2026-04-29",workerId:"shohid",ke:4607},{date:"2026-04-30",workerId:"shohid",ke:10615},
+  {date:"2026-04-11",workerId:"hannan",ke:754},{date:"2026-04-12",workerId:"hannan",ke:7053},{date:"2026-04-13",workerId:"hannan",ke:401},
+  {date:"2026-04-14",workerId:"hannan",ke:228},{date:"2026-04-18",workerId:"hannan",ke:3140},{date:"2026-04-19",workerId:"hannan",ke:2254},
+  {date:"2026-04-21",workerId:"hannan",ke:1703},{date:"2026-04-22",workerId:"hannan",ke:1089},{date:"2026-04-23",workerId:"hannan",ke:683},
+  {date:"2026-04-25",workerId:"hannan",ke:2923},{date:"2026-04-27",workerId:"hannan",ke:1556},
+  {date:"2026-04-30",workerId:"rizwan",ke:84},
+  // 🇬🇧 UK — Toukokuu 2026
+  {date:"2026-05-01",workerId:"shohid",ke:2087},
+  {date:"2026-05-01",workerId:"hannan",ke:1611},
+  {date:"2026-05-02",workerId:"hannan",ke:794},
+  {date:"2026-05-01",workerId:"rizwan",ke:831},
+  {date:"2026-05-02",workerId:"rizwan",ke:8047},
+  {date:"2026-05-02",workerId:"kimmo", ke:311},
+  // 🇫🇮 Suomi — Toukokuu 2026
+  {date:"2026-05-01",workerId:"aki",   ke:1580},
+  {date:"2026-05-02",workerId:"aki",   ke:3150},
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let entries = HIST.map((e,i)=>({...e,id:e.date+e.workerId+i,a:0,k:0}));
+let view = "entry";
+let selWorker = "kimmo";
+let selMonth = "2026-04";
+let cFilter = "all";
+let formA = "", formK = "", formKe = "";
+let saveTimer = null;
+let justSaved = false;
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function fmt(n){ return Math.round(n).toLocaleString("fi-FI"); }
+function fmtc(n,c){ return c==="uk"?`£${fmt(n)}`:`€${fmt(n)}`; }
+function sum(arr,k){ return arr.reduce((s,e)=>s+(Number(e[k])||0),0); }
+function byW(arr,id){ return arr.filter(e=>e.workerId===id); }
+function byMo(arr,ym){ return arr.filter(e=>e.date.startsWith(ym)); }
+function monthlyBonus(ke,tiers){ let r=0; for(const t of tiers){if(ke>=t.min)r=t.rate;} return ke*r; }
+
+function calcPL(me, month) {
+  const fixed = FIXED_DAYS[month]||{};
+  const kk = sum(byW(me,"kimmo"),"ke"), sk=sum(byW(me,"shohid"),"ke");
+  const hk = sum(byW(me,"hannan"),"ke"), rk=sum(byW(me,"rizwan"),"ke");
+  const ak = sum(byW(me,"aki"),"ke"), jk=sum(byW(me,"julius"),"ke");
+  const ukComm = (kk+sk+hk+rk)*0.10, fiComm=(ak+jk)*0.10;
+  const pd=fixed.paige||0, rd=fixed.rizwan||byW(me,"rizwan").length;
+  const pRev=pd*150, rRev=rd*150;
+  const sd=byW(me,"shohid").length, hd=byW(me,"hannan").length;
+  const sBase=sd*140, sBonus=monthlyBonus(sk,[{min:100000,rate:0.02}]);
+  const hBase=hd*100, hBonus=monthlyBonus(hk,[{min:100000,rate:0.02},{min:150000,rate:0.035}]);
+  const pCost=pd*80, rCost=rd*100, akC=ak*0.075, jkC=jk*0.05;
+  const ukIn=ukComm+pRev+rRev, ukCost=sBase+sBonus+hBase+hBonus+pCost+rCost;
+  const fiIn=fiComm, fiCost=akC+jkC;
+  return {
+    uk:{income:ukIn,cost:ukCost,net:ukIn-ukCost,kimmoKe:kk,shohidKe:sk,hannanKe:hk,rizwanKe:rk,
+        commission:ukComm,paigeRevenue:pRev,rizwanRevenue:rRev,
+        shohidBase:sBase,shohidBonus:sBonus,hannanBase:hBase,hannanBonus:hBonus,paigeCost:pCost,rizwanCost:rCost,
+        shohidDays:sd,hannanDays:hd,paigeDays:pd,rizwanDays:rd},
+    fi:{income:fiIn,cost:fiCost,net:fiIn-fiCost,akiKe:ak,juliusKe:jk,akiCost:akC,juliusCost:jkC},
+    total:{income:ukIn+fiIn,cost:ukCost+fiCost,net:(ukIn-ukCost)+(fiIn-fiCost)}
+  };
+}
+
+// ─── SETTERS ─────────────────────────────────────────────────────────────────
+function setView(v){ view=v; render(); }
+function setMonth(m){ selMonth=m; render(); }
+function setWorker(id){ selWorker=id; render(); }
+function setFilter(f){ cFilter=f; render(); }
+
+function handleSave(){
+  const a=parseInt(formA)||0, k=parseInt(formK)||0, ke=parseInt(formKe);
+  if(!ke) return;
+  if(a>0&&k>a) return;
+  const id=todayStr()+selWorker;
+  entries=entries.filter(e=>e.id!==id);
+  entries.push({id,date:todayStr(),workerId:selWorker,a,k,ke});
+  formA=""; formK=""; formKe="";
+  justSaved=true;
+  render();
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{justSaved=false;render();},2500);
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render(){
+  // Update tabs
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active', t.textContent.trim()===({entry:"Kirjaus",worker:"Tekijä",owner:"Omistaja"}[view]));
+  });
+
+  const me = byMo(entries, selMonth);
+  const w  = WORKERS.find(x=>x.id===selWorker);
+  const myE = byW(me, selWorker);
+  const myKe = sum(myE,"ke"), myA=sum(myE,"a"), myK=sum(myE,"k");
+  const myDays = myE.length;
+  const myKpd  = myDays>0?myKe/myDays:0;
+  const myConv = myA>0?Math.round((myK/myA)*100):0;
+  const prevMe = selMonth==="2026-05"?byMo(entries,"2026-04"):null;
+  const myPrevKe = prevMe?sum(byW(prevMe,selWorker),"ke"):null;
+  const trend = myPrevKe>0?Math.round(((myKe-myPrevKe)/myPrevKe)*100):null;
+  const todayE = entries.find(e=>e.date===todayStr()&&e.workerId===selWorker);
+  const pl = calcPL(me, selMonth);
+  const allDates=[...new Set(entries.map(e=>e.date))].sort();
+  const last14=allDates.slice(-14);
+
+  let html = "";
+
+  // ── ENTRY ──
+  if(view==="entry"){
+    const ukW = WORKERS.filter(x=>x.country==="uk").map(x=>`<option value="${x.id}"${x.id===selWorker?" selected":""}>${x.name} — ${x.car}</option>`).join("");
+    const fiW = WORKERS.filter(x=>x.country==="fi").map(x=>`<option value="${x.id}"${x.id===selWorker?" selected":""}>${x.name} — ${x.car}</option>`).join("");
+    const todayHtml = todayE?`<div class="today-saved">Tallennettu tänään: <span class="today-val">${todayE.a||0}/${todayE.k||0}/${fmtc(todayE.ke,w?.country||"uk")}</span></div>`:"";
+    const errHtml = formK&&formA&&parseInt(formK)>parseInt(formA)?`<div class="error-msg">⚠ Kaupat ei voi ylittää asiakkaita</div>`:"";
+    html=`
+    <div style="max-width:440px;margin:0 auto">
+      <div class="card">
+        <span class="lbl">Tekijä</span>
+        <select class="worker-sel" onchange="setWorker(this.value)">
+          <optgroup label="🇬🇧 UK">${ukW}</optgroup>
+          <optgroup label="🇫🇮 Suomi">${fiW}</optgroup>
+        </select>
+        <div class="note-box">${w?.note||""}</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700">Päivän kirjaus</div>
+          <div style="font-size:10px;color:#444;letter-spacing:2px">${todayStr()}</div>
+        </div>
+        ${todayHtml}
+        <div class="grid3" style="margin-bottom:8px">
+          <div>
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px;text-align:center">Asiakkaat</div>
+            <input type="number" class="inp" placeholder="0" value="${formA}" oninput="formA=this.value;renderInputs()" id="inp-a">
+          </div>
+          <div>
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px;text-align:center">Klousatut</div>
+            <input type="number" class="inp" placeholder="0" value="${formK}" oninput="formK=this.value;renderInputs()" id="inp-k">
+          </div>
+          <div>
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px;text-align:center">Kate</div>
+            <input type="number" class="inp accent" placeholder="0" value="${formKe}" oninput="formKe=this.value;renderInputs()" id="inp-ke">
+          </div>
+        </div>
+        ${errHtml}
+        <button class="btn-save${justSaved?" saved":""}" onclick="handleSave()">${justSaved?"✓ TALLENNETTU":"TALLENNA PÄIVÄ"}</button>
+      </div>
+    </div>`;
+  }
+
+  // ── WORKER ──
+  if(view==="worker"){
+    const ukW = WORKERS.filter(x=>x.country==="uk").map(x=>`<option value="${x.id}"${x.id===selWorker?" selected":""}>${x.name}</option>`).join("");
+    const fiW = WORKERS.filter(x=>x.country==="fi").map(x=>`<option value="${x.id}"${x.id===selWorker?" selected":""}>${x.name}</option>`).join("");
+    const trendHtml = trend!==null?`<div class="stat-sub ${trend>=0?"up":"dn"}">${trend>=0?"↑":"↓"} ${Math.abs(trend)}% vs edell. kk</div>`:"";
+    const convHtml  = myConv>0?`<div class="stat-sub mu">${myConv}% konversio</div>`:"";
+    const maxKe = Math.max(...myE.map(e=>e.ke),1);
+    const dayRows = [...myE].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`
+      <div class="day-row">
+        <div class="day-date">${e.date.slice(5)}</div>
+        <div class="day-bar-wrap"><div class="day-bar" style="width:${Math.round((e.ke/maxKe)*100)}%"></div></div>
+        <div class="day-val">${fmtc(e.ke,w?.country||"uk")}</div>
+      </div>`).join("");
+    let bonusHtml = "";
+    if(w?.model==="sub"&&myKe>0){
+      bonusHtml=`<div class="card">
+        <span class="lbl">Provisio erittely</span>
+        <div class="grid3" style="margin-top:8px">
+          <div><div class="row-label">Kate</div><div class="big" style="font-size:18px;color:#b4f040">${fmtc(myKe,w.country)}</div></div>
+          <div><div class="row-label">Sinulle (${w.rate*100}%)</div><div class="big" style="font-size:18px;color:#6bda6b">${fmtc(myKe*w.rate,w.country)}</div></div>
+          <div><div class="row-label">Devalorille</div><div class="big" style="font-size:18px;color:#dac86b">${fmtc(myKe*(0.10-w.rate),w.country)}</div></div>
+        </div>
+      </div>`;
+    }
+    if(w?.model==="operator"&&myDays>0){
+      const bonus=w.bonusTiers?monthlyBonus(myKe,w.bonusTiers):0;
+      const needed=w.bonusTiers?Math.max(0,(w.bonusTiers[0]?.min||100000)-myKe):0;
+      bonusHtml=`<div class="card">
+        <span class="lbl">Palkkaerittely</span>
+        <div class="row-item"><div><div class="row-label">Peruspalkka (${myDays}pv × £${w.dailyRate})</div></div><div class="row-val">£${fmt(myDays*w.dailyRate)}</div></div>
+        ${bonus>0?`<div class="row-item"><div class="row-label">Kuukausibonus</div><div class="row-val" style="color:#b4f040">£${fmt(bonus)}</div></div>`:""}
+        ${needed>0?`<div class="row-item"><div class="row-label">Bonukseen puuttuu</div><div class="row-val" style="color:#444">£${fmt(needed)}</div></div>`:""}
+      </div>`;
+    }
+    html=`
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+      <select class="month-sel" onchange="setWorker(this.value)" style="font-size:13px;padding:8px 12px">
+        <optgroup label="🇬🇧 UK">${ukW}</optgroup>
+        <optgroup label="🇫🇮 Suomi">${fiW}</optgroup>
+      </select>
+      <span class="badge" style="background:${w?.country==="uk"?"#6b9bda22":"#dac86b22"};color:${w?.country==="uk"?"#6b9bda":"#dac86b"}">${w?.car}</span>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,#0f1a08 0%,#10101c 100%);border-color:#1a2a1a">
+      <span class="lbl">Kuukauden tilanne</span>
+      <div class="stat-grid">
+        <div>
+          <div class="stat-val" style="color:#b4f040">${fmtc(myKe,w?.country||"uk")}</div>
+          <div class="stat-lbl">Kate</div>
+          ${trendHtml}
+        </div>
+        <div>
+          <div class="stat-val">${myDays}</div>
+          <div class="stat-lbl">Päivää</div>
+          ${convHtml}
+        </div>
+        <div>
+          <div class="stat-val">${fmtc(myKpd,w?.country||"uk")}</div>
+          <div class="stat-lbl">Kate/pv</div>
+        </div>
+      </div>
+    </div>
+    ${bonusHtml}
+    <div class="card">
+      <span class="lbl">Päiväkohtainen kate</span>
+      <div style="margin-top:10px">
+        ${dayRows||'<div style="color:#444;font-size:12px">Ei kirjauksia</div>'}
+      </div>
+    </div>`;
+  }
+
+  // ── OWNER ──
+  if(view==="owner"){
+    const trendBar = last14.map((ds,i)=>{
+      const dayE = entries.filter(e=>e.date===ds&&(cFilter==="all"||WORKERS.find(w=>w.id===e.workerId)?.country===cFilter));
+      const dayKe = sum(dayE,"ke");
+      const maxKe = Math.max(1,...last14.map(d=>sum(entries.filter(e=>e.date===d&&(cFilter==="all"||WORKERS.find(w=>w.id===e.workerId)?.country===cFilter)),"ke")));
+      const h = Math.max(3,Math.round((dayKe/maxKe)*55));
+      return `<div class="bar-col"><div class="bar-fill" style="height:${h}px;background:${i===last14.length-1?"#b4f040":"#1e2e1e"}"></div><div class="bar-date">${ds.slice(5)}</div></div>`;
+    }).join("");
+
+    const ukHtml = (cFilter==="all"||cFilter==="uk")?`
+    <div class="card" style="border-color:#1a1a3a">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">🇬🇧 UK</div>
+        <div class="big" style="font-size:20px;color:${pl.uk.net>=0?"#6bda6b":"#da6b6b"}">£${fmt(pl.uk.net)}</div>
+      </div>
+      <div class="grid2">
+        <div>
+          <div class="section-title" style="color:#b4f040">TULOT</div>
+          <div class="row-item"><div><div class="row-label">Kimmo kate × 10%</div><div class="row-sub">£${fmt(pl.uk.kimmoKe)} katteesta</div></div><div class="row-val">£${fmt(pl.uk.kimmoKe*0.10)}</div></div>
+          <div class="row-item"><div><div class="row-label">Shohid kate × 10%</div><div class="row-sub">£${fmt(pl.uk.shohidKe)} katteesta</div></div><div class="row-val">£${fmt(pl.uk.shohidKe*0.10)}</div></div>
+          <div class="row-item"><div><div class="row-label">Hannan kate × 10%</div><div class="row-sub">£${fmt(pl.uk.hannanKe)} katteesta</div></div><div class="row-val">£${fmt(pl.uk.hannanKe*0.10)}</div></div>
+          <div class="row-item"><div><div class="row-label">Rizwan kate × 10%</div></div><div class="row-val">£${fmt(pl.uk.rizwanKe*0.10)}</div></div>
+          <div class="row-item"><div><div class="row-label">Paige (${pl.uk.paigeDays}pv × £150)</div></div><div class="row-val">£${fmt(pl.uk.paigeRevenue)}</div></div>
+          <div class="row-item"><div><div class="row-label">Rizwan (${pl.uk.rizwanDays}pv × £150)</div></div><div class="row-val">£${fmt(pl.uk.rizwanRevenue)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0">
+            <span style="font-size:12px;font-weight:700">Yhteensä</span>
+            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#b4f040">£${fmt(pl.uk.income)}</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title" style="color:#da6b6b">KULUT</div>
+          <div class="row-item"><div><div class="row-label">Shohid (${pl.uk.shohidDays}pv × £140)</div></div><div class="row-val" style="color:#da6b6b">-£${fmt(pl.uk.shohidBase)}</div></div>
+          ${pl.uk.shohidBonus>0?`<div class="row-item"><div class="row-label">Shohid bonus</div><div class="row-val" style="color:#da6b6b">-£${fmt(pl.uk.shohidBonus)}</div></div>`:""}
+          <div class="row-item"><div><div class="row-label">Hannan (${pl.uk.hannanDays}pv × £100)</div></div><div class="row-val" style="color:#da6b6b">-£${fmt(pl.uk.hannanBase)}</div></div>
+          ${pl.uk.hannanBonus>0?`<div class="row-item"><div class="row-label">Hannan bonus</div><div class="row-val" style="color:#da6b6b">-£${fmt(pl.uk.hannanBonus)}</div></div>`:""}
+          <div class="row-item"><div><div class="row-label">Paige (${pl.uk.paigeDays}pv × £80)</div></div><div class="row-val" style="color:#da6b6b">-£${fmt(pl.uk.paigeCost)}</div></div>
+          <div class="row-item"><div><div class="row-label">Rizwan (${pl.uk.rizwanDays}pv × £100)</div></div><div class="row-val" style="color:#da6b6b">-£${fmt(pl.uk.rizwanCost)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0">
+            <span style="font-size:12px;font-weight:700">Yhteensä</span>
+            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#da6b6b">-£${fmt(pl.uk.cost)}</span>
+          </div>
+        </div>
+      </div>
+    </div>`:"";
+
+    const fiHtml = (cFilter==="all"||cFilter==="fi")?`
+    <div class="card" style="border-color:#2a1a1a">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">🇫🇮 Suomi</div>
+        <div class="big" style="font-size:20px;color:${pl.fi.net>=0?"#6bda6b":"#da6b6b"}">€${fmt(pl.fi.net)}</div>
+      </div>
+      <div class="grid2">
+        <div>
+          <div class="section-title" style="color:#b4f040">TULOT</div>
+          <div class="row-item"><div><div class="row-label">Aki kate × 10%</div><div class="row-sub">€${fmt(pl.fi.akiKe)} katteesta</div></div><div class="row-val">€${fmt(pl.fi.akiKe*0.10)}</div></div>
+          <div class="row-item"><div><div class="row-label">Julius kate × 10%</div><div class="row-sub">€${fmt(pl.fi.juliusKe)} katteesta</div></div><div class="row-val">€${fmt(pl.fi.juliusKe*0.10)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0">
+            <span style="font-size:12px;font-weight:700">Yhteensä</span>
+            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#b4f040">€${fmt(pl.fi.income)}</span>
+          </div>
+        </div>
+        <div>
+          <div class="section-title" style="color:#da6b6b">KULUT</div>
+          <div class="row-item"><div><div class="row-label">Aki provisio (7,5%)</div></div><div class="row-val" style="color:#da6b6b">-€${fmt(pl.fi.akiCost)}</div></div>
+          <div class="row-item"><div><div class="row-label">Julius provisio (5,0%)</div></div><div class="row-val" style="color:#da6b6b">-€${fmt(pl.fi.juliusCost)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0">
+            <span style="font-size:12px;font-weight:700">Yhteensä</span>
+            <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#da6b6b">-€${fmt(pl.fi.cost)}</span>
+          </div>
+        </div>
+      </div>
+    </div>`:"";
+
+    const totalHtml = cFilter==="all"?`
+    <div class="total-bar">
+      <div class="total-card"><span class="lbl">Kokonaistulot</span><div class="big" style="font-size:20px;color:#b4f040">£/€${fmt(pl.total.income)}</div></div>
+      <div class="total-card"><span class="lbl">Kulut</span><div class="big" style="font-size:20px;color:#da6b6b">-£/€${fmt(pl.total.cost)}</div></div>
+      <div class="total-card"><span class="lbl">Netto Kimmolle</span><div class="big" style="font-size:20px;color:#6bda6b">£/€${fmt(pl.total.net)}</div></div>
+    </div>`:"";
+
+    html=`
+    <div class="filter-row">
+      <button class="filter-btn${cFilter==="all"?" active":""}" onclick="setFilter('all')">Kaikki</button>
+      <button class="filter-btn${cFilter==="uk"?" active":""}" onclick="setFilter('uk')">🇬🇧 UK</button>
+      <button class="filter-btn${cFilter==="fi"?" active":""}" onclick="setFilter('fi')">🇫🇮 Suomi</button>
+    </div>
+    ${totalHtml}
+    ${ukHtml}
+    ${fiHtml}
+    <div class="card">
+      <span class="lbl">Kate päivittäin — 14 viimeistä päivää</span>
+      <div class="bar-wrap">${trendBar}</div>
+    </div>`;
+  }
+
+  document.getElementById("app").innerHTML = html;
+}
+
+function renderInputs(){
+  // Only update input values without full re-render to preserve focus
+  const ia=document.getElementById("inp-a");
+  const ik=document.getElementById("inp-k");
+  const ike=document.getElementById("inp-ke");
+  // inputs update themselves via oninput, nothing extra needed
+}
+
+render();
+</script>
+</body>
+</html>

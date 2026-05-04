@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Devalor Track</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Mono','Courier New',monospace;background:#080810;min-height:100vh;color:#e8e4d9}
+  input[type=number]{-moz-appearance:textfield;-webkit-appearance:none}
+  input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+  select,button{font-family:inherit;cursor:pointer}
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+  .login-box{width:100%;max-width:340px}
+  .login-logo{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;text-align:center;margin-bottom:6px}
+  .login-logo span{color:#b4f040}
+  .login-sub{font-size:10px;color:#333;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:36px}
+  .pin-display{display:flex;justify-content:center;gap:14px;margin-bottom:28px}
+  .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #2a2a3a;transition:all .2s}
+  .pin-dot.filled{background:#b4f040;border-color:#b4f040}
+  .pin-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .pin-btn{padding:18px;background:#10101c;border:1px solid #1c1c2c;color:#e8e4d9;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;border-radius:3px;transition:all .15s}
+  .pin-btn:active{transform:scale(0.93);background:#b4f040;color:#080810}
+  .pin-btn.del{font-size:14px;color:#555}
+  .login-error{color:#da6b6b;font-size:12px;text-align:center;margin-top:14px;min-height:18px}
+  .header{border-bottom:1px solid #1c1c2c;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;background:#080810;z-index:100}
+  .logo{font-family:'Syne',sans-serif;font-size:17px;font-weight:800}
+  .logo span{color:#b4f040}
+  .logo-sub{font-size:9px;color:#1a1a1a;letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+  .nav{display:flex}
+  .tab{padding:7px 12px;border:1px solid #1c1c2c;background:transparent;color:#444;font-size:10px;letter-spacing:2px;text-transform:uppercase;transition:all .2s}
+  .tab.active{background:#b4f040;color:#080810;border-color:#b4f040}
+  .logout-btn{padding:6px 10px;border:1px solid #222;background:transparent;color:#444;font-size:11px;cursor:pointer;border-radius:2px}
+  .logout-btn:hover{border-color:#da6b6b;color:#da6b6b}
+  .controls{padding:10px 16px 0;display:flex;gap:8px}
+  .month-sel{background:#10101c;border:1px solid #1c1c2c;color:#e8e4d9;font-family:inherit;font-size:11px;padding:6px 10px;border-radius:2px;outline:none}
+  .content{max-width:960px;margin:0 auto;padding:12px 14px}
+  .card{background:#10101c;border:1px solid #1c1c2c;border-radius:3px;padding:14px;margin-bottom:10px}
+  .lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#444;margin-bottom:5px;display:block}
+  .big{font-family:'Syne',sans-serif;font-weight:800;line-height:1}
+  .inp{width:100%;background:#080810;border:1px solid #1c1c2c;color:#e8e4d9;font-family:inherit;font-size:20px;padding:11px 6px;text-align:center;border-radius:2px;outline:none}
+  .inp.ac{border-color:#b4f040}
+  .inp:focus{border-color:#b4f040}
+  .btn-save{width:100%;padding:13px;background:#b4f040;color:#080810;border:none;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;border-radius:2px;margin-top:10px}
+  .btn-save.saved{background:#1a3a1a;color:#6bda6b}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px}
+  .sv{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;line-height:1}
+  .sl{font-size:9px;color:#444;margin-top:4px;letter-spacing:2px;text-transform:uppercase}
+  .ss{font-size:11px;margin-top:3px}
+  .up{color:#6bda6b}.dn{color:#da6b6b}.mu{color:#444}.ac{color:#b4f040}
+  .ri{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1c1c2c}
+  .rl{font-size:11px;color:#444}
+  .rv{font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+  .dr{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .dd{width:50px;font-size:10px;color:#444}
+  .dbw{flex:1;height:3px;background:#1c1c2c;border-radius:2px;overflow:hidden}
+  .db{height:100%;background:#b4f040;border-radius:2px}
+  .dv{width:68px;text-align:right;font-size:11px;font-family:'Syne',sans-serif;font-weight:700}
+  .dp{width:42px;text-align:right;font-size:10px;color:#555}
+  .kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+  .kb{background:#080810;border:1px solid #1c1c2c;border-radius:2px;padding:10px 12px}
+  .kv{font-family:'Syne',sans-serif;font-weight:800;font-size:19px}
+  .kl{font-size:9px;color:#444;letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+  .fb{padding:6px 12px;border:1px solid #1c1c2c;background:transparent;color:#444;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:2px}
+  .fb.on{background:#1a2a08;color:#b4f040;border-color:#b4f040}
+  .tb{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+  .tc{background:#10101c;border:1px solid #1c1c2c;border-radius:3px;padding:12px}
+  .bw{display:flex;align-items:flex-end;gap:3px;height:50px;margin-top:10px}
+  .bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .bf{width:100%;border-radius:2px}
+  .bd{font-size:8px;color:#1a1a1a}
+  .note{padding:8px 10px;background:#080810;border:1px solid #1c1c2c;border-radius:2px;font-size:11px;color:#444;margin-top:8px}
+  .st{font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}
+  .ts{background:#0a180a;border:1px solid #1a2a1a;border-radius:2px;padding:9px 12px;margin-bottom:10px;font-size:11px;color:#444}
+  @media(max-width:480px){.sg{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.tb{grid-template-columns:1fr}.kpi{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const USERS=[
+  {pin:"1234",workerId:"kimmo", role:"owner"},
+  {pin:"2001",workerId:"shohid",role:"worker"},
+  {pin:"2002",workerId:"hannan",role:"worker"},
+  {pin:"2003",workerId:"rizwan",role:"worker"},
+  {pin:"2004",workerId:"paige", role:"worker"},
+  {pin:"3001",workerId:"aki",   role:"worker"},
+  {pin:"3002",workerId:"julius",role:"worker"},
+];
+const WORKERS=[
+  {id:"kimmo", name:"Kimmo Kaukinen",country:"uk",car:"UK vehicles",  model:"owner",   note:"Owner — 10% of margin to Devalor"},
+  {id:"shohid",name:"Abdul Shohid",  country:"uk",car:"FP75LSC (B)",  model:"operator",dailyRate:140,bonusTiers:[{min:100000,rate:0.02}],note:"Lead Operator — £140/day + 2% bonus if ≥£100k/month"},
+  {id:"hannan",name:"Abdul Hannan",  country:"uk",car:"FP75LSC (C)",  model:"operator",dailyRate:100,bonusTiers:[{min:100000,rate:0.02},{min:150000,rate:0.035}],note:"Operator — £100/day + monthly bonus"},
+  {id:"rizwan",name:"Rizwan Patel",  country:"uk",car:"KN26ERR",      model:"billable",dailyRateIn:150,dailyRateOut:100,bonusTiers:[{min:100000,rate:0.02},{min:150000,rate:0.035}],note:"Operator — £150 billed / £100 paid"},
+  {id:"paige", name:"Paige James",   country:"uk",car:"FP75LSC",      model:"billable",dailyRateIn:150,dailyRateOut:80,note:"Assistant — £150 billed / £80 paid"},
+  {id:"aki",   name:"Aki Kultanen",  country:"fi",car:"JMU-617",      model:"sub",rate:0.075,note:"Subcontractor — 7.5% commission"},
+  {id:"julius",name:"Julius Tiihonen",country:"fi",car:"JMU-617",     model:"sub",rate:0.05, note:"Subcontractor — 5.0% commission"},
+];
+const FD={"2026-04":{paige:14,rizwan:10},"2026-05":{paige:0,rizwan:3}};
+const HIST=[
+  // Kimmo April
+  {date:"2026-04-01",workerId:"kimmo",ke:1846,purchases:2150,sales:3996,mgn:46},
+  {date:"2026-04-02",workerId:"kimmo",ke:571,purchases:544,sales:1115,mgn:51},
+  {date:"2026-04-04",workerId:"kimmo",ke:4316,purchases:5801,sales:10117,mgn:43},
+  {date:"2026-04-06",workerId:"kimmo",ke:2582,purchases:2987,sales:5570,mgn:46},
+  {date:"2026-04-07",workerId:"kimmo",ke:2451,purchases:3131,sales:5582,mgn:44},
+  {date:"2026-04-11",workerId:"kimmo",ke:332,purchases:354,sales:686,mgn:48},
+  {date:"2026-04-12",workerId:"kimmo",ke:2120,purchases:3606,sales:5727,mgn:37},
+  {date:"2026-04-14",workerId:"kimmo",ke:730,purchases:1401,sales:2131,mgn:34},
+  {date:"2026-04-15",workerId:"kimmo",ke:4669,purchases:5012,sales:9681,mgn:48},
+  {date:"2026-04-16",workerId:"kimmo",ke:1622,purchases:4012,sales:5633,mgn:29},
+  {date:"2026-04-17",workerId:"kimmo",ke:460,purchases:466,sales:926,mgn:50},
+  {date:"2026-04-18",workerId:"kimmo",ke:749,purchases:2563,sales:3312,mgn:23},
+  {date:"2026-04-19",workerId:"kimmo",ke:1045,purchases:1754,sales:2799,mgn:37},
+  {date:"2026-04-21",workerId:"kimmo",ke:953,purchases:5588,sales:6542,mgn:15},
+  {date:"2026-04-22",workerId:"kimmo",ke:726,purchases:1995,sales:2721,mgn:27},
+  {date:"2026-04-25",workerId:"kimmo",ke:245,purchases:561,sales:807,mgn:30},
+  {date:"2026-04-26",workerId:"kimmo",ke:10391,purchases:18134,sales:28525,mgn:36},
+  {date:"2026-04-27",workerId:"kimmo",ke:595,purchases:595,sales:1189,mgn:50},
+  {date:"2026-04-28",workerId:"kimmo",ke:8673,purchases:13170,sales:21843,mgn:40},
+  {date:"2026-04-29",workerId:"kimmo",ke:2262,purchases:2797,sales:5058,mgn:45},
+  // Shohid April
+  {date:"2026-04-03",workerId:"shohid",ke:7458,purchases:10228,sales:17686,mgn:42},
+  {date:"2026-04-05",workerId:"shohid",ke:950,purchases:1462,sales:2411,mgn:39},
+  {date:"2026-04-08",workerId:"shohid",ke:128,purchases:416,sales:543,mgn:24},
+  {date:"2026-04-09",workerId:"shohid",ke:787,purchases:5559,sales:6346,mgn:12},
+  {date:"2026-04-10",workerId:"shohid",ke:2866,purchases:4334,sales:7200,mgn:40},
+  {date:"2026-04-13",workerId:"shohid",ke:1032,purchases:1904,sales:2935,mgn:35},
+  {date:"2026-04-15",workerId:"shohid",ke:1344,purchases:1481,sales:2825,mgn:48},
+  {date:"2026-04-16",workerId:"shohid",ke:5512,purchases:5217,sales:10730,mgn:51},
+  {date:"2026-04-17",workerId:"shohid",ke:3918,purchases:4586,sales:8503,mgn:46},
+  {date:"2026-04-20",workerId:"shohid",ke:1149,purchases:1619,sales:2768,mgn:42},
+  {date:"2026-04-23",workerId:"shohid",ke:1578,purchases:3957,sales:5535,mgn:29},
+  {date:"2026-04-24",workerId:"shohid",ke:4481,purchases:6718,sales:11199,mgn:40},
+  {date:"2026-04-29",workerId:"shohid",ke:4607,purchases:5493,sales:10101,mgn:46},
+  {date:"2026-04-30",workerId:"shohid",ke:10615,purchases:16743,sales:27358,mgn:39},
+  // Hannan April
+  {date:"2026-04-11",workerId:"hannan",ke:754,purchases:768,sales:1521,mgn:50},
+  {date:"2026-04-12",workerId:"hannan",ke:7053,purchases:11917,sales:18970,mgn:37},
+  {date:"2026-04-13",workerId:"hannan",ke:401,purchases:754,sales:1156,mgn:35},
+  {date:"2026-04-14",workerId:"hannan",ke:228,purchases:401,sales:629,mgn:36},
+  {date:"2026-04-18",workerId:"hannan",ke:3140,purchases:13336,sales:16476,mgn:19},
+  {date:"2026-04-19",workerId:"hannan",ke:2254,purchases:13696,sales:15949,mgn:14},
+  {date:"2026-04-21",workerId:"hannan",ke:1703,purchases:7580,sales:9284,mgn:18},
+  {date:"2026-04-22",workerId:"hannan",ke:1089,purchases:1957,sales:3046,mgn:36},
+  {date:"2026-04-23",workerId:"hannan",ke:683,purchases:2234,sales:2917,mgn:23},
+  {date:"2026-04-25",workerId:"hannan",ke:2923,purchases:5691,sales:8614,mgn:34},
+  {date:"2026-04-27",workerId:"hannan",ke:1556,purchases:1638,sales:3194,mgn:49},
+  // Rizwan April
+  {date:"2026-04-30",workerId:"rizwan",ke:84,purchases:0,sales:0,mgn:0},
+  // Aki April
+  {date:"2026-04-02",workerId:"aki",ke:202,purchases:823,sales:1026,mgn:20},
+  {date:"2026-04-03",workerId:"aki",ke:4286,purchases:9072,sales:13357,mgn:32},
+  {date:"2026-04-04",workerId:"aki",ke:4400,purchases:8910,sales:13311,mgn:33},
+  {date:"2026-04-05",workerId:"aki",ke:1423,purchases:3349,sales:4771,mgn:30},
+  {date:"2026-04-06",workerId:"aki",ke:11879,purchases:25602,sales:37481,mgn:32},
+  {date:"2026-04-07",workerId:"aki",ke:2770,purchases:5463,sales:8233,mgn:34},
+  {date:"2026-04-08",workerId:"aki",ke:3251,purchases:10403,sales:13655,mgn:24},
+  {date:"2026-04-09",workerId:"aki",ke:3590,purchases:13242,sales:16833,mgn:21},
+  {date:"2026-04-10",workerId:"aki",ke:4069,purchases:12523,sales:16591,mgn:25},
+  {date:"2026-04-11",workerId:"aki",ke:633,purchases:3385,sales:4018,mgn:16},
+  {date:"2026-04-23",workerId:"aki",ke:7578,purchases:11160,sales:18738,mgn:40},
+  {date:"2026-04-24",workerId:"aki",ke:2034,purchases:4919,sales:6953,mgn:29},
+  {date:"2026-04-25",workerId:"aki",ke:3334,purchases:9045,sales:12379,mgn:27},
+  {date:"2026-04-26",workerId:"aki",ke:3115,purchases:8104,sales:11219,mgn:28},
+  {date:"2026-04-27",workerId:"aki",ke:5379,purchases:15410,sales:20789,mgn:26},
+  {date:"2026-04-28",workerId:"aki",ke:438,purchases:1456,sales:1895,mgn:23},
+  {date:"2026-04-29",workerId:"aki",ke:5574,purchases:11901,sales:17476,mgn:32},
+  {date:"2026-04-30",workerId:"aki",ke:1331,purchases:4251,sales:5582,mgn:24},
+  // Julius April
+  {date:"2026-04-01",workerId:"julius",ke:6112,purchases:8200,sales:14312,mgn:43},
+  {date:"2026-04-02",workerId:"julius",ke:5927,purchases:9442,sales:15368,mgn:39},
+  {date:"2026-04-12",workerId:"julius",ke:2698,purchases:4624,sales:7321,mgn:37},
+  {date:"2026-04-13",workerId:"julius",ke:4227,purchases:6499,sales:10725,mgn:39},
+  {date:"2026-04-14",workerId:"julius",ke:7076,purchases:12024,sales:19100,mgn:37},
+  {date:"2026-04-15",workerId:"julius",ke:1882,purchases:2906,sales:4787,mgn:39},
+  {date:"2026-04-16",workerId:"julius",ke:4311,purchases:5232,sales:9543,mgn:45},
+  {date:"2026-04-17",workerId:"julius",ke:3006,purchases:4682,sales:7688,mgn:39},
+  {date:"2026-04-18",workerId:"julius",ke:3952,purchases:8557,sales:12509,mgn:32},
+  {date:"2026-04-19",workerId:"julius",ke:3112,purchases:4774,sales:7885,mgn:39},
+  {date:"2026-04-20",workerId:"julius",ke:9590,purchases:12162,sales:21752,mgn:44},
+  {date:"2026-04-21",workerId:"julius",ke:1225,purchases:1867,sales:3092,mgn:40},
+  {date:"2026-04-22",workerId:"julius",ke:7565,purchases:13496,sales:21060,mgn:36},
+  // May UK
+  {date:"2026-05-01",workerId:"shohid",ke:2087,purchases:4036,sales:6123,mgn:34},
+  {date:"2026-05-01",workerId:"hannan",ke:1611,purchases:1641,sales:3252,mgn:50},
+  {date:"2026-05-02",workerId:"hannan",ke:794,purchases:973,sales:1767,mgn:45},
+  {date:"2026-05-01",workerId:"rizwan",ke:831,purchases:935,sales:1766,mgn:47},
+  {date:"2026-05-02",workerId:"rizwan",ke:8047,purchases:9050,sales:17097,mgn:47},
+  {date:"2026-05-03",workerId:"rizwan",ke:9765,purchases:10213,sales:19978,mgn:49},
+  {date:"2026-05-02",workerId:"kimmo",ke:311,purchases:2127,sales:2438,mgn:13},
+  {date:"2026-05-03",workerId:"kimmo",ke:565,purchases:1605,sales:2169,mgn:26},
+  // May Finland
+  {date:"2026-05-01",workerId:"aki",ke:1580,purchases:2783,sales:4363,mgn:36},
+  {date:"2026-05-02",workerId:"aki",ke:3150,purchases:4535,sales:7684,mgn:41},
+  {date:"2026-05-03",workerId:"aki",ke:2523,purchases:4531,sales:7055,mgn:36},
+];
+
+let user=null,entries=HIST.map((e,i)=>({...e,id:e.date+e.workerId+i,a:e.a||0,k:e.k||0}));
+let view="entry",selMonth="2026-05",cFilter="all",pin="";
+let fA="",fK="",fKe="",fP="",fS="",saved=false,saveT=null;
+
+const td=()=>new Date().toISOString().slice(0,10);
+const fmt=n=>Math.round(n).toLocaleString("en-GB");
+const fc=(n,c)=>c==="uk"?`£${fmt(n)}`:`€${fmt(n)}`;
+const pct=(a,b)=>b>0?Math.round((a/b)*100):0;
+const sum=(a,k)=>a.reduce((s,e)=>s+(Number(e[k])||0),0);
+const bW=(a,id)=>a.filter(e=>e.workerId===id);
+const bM=(a,ym)=>a.filter(e=>e.date.startsWith(ym));
+const MO={"2026-04":"April 2026","2026-05":"May 2026"};
+
+function mBonus(ke,t){let r=0;for(const x of t){if(ke>=x.min)r=x.rate;}return ke*r;}
+
+function pl(me,month){
+  const f=FD[month]||{};
+  const kk=sum(bW(me,"kimmo"),"ke"),sk=sum(bW(me,"shohid"),"ke"),hk=sum(bW(me,"hannan"),"ke"),rk=sum(bW(me,"rizwan"),"ke");
+  const ak=sum(bW(me,"aki"),"ke"),jk=sum(bW(me,"julius"),"ke");
+  const uC=(kk+sk+hk+rk)*0.10,fC=(ak+jk)*0.10;
+  const pd=f.paige||0,rd=f.rizwan||bW(me,"rizwan").length;
+  const pR=pd*150,rR=rd*150;
+  const sd=bW(me,"shohid").length,hd=bW(me,"hannan").length;
+  const sB=sd*140,sBo=mBonus(sk,[{min:100000,rate:0.02}]);
+  const hB=hd*100,hBo=mBonus(hk,[{min:100000,rate:0.02},{min:150000,rate:0.035}]);
+  const pC=pd*80,rC=rd*100,aC=ak*0.075,jC=jk*0.05;
+  const uI=uC+pR+rR,uCo=sB+sBo+hB+hBo+pC+rC,fI=fC,fCo=aC+jC;
+  return{uk:{income:uI,cost:uCo,net:uI-uCo,kK:kk,sK:sk,hK:hk,rK:rk,pR,rR,sB,sBo,hB,hBo,pC,rC,sd,hd,pd,rd},
+         fi:{income:fI,cost:fCo,net:fI-fCo,aK:ak,jK:jk,aC,jC},
+         tot:{income:uI+fI,cost:uCo+fCo,net:(uI-uCo)+(fI-fCo)}};
+}
+
+function updateCalc(){
+  const p=parseInt(fP)||0, s=parseInt(fS)||0;
+  const a=parseInt(fA)||0, k=parseInt(fK)||0;
+  const ke=s>p?s-p:0;
+  const mgn=s>0?Math.round((ke/s)*100):0;
+  const close=a>0?Math.round((k/a)*100):0;
+
+  // Update margin box
+  const box=document.getElementById("calc-box");
+  if(box){
+    if(s>0&&p>0){
+      const col=mgn>=30?"#6bda6b":mgn>=20?"#b4f040":"#da6b6b";
+      const brd=mgn>=30?"#1a2a1a":mgn>=20?"#2a2a0a":"#2a1a1a";
+      box.style.borderColor=brd;
+      box.innerHTML=`
+        <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:${col}">${mgn}%</div>
+        <div style="font-size:10px;color:#444;letter-spacing:2px;margin-top:2px">MARGIN</div>
+        <div style="font-size:13px;color:#b4f040;margin-top:6px;font-family:'Syne',sans-serif;font-weight:700">${ke.toLocaleString("en-GB")} margin</div>`;
+    } else {
+      box.style.borderColor="#1c1c2c";
+      box.innerHTML=`<div style="font-size:11px;color:#333">Enter purchases & sales to calculate margin</div>`;
+    }
+  }
+
+  // Update close rate
+  const cr=document.getElementById("close-rate");
+  if(cr){
+    if(a>0&&k>0&&k<=a){
+      cr.innerHTML=`<span style="font-size:13px;color:#6bda6b;font-family:'Syne',sans-serif;font-weight:700">${close}% close rate</span> <span style="font-size:11px;color:#444">${k}/${a} deals</span>`;
+    } else if(k>a&&a>0){
+      cr.innerHTML=`<span style="color:#da6b6b;font-size:11px">⚠ Closed cannot exceed customers</span>`;
+    } else {
+      cr.innerHTML="";
+    }
+  }
+}
+
+function renderLogin(){
+  const dots=[0,1,2,3].map(i=>`<div class="pin-dot${i<pin.length?" filled":""}"></div>`).join("");
+  const btns=[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map(n=>{
+    if(n==="")return`<div></div>`;
+    return`<button class="pin-btn${n==="⌫"?" del":""}" onclick="pp('${n}')">${n}</button>`;
+  }).join("");
+  document.getElementById("root").innerHTML=`
+  <div class="login-wrap"><div class="login-box">
+    <div class="login-logo">DEVALOR<span>.</span>TRACK</div>
+    <div class="login-sub">Enter PIN code</div>
+    <div class="pin-display">${dots}</div>
+    <div class="pin-grid">${btns}</div>
+    <div class="login-error" id="pe"></div>
+  </div></div>`;
+}
+
+function pp(v){
+  if(v==="⌫"){pin=pin.slice(0,-1);}
+  else if(pin.length<4){pin+=v;}
+  if(pin.length===4){
+    const u=USERS.find(x=>x.pin===pin);
+    if(u){user=u;pin="";view="entry";render();}
+    else{
+      renderLogin();
+      document.getElementById("pe").textContent="Incorrect PIN";
+      setTimeout(()=>{pin="";renderLogin();},900);
+      return;
+    }
+  } else renderLogin();
+}
+
+function logout(){user=null;pin="";renderLogin();}
+function setView(v){view=v;render();}
+function setMonth(m){selMonth=m;render();}
+function setFilter(f){cFilter=f;render();}
+
+function save(){
+  const a=parseInt(fA)||0,k=parseInt(fK)||0;
+  const purchases=parseInt(fP)||0,sales=parseInt(fS)||0;
+  if(!purchases||!sales)return;
+  if(a>0&&k>a)return;
+  const ke=Math.max(0,sales-purchases);
+  const mgn=sales>0?Math.round((ke/sales)*100):0;
+  const id=td()+user.workerId;
+  entries=entries.filter(e=>e.id!==id);
+  entries.push({id,date:td(),workerId:user.workerId,a,k,ke,purchases,sales,mgn});
+  fA="";fK="";fKe="";fP="";fS="";
+  saved=true;render();
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{saved=false;render();},2500);
+}
+
+function render(){
+  if(!user){renderLogin();return;}
+  const w=WORKERS.find(x=>x.id===user.workerId);
+  const isOwner=user.role==="owner";
+  const me=bM(entries,selMonth);
+  const myE=bW(me,user.workerId);
+  const myKe=sum(myE,"ke"),myA=sum(myE,"a"),myK=sum(myE,"k");
+  const myS=sum(myE,"sales"),myDays=myE.length,myKpd=myDays>0?myKe/myDays:0;
+  const myConv=myA>0?pct(myK,myA):0;
+  const myMgn=myS>0?Math.round((myKe/myS)*100):myE.length>0?Math.round(myE.filter(e=>e.mgn>0).reduce((s,e,_,a)=>s+e.mgn/a.length,0)):0;
+  const prev=selMonth==="2026-05"?bM(entries,"2026-04"):null;
+  const prevKe=prev?sum(bW(prev,user.workerId),"ke"):null;
+  const trend=prevKe>0?Math.round(((myKe-prevKe)/prevKe)*100):null;
+  const todayE=entries.find(e=>e.date===td()&&e.workerId===user.workerId);
+  const P=pl(me,selMonth);
+  const allDates=[...new Set(entries.map(e=>e.date))].sort();
+  const l14=allDates.slice(-14);
+  const liveKePct=fP&&fS&&parseInt(fS)>0?Math.round(((parseInt(fS)-parseInt(fP))/parseInt(fS))*100):null;
+  const liveConv=fA&&fK&&parseInt(fA)>0?pct(parseInt(fK),parseInt(fA)):null;
+
+  const tabs=isOwner
+    ?[["entry","Entry"],["worker","My Stats"],["owner","Owner"]]
+    :[["entry","Entry"],["worker","My Stats"]];
+
+  const nav=tabs.map(([v,l])=>`<button class="tab${view===v?" active":""}" onclick="setView('${v}')">${l}</button>`).join("");
+
+  const hdr=`
+  <div class="header">
+    <div><div class="logo">DEVALOR<span>.</span>TRACK</div><div class="logo-sub">${w?.name}</div></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="nav">${nav}</div>
+      <button class="logout-btn" onclick="logout()">⏻</button>
+    </div>
+  </div>
+  <div class="controls">
+    <select class="month-sel" onchange="setMonth(this.value)">
+      ${["2026-04","2026-05"].map(m=>`<option value="${m}"${m===selMonth?" selected":""}>${MO[m]}</option>`).join("")}
+    </select>
+  </div>`;
+
+  let body="";
+
+  if(view==="entry"){
+    body=`<div style="max-width:440px;margin:0 auto">
+    <div class="card">
+      <span class="lbl">Operator</span>
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">${w?.name}</div>
+      <div class="note">${w?.note}</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">Daily Entry</div>
+        <div style="font-size:10px;color:#444">${td()}</div>
+      </div>
+      ${todayE?`<div class="ts">
+        <div style="margin-bottom:4px">Saved today — <span style="color:#888;font-size:10px">fill in to overwrite</span></div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+          <span style="color:#b4f040;font-weight:700">${fc(todayE.ke,w?.country||"uk")} margin</span>
+          <span style="color:#888">${todayE.mgn>0?todayE.mgn+"% margin":""}</span>
+          <span style="color:#888">${todayE.a>0?todayE.a+"/"+todayE.k+" closed":""}</span>
+        </div>
+      </div>`:""}
+
+      <div class="g2" style="margin-bottom:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px;text-align:center">Purchases</div>
+          <input type="number" class="inp" placeholder="0" value="${fP}" oninput="fP=this.value;updateCalc()" id="ip">
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px;text-align:center">Sales</div>
+          <input type="number" class="inp" placeholder="0" value="${fS}" oninput="fS=this.value;updateCalc()" id="is">
+        </div>
+      </div>
+
+      <div id="calc-box" style="background:#080810;border:1px solid #1c1c2c;border-radius:2px;padding:12px;margin-bottom:10px;text-align:center">
+        <div style="font-size:11px;color:#333">Enter purchases & sales to calculate margin</div>
+      </div>
+
+      <div class="g2" style="margin-bottom:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px;text-align:center">Customers</div>
+          <input type="number" class="inp" placeholder="0" value="${fA}" oninput="fA=this.value;updateCalc()" id="ia">
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:5px;text-align:center">Closed</div>
+          <input type="number" class="inp" placeholder="0" value="${fK}" oninput="fK=this.value;updateCalc()" id="ik">
+        </div>
+      </div>
+
+      <div id="close-rate" style="text-align:center;margin-bottom:10px;min-height:20px"></div>
+      <button class="btn-save${saved?" saved":""}" onclick="save()">${saved?"✓ SAVED":"SAVE DAY"}</button>
+    </div></div>`;
+  }
+
+  if(view==="worker"){
+    const maxKe=Math.max(...myE.map(e=>e.ke),1);
+    const rows=[...myE].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>{
+      const showPct=e.mgn>0?e.mgn+"%":e.a>0?pct(e.k,e.a)+"%":"";
+      return`<div class="dr">
+        <div class="dd">${e.date.slice(5)}</div>
+        <div class="dbw"><div class="db" style="width:${Math.round((e.ke/maxKe)*100)}%"></div></div>
+        <div class="dv">${fc(e.ke,w?.country||"uk")}</div>
+        <div class="dp">${showPct}</div>
+      </div>`;
+    }).join("");
+
+    let bHtml="";
+    if(w?.model==="sub"&&myKe>0){
+      bHtml=`<div class="card"><span class="lbl">Commission Breakdown</span>
+      <div class="g3" style="margin-top:8px">
+        <div><div class="rl">Margin generated</div><div class="big ac" style="font-size:16px">${fc(myKe,w.country)}</div></div>
+        <div><div class="rl">Your share (${w.rate*100}%)</div><div class="big up" style="font-size:16px">${fc(myKe*w.rate,w.country)}</div></div>
+        <div><div class="rl">To Devalor</div><div class="big" style="font-size:16px;color:#dac86b">${fc(myKe*(0.10-w.rate),w.country)}</div></div>
+      </div></div>`;
+    }
+    if((w?.model==="operator"||w?.model==="billable")&&myDays>0){
+      const bo=w.bonusTiers?mBonus(myKe,w.bonusTiers):0;
+      const nd=w.bonusTiers?Math.max(0,(w.bonusTiers[0]?.min||100000)-myKe):0;
+      bHtml=`<div class="card"><span class="lbl">Pay Breakdown</span>
+        <div class="ri"><div class="rl">Base pay (${myDays} days × £${w.dailyRate||w.dailyRateOut})</div><div class="rv">£${fmt(myDays*(w.dailyRate||w.dailyRateOut))}</div></div>
+        ${bo>0?`<div class="ri"><div class="rl">Monthly bonus</div><div class="rv ac">£${fmt(bo)}</div></div>`:""}
+        ${nd>0?`<div class="ri"><div class="rl">Still needed for bonus</div><div class="rv mu">£${fmt(nd)}</div></div>`:""}
+      </div>`;
+    }
+
+    body=`
+    <div class="card" style="background:linear-gradient(135deg,#0f1a08 0%,#10101c 100%);border-color:#1a2a1a">
+      <span class="lbl">${MO[selMonth]}</span>
+      <div class="sg">
+        <div>
+          <div class="sv ac">${fc(myKe,w?.country||"uk")}</div>
+          <div class="sl">Total Margin</div>
+          ${trend!==null?`<div class="ss ${trend>=0?"up":"dn"}">${trend>=0?"↑":"↓"} ${Math.abs(trend)}% vs prev.</div>`:""}
+        </div>
+        <div>
+          <div class="sv ${myMgn>30?"up":myMgn>20?"ac":"mu"}">${myMgn>0?myMgn+"%":"—"}</div>
+          <div class="sl">Margin %</div>
+          <div class="ss mu">${myDays} days</div>
+        </div>
+        <div>
+          <div class="sv">${myConv>0?myConv+"%":"—"}</div>
+          <div class="sl">Close %</div>
+          <div class="ss mu">${myK}/${myA}</div>
+        </div>
+      </div>
+    </div>
+    <div class="kpi">
+      <div class="kb"><div class="kv">${fc(myKpd,w?.country||"uk")}</div><div class="kl">Margin / day</div></div>
+      <div class="kb"><div class="kv">${myDays}</div><div class="kl">Days worked</div></div>
+      <div class="kb"><div class="kv">${myConv>0?myConv+"%":"—"}</div><div class="kl">Close rate</div></div>
+    </div>
+    ${bHtml}
+    <div class="card">
+      <span class="lbl">Daily breakdown — ${MO[selMonth]}</span>
+      <div style="margin-top:8px">${rows||'<div style="color:#444;font-size:12px">No entries yet</div>'}</div>
+    </div>`;
+  }
+
+  if(view==="owner"&&isOwner){
+    const tbar=l14.map((ds,i)=>{
+      const dE=entries.filter(e=>e.date===ds&&(cFilter==="all"||WORKERS.find(w=>w.id===e.workerId)?.country===cFilter));
+      const dKe=sum(dE,"ke");
+      const mx=Math.max(1,...l14.map(d=>sum(entries.filter(e=>e.date===d&&(cFilter==="all"||WORKERS.find(w=>w.id===e.workerId)?.country===cFilter)),"ke")));
+      const h=Math.max(3,Math.round((dKe/mx)*50));
+      return`<div class="bc"><div class="bf" style="height:${h}px;background:${i===l14.length-1?"#b4f040":"#1e2e1e"}"></div><div class="bd">${ds.slice(5)}</div></div>`;
+    }).join("");
+
+    const ukH=(cFilter==="all"||cFilter==="uk")?`
+    <div class="card" style="border-color:#1a1a3a">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">🇬🇧 United Kingdom</div>
+        <div class="big" style="font-size:17px;color:${P.uk.net>=0?"#6bda6b":"#da6b6b"}">£${fmt(P.uk.net)}</div>
+      </div>
+      <div class="g2">
+        <div>
+          <div class="st" style="color:#b4f040">INCOME</div>
+          <div class="ri"><div><div class="rl">Kimmo × 10%</div><div style="font-size:9px;color:#333">£${fmt(P.uk.kK)}</div></div><div class="rv">£${fmt(P.uk.kK*0.10)}</div></div>
+          <div class="ri"><div><div class="rl">Shohid × 10%</div><div style="font-size:9px;color:#333">£${fmt(P.uk.sK)}</div></div><div class="rv">£${fmt(P.uk.sK*0.10)}</div></div>
+          <div class="ri"><div><div class="rl">Hannan × 10%</div><div style="font-size:9px;color:#333">£${fmt(P.uk.hK)}</div></div><div class="rv">£${fmt(P.uk.hK*0.10)}</div></div>
+          <div class="ri"><div class="rl">Rizwan × 10%</div><div class="rv">£${fmt(P.uk.rK*0.10)}</div></div>
+          <div class="ri"><div class="rl">Paige (${P.uk.pd}d × £150)</div><div class="rv">£${fmt(P.uk.pR)}</div></div>
+          <div class="ri"><div class="rl">Rizwan (${P.uk.rd}d × £150)</div><div class="rv">£${fmt(P.uk.rR)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0">
+            <span style="font-size:11px;font-weight:700">Total</span>
+            <span class="big ac" style="font-size:13px">£${fmt(P.uk.income)}</span>
+          </div>
+        </div>
+        <div>
+          <div class="st" style="color:#da6b6b">COSTS</div>
+          <div class="ri"><div class="rl">Shohid (${P.uk.sd}d×£140)</div><div class="rv dn">-£${fmt(P.uk.sB)}</div></div>
+          ${P.uk.sBo>0?`<div class="ri"><div class="rl">Shohid bonus</div><div class="rv dn">-£${fmt(P.uk.sBo)}</div></div>`:""}
+          <div class="ri"><div class="rl">Hannan (${P.uk.hd}d×£100)</div><div class="rv dn">-£${fmt(P.uk.hB)}</div></div>
+          ${P.uk.hBo>0?`<div class="ri"><div class="rl">Hannan bonus</div><div class="rv dn">-£${fmt(P.uk.hBo)}</div></div>`:""}
+          <div class="ri"><div class="rl">Paige (${P.uk.pd}d×£80)</div><div class="rv dn">-£${fmt(P.uk.pC)}</div></div>
+          <div class="ri"><div class="rl">Rizwan (${P.uk.rd}d×£100)</div><div class="rv dn">-£${fmt(P.uk.rC)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0">
+            <span style="font-size:11px;font-weight:700">Total</span>
+            <span class="big dn" style="font-size:13px">-£${fmt(P.uk.cost)}</span>
+          </div>
+        </div>
+      </div>
+    </div>`:"";
+
+    const fiH=(cFilter==="all"||cFilter==="fi")?`
+    <div class="card" style="border-color:#2a1a1a">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700">🇫🇮 Finland</div>
+        <div class="big" style="font-size:17px;color:${P.fi.net>=0?"#6bda6b":"#da6b6b"}">€${fmt(P.fi.net)}</div>
+      </div>
+      <div class="g2">
+        <div>
+          <div class="st" style="color:#b4f040">INCOME</div>
+          <div class="ri"><div><div class="rl">Aki × 10%</div><div style="font-size:9px;color:#333">€${fmt(P.fi.aK)}</div></div><div class="rv">€${fmt(P.fi.aK*0.10)}</div></div>
+          <div class="ri"><div><div class="rl">Julius × 10%</div><div style="font-size:9px;color:#333">€${fmt(P.fi.jK)}</div></div><div class="rv">€${fmt(P.fi.jK*0.10)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0">
+            <span style="font-size:11px;font-weight:700">Total</span>
+            <span class="big ac" style="font-size:13px">€${fmt(P.fi.income)}</span>
+          </div>
+        </div>
+        <div>
+          <div class="st" style="color:#da6b6b">COSTS</div>
+          <div class="ri"><div class="rl">Aki (7.5%)</div><div class="rv dn">-€${fmt(P.fi.aC)}</div></div>
+          <div class="ri"><div class="rl">Julius (5.0%)</div><div class="rv dn">-€${fmt(P.fi.jC)}</div></div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0">
+            <span style="font-size:11px;font-weight:700">Total</span>
+            <span class="big dn" style="font-size:13px">-€${fmt(P.fi.cost)}</span>
+          </div>
+        </div>
+      </div>
+    </div>`:"";
+
+    body=`
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="fb${cFilter==="all"?" on":""}" onclick="setFilter('all')">All</button>
+      <button class="fb${cFilter==="uk"?" on":""}" onclick="setFilter('uk')">🇬🇧 UK</button>
+      <button class="fb${cFilter==="fi"?" on":""}" onclick="setFilter('fi')">🇫🇮 Finland</button>
+    </div>
+    ${cFilter==="all"?`<div class="tb">
+      <div class="tc"><span class="lbl">Income</span><div class="big ac" style="font-size:17px">£/€${fmt(P.tot.income)}</div></div>
+      <div class="tc"><span class="lbl">Costs</span><div class="big dn" style="font-size:17px">-£/€${fmt(P.tot.cost)}</div></div>
+      <div class="tc"><span class="lbl">Net to Kimmo</span><div class="big up" style="font-size:17px">£/€${fmt(P.tot.net)}</div></div>
+    </div>`:""}
+    ${ukH}${fiH}
+    <div class="card">
+      <span class="lbl">Daily margin — last 14 active days</span>
+      <div class="bw">${tbar}</div>
+    </div>`;
+  }
+
+  document.getElementById("root").innerHTML=`${hdr}<div class="content">${body}</div>`;
+}
+
+renderLogin();
+</script>
+</body>
+</html>

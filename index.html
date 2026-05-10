@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Devalor Track</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Mono','Courier New',monospace;background:#06060f;min-height:100vh;color:#e8e4d9;overflow-x:hidden}
+input[type=number],input[type=text],input[type=date]{-moz-appearance:textfield;-webkit-appearance:none;font-family:inherit}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+select,button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* ── LOGIN ── */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:radial-gradient(ellipse at center, #0d0d1f 0%, #06060f 70%)}
+.login-box{width:100%;max-width:340px}
+.login-logo{font-family:'Syne',sans-serif;font-size:32px;font-weight:900;text-align:center;letter-spacing:-1px;margin-bottom:4px}
+.login-logo span{color:#b4f040}
+.login-tagline{font-size:9px;color:#222;letter-spacing:4px;text-transform:uppercase;text-align:center;margin-bottom:40px}
+.pin-display{display:flex;justify-content:center;gap:16px;margin-bottom:32px}
+.pin-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #1a1a2a;transition:all .25s cubic-bezier(.4,0,.2,1)}
+.pin-dot.filled{background:#b4f040;border-color:#b4f040;box-shadow:0 0 12px rgba(180,240,64,0.4)}
+.pin-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.pin-btn{padding:20px;background:#0d0d1f;border:1px solid #141428;color:#e8e4d9;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;border-radius:4px;transition:all .15s;position:relative;overflow:hidden}
+.pin-btn::after{content:'';position:absolute;inset:0;background:rgba(180,240,64,0);transition:background .15s}
+.pin-btn:active::after{background:rgba(180,240,64,0.1)}
+.pin-btn:active{transform:scale(0.94);border-color:#b4f040}
+.pin-btn.del{font-size:16px;color:#333}
+.login-error{color:#da6b6b;font-size:11px;text-align:center;margin-top:16px;min-height:18px;letter-spacing:1px}
+
+/* ── LAYOUT ── */
+.header{border-bottom:1px solid #0f0f1e;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;background:rgba(6,6,15,0.95);backdrop-filter:blur(12px);z-index:100}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;letter-spacing:-0.5px}
+.logo span{color:#b4f040}
+.logo-sub{font-size:8px;color:#111;letter-spacing:4px;text-transform:uppercase;margin-top:2px}
+.nav{display:flex;flex-wrap:wrap;gap:2px}
+.tab{padding:7px 11px;border:1px solid #0f0f1e;background:transparent;color:#333;font-size:9px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;border-radius:2px}
+.tab:hover{color:#666;border-color:#1a1a2a}
+.tab.active{background:#b4f040;color:#06060f;border-color:#b4f040;font-weight:700}
+.logout-btn{width:32px;height:32px;border:1px solid #111;background:transparent;color:#333;font-size:14px;cursor:pointer;border-radius:2px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.logout-btn:hover{border-color:#da6b6b;color:#da6b6b}
+.controls{padding:12px 18px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.month-sel{background:#0d0d1f;border:1px solid #141428;color:#e8e4d9;font-family:inherit;font-size:11px;padding:7px 12px;border-radius:2px;outline:none;transition:border .2s}
+.month-sel:focus{border-color:#b4f040}
+.content{max-width:960px;margin:0 auto;padding:14px 16px;padding-bottom:40px}
+
+/* ── CARDS ── */
+.card{background:#0d0d1f;border:1px solid #111827;border-radius:4px;padding:16px;margin-bottom:10px;transition:border .2s}
+.card-glow{background:linear-gradient(135deg,#0f1a08 0%,#0d0d1f 100%);border-color:#1a2a1a}
+.card-blue{background:linear-gradient(135deg,#080f1a 0%,#0d0d1f 100%);border-color:#1a1a3a}
+.card-purple{background:linear-gradient(135deg,#0f0818 0%,#0d0d1f 100%);border-color:#2a1a3a}
+
+/* ── INPUTS ── */
+.lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#333;margin-bottom:6px;display:block}
+.inp{width:100%;background:#06060f;border:1px solid #111827;color:#e8e4d9;font-family:inherit;font-size:20px;padding:12px 8px;text-align:center;border-radius:3px;outline:none;transition:all .2s}
+.inp:focus{border-color:#b4f040;box-shadow:0 0 0 3px rgba(180,240,64,0.06)}
+.inp.ac{border-color:#b4f040}
+.inp-date{width:100%;background:#06060f;border:1px solid #111827;color:#e8e4d9;font-family:inherit;font-size:14px;padding:10px 10px;border-radius:3px;outline:none;transition:all .2s}
+.inp-date:focus{border-color:#b4f040}
+
+/* ── BUTTONS ── */
+.btn-save{width:100%;padding:14px;background:#b4f040;color:#06060f;border:none;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:4px;text-transform:uppercase;border-radius:3px;margin-top:12px;transition:all .2s;position:relative;overflow:hidden}
+.btn-save:active{transform:scale(0.98)}
+.btn-save.saved{background:#0a1f0a;color:#4bda4b;border:1px solid #1a3a1a}
+.btn-sm{padding:6px 12px;border:1px solid #111827;background:transparent;color:#333;font-size:9px;letter-spacing:2px;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all .2s}
+.btn-sm:hover{border-color:#b4f040;color:#b4f040}
+.btn-del{padding:3px 8px;border:1px solid #1a0a0a;background:transparent;color:#444;font-size:10px;border-radius:2px;cursor:pointer;transition:all .2s}
+.btn-del:hover{border-color:#da6b6b;color:#da6b6b}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:12px}
+.stat-val{font-family:'Syne',sans-serif;font-weight:900;font-size:22px;line-height:1}
+.stat-lbl{font-size:8px;color:#333;margin-top:5px;letter-spacing:3px;text-transform:uppercase}
+.stat-sub{font-size:11px;margin-top:4px}
+
+/* ── COLORS ── */
+.up{color:#6bda6b}.dn{color:#da6b6b}.mu{color:#333}.ac{color:#b4f040}.bl{color:#4ab0f0}
+
+/* ── ROW ITEMS ── */
+.ri{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #0f0f1e}
+.ri:last-child{border-bottom:none}
+.rl{font-size:11px;color:#444}
+.rl-sub{font-size:9px;color:#222;margin-top:2px}
+.rv{font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
+
+/* ── DAY ROWS ── */
+.dr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.dd{width:52px;font-size:10px;color:#333}
+.dbw{flex:1;height:3px;background:#0f0f1e;border-radius:2px;overflow:hidden}
+.db{height:100%;background:#b4f040;border-radius:2px;transition:width .5s}
+.dv{width:76px;text-align:right;font-size:11px;font-family:'Syne',sans-serif;font-weight:700}
+.dp{width:38px;text-align:right;font-size:10px;color:#444}
+
+/* ── KPI BOX ── */
+.kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.kb{background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px}
+.kv{font-family:'Syne',sans-serif;font-weight:800;font-size:18px}
+.kl{font-size:8px;color:#333;letter-spacing:3px;text-transform:uppercase;margin-top:4px}
+
+/* ── FILTERS ── */
+.fb{padding:6px 14px;border:1px solid #0f0f1e;background:transparent;color:#333;font-size:9px;letter-spacing:2px;text-transform:uppercase;border-radius:2px;transition:all .2s}
+.fb.on{background:#0f1a08;color:#b4f040;border-color:#b4f040}
+.sel{width:100%;background:#06060f;border:1px solid #111827;color:#e8e4d9;font-family:inherit;font-size:14px;padding:10px 8px;border-radius:3px;outline:none;transition:border .2s}
+.sel:focus{border-color:#b4f040}
+
+/* ── TOTAL CARDS ── */
+.tb{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.tc{background:#0d0d1f;border:1px solid #0f0f1e;border-radius:3px;padding:14px}
+
+/* ── BAR CHART ── */
+.bw{display:flex;align-items:flex-end;gap:3px;height:60px;margin-top:12px}
+.bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bf{width:100%;border-radius:2px 2px 0 0;transition:height .3s}
+.bd{font-size:7px;color:#1a1a2a}
+
+/* ── ROLE BADGES ── */
+.rb{display:inline-block;padding:2px 7px;border-radius:2px;font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+.rb-operator{background:#0f1a08;color:#b4f040;border:1px solid #1a2a14}
+.rb-assistant{background:#080f1a;color:#4ab0f0;border:1px solid #14201a}
+.rb-trainee{background:#1a0f08;color:#f0a04a;border:1px solid #2a1a14}
+.rb-owner{background:#180a18;color:#d040f0;border:1px solid #280a28}
+
+/* ── CALC BOX ── */
+.calc-box{background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:16px;margin-bottom:12px;text-align:center;transition:all .3s}
+
+/* ── NOTIFICATION ── */
+.ts{background:#060f06;border:1px solid #0f1f0f;border-radius:3px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#333}
+
+/* ── NOTE ── */
+.note{padding:8px 12px;background:#06060f;border:1px solid #0f0f1e;border-radius:2px;font-size:10px;color:#333;margin-top:8px;line-height:1.6}
+
+/* ── SECTION TITLE ── */
+.st{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #0f0f1e}
+
+/* ── RANK BAR ── */
+.rank-bar{height:5px;background:#0f0f1e;border-radius:3px;overflow:hidden;margin-top:5px}
+.rank-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+/* ── VALUATION ── */
+.val-box{border-radius:4px;padding:16px;text-align:center;border:1px solid}
+.val-number{font-family:'Syne',sans-serif;font-weight:900;line-height:1;letter-spacing:-1px}
+.val-locked{filter:blur(4px);user-select:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:480px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .tb{grid-template-columns:1fr}
+  .kpi{grid-template-columns:1fr 1fr}
+  .g4{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// ─── SUPABASE ─────────────────────────────────────────────────────────────────
+const SUPA_URL = "https://bxlvamfefqtykwubngso.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4bHZhbWZlZnF0eWt3dWJuZ3NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDIxODUsImV4cCI6MjA5MzMxODE4NX0.YiDcJ2gVeygvU2gFhgalz3sAP9veTpkkHNvylsYMue4";
+
+const supa = {
+  async get(table) {
+    try {
+      const r = await fetch(SUPA_URL+"/rest/v1/"+table+"?select=*&order=date.asc", {
+        headers: {"apikey": SUPA_KEY, "Authorization": "Bearer "+SUPA_KEY}
+      });
+      return r.ok ? await r.json() : [];
+    } catch(e) { return []; }
+  },
+  async upsert(table, data) {
+    try {
+      const r = await fetch(SUPA_URL+"/rest/v1/"+table, {
+        method: "POST",
+        headers: {
+          "apikey": SUPA_KEY,
+          "Authorization": "Bearer "+SUPA_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "resolution=merge-duplicates"
+        },
+        body: JSON.stringify(data)
+      });
+      return r.ok;
+    } catch(e) { return false; }
+  },
+  async del(table, id) {
+    try {
+      const r = await fetch(SUPA_URL+"/rest/v1/"+table+"?id=eq."+encodeURIComponent(id), {
+        method: "DELETE",
+        headers: {"apikey": SUPA_KEY, "Authorization": "Bearer "+SUPA_KEY}
+      });
+      return r.ok;
+    } catch(e) { return false; }
+  }
+};
+
+async function loadFromSupabase() {
+  // Load entries
+  const data = await supa.get("entries");
+  if (data && data.length > 0) {
+    const supaIds = new Set(data.map(e => e.date + e.workerId));
+    entries = [
+      ...entries.filter(e => !supaIds.has(e.date + e.workerId)),
+      ...data.map(e => ({...e, id: e.date + e.workerId}))
+    ];
+  }
+  // Load operators from Supabase
+  const ops = await supa.get("operators");
+  if (ops && ops.length > 0) {
+    ops.filter(o => o.active).forEach(o => {
+      if (!WORKERS.find(w => w.id === o.id)) {
+        WORKERS.push({
+          id: o.id, name: o.name, country: o.country||'uk',
+          car: o.car||'', role: o.role||'operator',
+          billedRate: o.billed_rate||0, dailyRate: o.daily_rate||0,
+          rate: o.commission_rate||0, bonusTiers: o.bonus_tiers||[],
+          note: o.note||'', earlyAdopter: o.early_adopter||false
+        });
+      }
+    });
+  }
+  // Load users/PINs from Supabase
+  const usrs = await supa.get("users");
+  if (usrs && usrs.length > 0) {
+    usrs.forEach(u => {
+      if (!USERS.find(x => x.workerId === u.operator_id)) {
+        USERS.push({pin: u.pin, workerId: u.operator_id, role: u.role||'worker'});
+      }
+    });
+  }
+  render();
+}
+
+// ─── USERS ────────────────────────────────────────────────────────────────────
+const USERS = [
+  {pin:"171211", workerId:"kimmo",  role:"owner"},
+  {pin:"2001",   workerId:"shohid", role:"worker"},
+  {pin:"2002",   workerId:"hannan", role:"worker"},
+  {pin:"2003",   workerId:"rizwan", role:"worker"},
+  {pin:"2004",   workerId:"paige",  role:"worker"},
+  {pin:"2005",   workerId:"mira",   role:"worker"},
+  {pin:"3001",   workerId:"aki",    role:"worker"},
+  {pin:"3002",   workerId:"julius", role:"worker"},
+];
+
+// ─── WORKERS ──────────────────────────────────────────────────────────────────
+const WORKERS = [
+  {id:"kimmo",  name:"Kimmo Kaukinen",  country:"uk", car:"UK Vehicles",   role:"operator",
+   billedRate:0,   dailyRate:0,   bonusTiers:[{min:100000,rate:0.02},{min:150000,rate:0.035}],
+   note:"Owner — 10% of margin to Devalor"},
+  {id:"shohid", name:"Abdul Shohid",    country:"uk", car:"FP75LSC (B)",   role:"operator",
+   billedRate:0,   dailyRate:140, bonusTiers:[{min:100000,rate:0.02}],
+   note:"Lead Operator — £140/day + 2% bonus if ≥£100k/month"},
+  {id:"hannan", name:"Abdul Hannan",    country:"uk", car:"FP75LSC (C)",   role:"operator",
+   billedRate:0,   dailyRate:100, bonusTiers:[{min:100000,rate:0.02},{min:150000,rate:0.035}],
+   note:"Operator — £100/day + monthly bonus"},
+  {id:"rizwan", name:"Rizwan Patel",    country:"uk", car:"KN26ERR",       role:"operator",
+   billedRate:150, dailyRate:100, bonusTiers:[{min:100000,rate:0.02},{min:150000,rate:0.035}],
+   note:"Operator — £100/day + monthly bonus"},
+  {id:"paige",  name:"Paige James",     country:"uk", car:"FP75LSC",       role:"assistant",
+   billedRate:150, dailyRate:80,  bonusTiers:[],
+   note:"Assistant — £150 billed / £80 paid"},
+  {id:"mira",   name:"Mira Sivén",      country:"uk", car:"FP75LSC",       role:"assistant",
+   billedRate:150, dailyRate:130, bonusTiers:[],
+   note:"Assistant — £150 billed / £130 paid"},
+  {id:"aki",    name:"Aki Kultanen",    country:"fi", car:"JMU-617",       role:"operator",
+   billedRate:0,   dailyRate:0,   bonusTiers:[], rate:0.075,
+   note:"Subcontractor — 7.5% commission"},
+  {id:"julius", name:"Julius Tiihonen", country:"fi", car:"JMU-617",       role:"operator",
+   billedRate:0,   dailyRate:0,   bonusTiers:[], rate:0.05,
+   note:"Subcontractor — 5.0% commission"},
+];
+
+const FD = {
+  "2026-04": {paige:14, rizwan:10, mira:0},
+  "2026-05": {paige:4,  rizwan:5,  mira:2},
+};
+
+const ROLE_LABELS = {operator:"Operator", assistant:"Assistant", trainee:"Trainee", owner:"Owner"};
+const MONTHS = ["2026-04","2026-05"];
+const MO_LABEL = {"2026-04":"April 2026","2026-05":"May 2026"};
+
+// ─── HISTORICAL DATA ──────────────────────────────────────────────────────────
+const HIST = [
+  // ── KIMMO — April ──
+  {date:"2026-04-01",workerId:"kimmo",ke:1846,purchases:2150,sales:3996,mgn:46,a:0,k:0},
+  {date:"2026-04-02",workerId:"kimmo",ke:571,purchases:544,sales:1115,mgn:51,a:0,k:0},
+  {date:"2026-04-04",workerId:"kimmo",ke:4316,purchases:5801,sales:10117,mgn:43,a:0,k:0},
+  {date:"2026-04-06",workerId:"kimmo",ke:2582,purchases:2987,sales:5570,mgn:46,a:0,k:0},
+  {date:"2026-04-07",workerId:"kimmo",ke:2451,purchases:3131,sales:5582,mgn:44,a:0,k:0},
+  {date:"2026-04-11",workerId:"kimmo",ke:332,purchases:354,sales:686,mgn:48,a:0,k:0},
+  {date:"2026-04-12",workerId:"kimmo",ke:2120,purchases:3606,sales:5727,mgn:37,a:0,k:0},
+  {date:"2026-04-14",workerId:"kimmo",ke:730,purchases:1401,sales:2131,mgn:34,a:0,k:0},
+  {date:"2026-04-15",workerId:"kimmo",ke:4669,purchases:5012,sales:9681,mgn:48,a:0,k:0},
+  {date:"2026-04-16",workerId:"kimmo",ke:1622,purchases:4012,sales:5633,mgn:29,a:0,k:0},
+  {date:"2026-04-17",workerId:"kimmo",ke:460,purchases:466,sales:926,mgn:50,a:0,k:0},
+  {date:"2026-04-18",workerId:"kimmo",ke:749,purchases:2563,sales:3312,mgn:23,a:0,k:0},
+  {date:"2026-04-19",workerId:"kimmo",ke:1045,purchases:1754,sales:2799,mgn:37,a:0,k:0},
+  {date:"2026-04-21",workerId:"kimmo",ke:953,purchases:5588,sales:6542,mgn:15,a:0,k:0},
+  {date:"2026-04-22",workerId:"kimmo",ke:726,purchases:1995,sales:2721,mgn:27,a:0,k:0},
+  {date:"2026-04-25",workerId:"kimmo",ke:245,purchases:561,sales:807,mgn:30,a:0,k:0},
+  {date:"2026-04-26",workerId:"kimmo",ke:10391,purchases:18134,sales:28525,mgn:36,a:0,k:0},
+  {date:"2026-04-27",workerId:"kimmo",ke:595,purchases:595,sales:1189,mgn:50,a:0,k:0},
+  {date:"2026-04-28",workerId:"kimmo",ke:8673,purchases:13170,sales:21843,mgn:40,a:0,k:0},
+  {date:"2026-04-29",workerId:"kimmo",ke:2262,purchases:2797,sales:5058,mgn:45,a:0,k:0},
+  // ── SHOHID — April ──
+  {date:"2026-04-03",workerId:"shohid",ke:7458,purchases:10228,sales:17686,mgn:42,a:0,k:0},
+  {date:"2026-04-05",workerId:"shohid",ke:950,purchases:1462,sales:2411,mgn:39,a:0,k:0},
+  {date:"2026-04-08",workerId:"shohid",ke:128,purchases:416,sales:543,mgn:24,a:0,k:0},
+  {date:"2026-04-09",workerId:"shohid",ke:787,purchases:5559,sales:6346,mgn:12,a:0,k:0},
+  {date:"2026-04-10",workerId:"shohid",ke:2866,purchases:4334,sales:7200,mgn:40,a:0,k:0},
+  {date:"2026-04-13",workerId:"shohid",ke:1032,purchases:1904,sales:2935,mgn:35,a:0,k:0},
+  {date:"2026-04-15",workerId:"shohid",ke:1344,purchases:1481,sales:2825,mgn:48,a:0,k:0},
+  {date:"2026-04-16",workerId:"shohid",ke:5512,purchases:5217,sales:10730,mgn:51,a:0,k:0},
+  {date:"2026-04-17",workerId:"shohid",ke:3918,purchases:4586,sales:8503,mgn:46,a:0,k:0},
+  {date:"2026-04-20",workerId:"shohid",ke:1149,purchases:1619,sales:2768,mgn:42,a:0,k:0},
+  {date:"2026-04-23",workerId:"shohid",ke:1578,purchases:3957,sales:5535,mgn:29,a:0,k:0},
+  {date:"2026-04-24",workerId:"shohid",ke:4481,purchases:6718,sales:11199,mgn:40,a:0,k:0},
+  {date:"2026-04-29",workerId:"shohid",ke:4607,purchases:5493,sales:10101,mgn:46,a:0,k:0},
+  {date:"2026-04-30",workerId:"shohid",ke:10615,purchases:16743,sales:27358,mgn:39,a:0,k:0},
+  // ── HANNAN — April ──
+  {date:"2026-04-11",workerId:"hannan",ke:754,purchases:768,sales:1521,mgn:50,a:0,k:0},
+  {date:"2026-04-12",workerId:"hannan",ke:7053,purchases:11917,sales:18970,mgn:37,a:0,k:0},
+  {date:"2026-04-13",workerId:"hannan",ke:401,purchases:754,sales:1156,mgn:35,a:0,k:0},
+  {date:"2026-04-14",workerId:"hannan",ke:228,purchases:401,sales:629,mgn:36,a:0,k:0},
+  {date:"2026-04-18",workerId:"hannan",ke:3140,purchases:13336,sales:16476,mgn:19,a:0,k:0},
+  {date:"2026-04-19",workerId:"hannan",ke:2254,purchases:13696,sales:15949,mgn:14,a:0,k:0},
+  {date:"2026-04-21",workerId:"hannan",ke:1703,purchases:7580,sales:9284,mgn:18,a:0,k:0},
+  {date:"2026-04-22",workerId:"hannan",ke:1089,purchases:1957,sales:3046,mgn:36,a:0,k:0},
+  {date:"2026-04-23",workerId:"hannan",ke:683,purchases:2234,sales:2917,mgn:23,a:0,k:0},
+  {date:"2026-04-25",workerId:"hannan",ke:2923,purchases:5691,sales:8614,mgn:34,a:0,k:0},
+  {date:"2026-04-27",workerId:"hannan",ke:1556,purchases:1638,sales:3194,mgn:49,a:0,k:0},
+  // ── RIZWAN ──
+  {date:"2026-04-30",workerId:"rizwan",ke:84,purchases:0,sales:0,mgn:0,a:0,k:0},
+  // ── AKI — April ──
+  {date:"2026-04-02",workerId:"aki",ke:202,purchases:823,sales:1026,mgn:20,a:0,k:0},
+  {date:"2026-04-03",workerId:"aki",ke:4286,purchases:9072,sales:13357,mgn:32,a:0,k:0},
+  {date:"2026-04-04",workerId:"aki",ke:4400,purchases:8910,sales:13311,mgn:33,a:0,k:0},
+  {date:"2026-04-05",workerId:"aki",ke:1423,purchases:3349,sales:4771,mgn:30,a:0,k:0},
+  {date:"2026-04-06",workerId:"aki",ke:11879,purchases:25602,sales:37481,mgn:32,a:0,k:0},
+  {date:"2026-04-07",workerId:"aki",ke:2770,purchases:5463,sales:8233,mgn:34,a:0,k:0},
+  {date:"2026-04-08",workerId:"aki",ke:3251,purchases:10403,sales:13655,mgn:24,a:0,k:0},
+  {date:"2026-04-09",workerId:"aki",ke:3590,purchases:13242,sales:16833,mgn:21,a:0,k:0},
+  {date:"2026-04-10",workerId:"aki",ke:4069,purchases:12523,sales:16591,mgn:25,a:0,k:0},
+  {date:"2026-04-11",workerId:"aki",ke:633,purchases:3385,sales:4018,mgn:16,a:0,k:0},
+  {date:"2026-04-23",workerId:"aki",ke:7578,purchases:11160,sales:18738,mgn:40,a:0,k:0},
+  {date:"2026-04-24",workerId:"aki",ke:2034,purchases:4919,sales:6953,mgn:29,a:0,k:0},
+  {date:"2026-04-25",workerId:"aki",ke:3334,purchases:9045,sales:12379,mgn:27,a:0,k:0},
+  {date:"2026-04-26",workerId:"aki",ke:3115,purchases:8104,sales:11219,mgn:28,a:0,k:0},
+  {date:"2026-04-27",workerId:"aki",ke:5379,purchases:15410,sales:20789,mgn:26,a:0,k:0},
+  {date:"2026-04-28",workerId:"aki",ke:438,purchases:1456,sales:1895,mgn:23,a:0,k:0},
+  {date:"2026-04-29",workerId:"aki",ke:5574,purchases:11901,sales:17476,mgn:32,a:0,k:0},
+  {date:"2026-04-30",workerId:"aki",ke:1331,purchases:4251,sales:5582,mgn:24,a:0,k:0},
+  // ── JULIUS — April ──
+  {date:"2026-04-01",workerId:"julius",ke:6112,purchases:8200,sales:14312,mgn:43,a:0,k:0},
+  {date:"2026-04-02",workerId:"julius",ke:5927,purchases:9442,sales:15368,mgn:39,a:0,k:0},
+  {date:"2026-04-12",workerId:"julius",ke:2698,purchases:4624,sales:7321,mgn:37,a:0,k:0},
+  {date:"2026-04-13",workerId:"julius",ke:4227,purchases:6499,sales:10725,mgn:39,a:0,k:0},
+  {date:"2026-04-14",workerId:"julius",ke:7076,purchases:12024,sales:19100,mgn:37,a:0,k:0},
+  {date:"2026-04-15",workerId:"julius",ke:1882,purchases:2906,sales:4787,mgn:39,a:0,k:0},
+  {date:"2026-04-16",workerId:"julius",ke:4311,purchases:5232,sales:9543,mgn:45,a:0,k:0},
+  {date:"2026-04-17",workerId:"julius",ke:3006,purchases:4682,sales:7688,mgn:39,a:0,k:0},
+  {date:"2026-04-18",workerId:"julius",ke:3952,purchases:8557,sales:12509,mgn:32,a:0,k:0},
+  {date:"2026-04-19",workerId:"julius",ke:3112,purchases:4774,sales:7885,mgn:39,a:0,k:0},
+  {date:"2026-04-20",workerId:"julius",ke:9590,purchases:12162,sales:21752,mgn:44,a:0,k:0},
+  {date:"2026-04-21",workerId:"julius",ke:1225,purchases:1867,sales:3092,mgn:40,a:0,k:0},
+  {date:"2026-04-22",workerId:"julius",ke:7565,purchases:13496,sales:21060,mgn:36,a:0,k:0},
+  // ── MAY — UK ──
+  {date:"2026-05-01",workerId:"shohid",ke:2087,purchases:4036,sales:6123,mgn:34,a:0,k:0},
+  {date:"2026-05-04",workerId:"shohid",ke:5888,purchases:8207,sales:14095,mgn:42,a:0,k:0},
+  {date:"2026-05-06",workerId:"shohid",ke:1796,purchases:2363,sales:4160,mgn:43,a:0,k:0},
+  {date:"2026-05-01",workerId:"hannan",ke:1611,purchases:1641,sales:3252,mgn:50,a:0,k:0},
+  {date:"2026-05-02",workerId:"hannan",ke:794,purchases:973,sales:1767,mgn:45,a:0,k:0},
+  {date:"2026-05-05",workerId:"hannan",ke:1502,purchases:2770,sales:4272,mgn:35,a:0,k:0},
+  {date:"2026-05-06",workerId:"hannan",ke:791,purchases:1147,sales:1938,mgn:41,a:0,k:0},
+  {date:"2026-05-01",workerId:"rizwan",ke:831,purchases:935,sales:1766,mgn:47,a:0,k:0},
+  {date:"2026-05-02",workerId:"rizwan",ke:8047,purchases:9050,sales:17097,mgn:47,a:0,k:0},
+  {date:"2026-05-03",workerId:"rizwan",ke:9765,purchases:10213,sales:19979,mgn:49,a:0,k:0},
+  {date:"2026-05-04",workerId:"rizwan",ke:5167,purchases:8072,sales:13239,mgn:39,a:0,k:0},
+  {date:"2026-05-05",workerId:"rizwan",ke:981,purchases:1145,sales:2125,mgn:46,a:0,k:0},
+  {date:"2026-05-02",workerId:"kimmo",ke:311,purchases:2127,sales:2438,mgn:13,a:0,k:0},
+  {date:"2026-05-03",workerId:"kimmo",ke:565,purchases:1605,sales:2169,mgn:26,a:0,k:0},
+  {date:"2026-05-04",workerId:"kimmo",ke:4498,purchases:8092,sales:12590,mgn:36,a:0,k:0},
+  {date:"2026-05-06",workerId:"kimmo",ke:727,purchases:2378,sales:3105,mgn:23,a:0,k:0},
+  {date:"2026-05-07",workerId:"kimmo",ke:1005,purchases:3366,sales:4371,mgn:23,a:5,k:3},
+  {date:"2026-05-03",workerId:"paige",ke:70,purchases:0,sales:150,mgn:47,a:0,k:0},
+  {date:"2026-05-05",workerId:"paige",ke:70,purchases:0,sales:150,mgn:47,a:0,k:0},
+  {date:"2026-05-06",workerId:"paige",ke:70,purchases:0,sales:150,mgn:47,a:0,k:0},
+  {date:"2026-05-07",workerId:"paige",ke:70,purchases:0,sales:150,mgn:47,a:0,k:0},
+  {date:"2026-05-03",workerId:"mira",ke:20,purchases:0,sales:150,mgn:13,a:0,k:0},
+  {date:"2026-05-04",workerId:"mira",ke:20,purchases:0,sales:150,mgn:13,a:0,k:0},
+  // ── MAY — Finland ──
+  {date:"2026-05-01",workerId:"aki",ke:1580,purchases:2783,sales:4363,mgn:36,a:0,k:0},
+  {date:"2026-05-02",workerId:"aki",ke:3150,purchases:4535,sales:7684,mgn:41,a:0,k:0},
+  {date:"2026-05-03",workerId:"aki",ke:2523,purchases:4531,sales:7055,mgn:36,a:0,k:0},
+  {date:"2026-05-05",workerId:"julius",ke:4769,purchases:8774,sales:13543,mgn:35,a:11,k:11},
+  {date:"2026-05-06",workerId:"julius",ke:3903,purchases:7183,sales:11086,mgn:35,a:9,k:11},
+  {date:"2026-05-07",workerId:"julius",ke:9387,purchases:17280,sales:26667,mgn:35,a:16,k:15},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let user = null;
+let entries = HIST.map((e,i) => ({...e, id: e.date+e.workerId+i}));
+let view = "entry";
+let selMonth = "2026-05";
+let cFilter = "all";
+let pin = "";
+let fP="", fS="", fA="", fK="", fDate="";
+let showBackdate = false;
+let saved = false;
+let saveT = null;
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const td = () => new Date().toISOString().slice(0,10);
+const fmt = n => Math.round(n).toLocaleString("en-GB");
+const fmtM = n => { if(n>=1000000) return (n/1000000).toFixed(1)+"M"; if(n>=1000) return Math.round(n/1000)+"k"; return fmt(n); };
+const fc = (n,c) => (c==="fi" ? "€" : "£") + fmt(n);
+const fcM = (n,c) => (c==="fi" ? "€" : "£") + fmtM(n);
+const pct = (a,b) => b>0 ? Math.round((a/b)*100) : 0;
+const sum = (a,k) => a.reduce((s,e) => s+(Number(e[k])||0), 0);
+const bW = (a,id) => a.filter(e => e.workerId===id);
+const bM = (a,ym) => a.filter(e => e.date && e.date.startsWith(ym));
+const mBonus = (ke,tiers) => { let r=0; tiers.forEach(t => { if(ke>=t.min) r=t.rate; }); return ke*r; };
+const rb = (role) => '<span class="rb rb-'+role+'">'+(ROLE_LABELS[role]||role)+'</span>';
+
+// ─── P&L CALCULATOR ──────────────────────────────────────────────────────────
+function calcPL(me, month) {
+  const f = FD[month] || {};
+  const kk=sum(bW(me,"kimmo"),"ke"), sk=sum(bW(me,"shohid"),"ke");
+  const hk=sum(bW(me,"hannan"),"ke"), rk=sum(bW(me,"rizwan"),"ke");
+  const ak=sum(bW(me,"aki"),"ke"),    jk=sum(bW(me,"julius"),"ke");
+
+  const pd = f.paige  || bW(me,"paige").length;
+  const rd = f.rizwan || bW(me,"rizwan").length;
+  const md = f.mira   || bW(me,"mira").length;
+
+  const ukComm = (kk+sk+hk+rk)*0.10;
+  const fiComm = (ak+jk)*0.10;
+
+  // Income
+  const pR=pd*150, rR=rd*150, mR=md*150;
+
+  // Costs
+  const sd=bW(me,"shohid").length, hd=bW(me,"hannan").length;
+  const sB=sd*140, sBo=mBonus(sk,[{min:100000,rate:0.02}]);
+  const hB=hd*100, hBo=mBonus(hk,[{min:100000,rate:0.02},{min:150000,rate:0.035}]);
+  const pC=pd*80, rC=rd*100, mC=md*130;
+  const aC=ak*0.075, jC=jk*0.05;
+
+  const uI=ukComm+pR+rR+mR, uCo=sB+sBo+hB+hBo+pC+rC+mC;
+  const fI=fiComm, fCo=aC+jC;
+
+  return {
+    uk: {income:uI, cost:uCo, net:uI-uCo, kK:kk, sK:sk, hK:hk, rK:rk,
+         pR, rR, mR, sB, sBo, hB, hBo, pC, rC, mC, sd, hd, pd, rd, md},
+    fi: {income:fI, cost:fCo, net:fI-fCo, aK:ak, jK:jk, aC, jC},
+    tot: {income:uI+fI, cost:uCo+fCo, net:(uI-uCo)+(fI-fCo)}
+  };
+}
+
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+function renderLogin() {
+  const maxLen = 6;
+  const dots = [0,1,2,3,4,5].map(i =>
+    '<div class="pin-dot'+(i<pin.length?' filled':'')+'"></div>'
+  ).join('');
+  const btns = [1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(n => {
+    if(n==='') return '<div></div>';
+    return '<button class="pin-btn'+(n==='⌫'?' del':'')+'" onclick="pp(\''+n+'\')">'+n+'</button>';
+  }).join('');
+  document.getElementById('root').innerHTML =
+    '<div class="login-wrap"><div class="login-box">'+
+    '<div class="login-logo">DEVALOR<span>.</span>TRACK</div>'+
+    '<div class="login-tagline">Performance · Value · Exit</div>'+
+    '<div class="pin-display">'+dots+'</div>'+
+    '<div class="pin-grid">'+btns+'</div>'+
+    '<div class="login-error" id="pe"></div>'+
+    '</div></div>';
+}
+
+function pp(v) {
+  if(v==='⌫') { pin=pin.slice(0,-1); }
+  else if(pin.length<6) { pin+=v; }
+  const matched = USERS.find(x => x.pin===pin);
+  if(matched) {
+    user=matched; pin=""; view="entry"; fDate=td(); render();
+  } else if(pin.length>=6 || (pin.length===4 && !USERS.some(x=>x.pin.startsWith(pin)&&x.pin.length>4))) {
+    renderLogin();
+    document.getElementById('pe').textContent = "Incorrect PIN";
+    setTimeout(() => { pin=""; renderLogin(); }, 900);
+  } else {
+    renderLogin();
+  }
+}
+
+function logout() { user=null; pin=""; renderLogin(); }
+function setView(v) { view=v; render(); }
+function setMonth(m) { selMonth=m; render(); }
+function setFilter(f) { cFilter=f; render(); }
+function toggleBackdate() { showBackdate=!showBackdate; render(); }
+
+// ─── SAVE ─────────────────────────────────────────────────────────────────────
+async function save() {
+  const w = WORKERS.find(x => x.id===user.workerId);
+  const entryDate = fDate || td();
+  let ke=0, mgn=0, purchases=0, sales=0;
+  const a=parseInt(fA)||0, k=parseInt(fK)||0;
+
+  if(w.role==='operator'||w.role==='owner') {
+    purchases=parseInt(fP)||0; sales=parseInt(fS)||0;
+    if(!purchases&&!sales) return;
+    ke=Math.max(0,sales-purchases);
+    mgn=sales>0?Math.round((ke/sales)*100):0;
+  } else {
+    ke=(w.billedRate||0)-(w.dailyRate||0);
+    sales=w.billedRate||0;
+    mgn=sales>0?Math.round((ke/sales)*100):0;
+  }
+
+  const id = entryDate+user.workerId;
+  const entry = {id, date:entryDate, workerId:user.workerId, ke, purchases, sales, mgn, a, k};
+  entries = entries.filter(e=>e.id!==id);
+  entries.push(entry);
+
+  await supa.upsert("entries", {id, date:entryDate, workerId:user.workerId, ke, purchases, sales, mgn, a, k});
+
+  fP=""; fS=""; fA=""; fK=""; fDate=td(); showBackdate=false;
+  saved=true; render();
+  clearTimeout(saveT);
+  saveT=setTimeout(() => { saved=false; render(); }, 2500);
+}
+
+async function delEntry(id) {
+  entries=entries.filter(e=>e.id!==id);
+  await supa.del("entries", id);
+  render();
+}
+
+// ─── LIVE CALC ────────────────────────────────────────────────────────────────
+function updateCalc() {
+  const p=parseInt(fP)||0, s=parseInt(fS)||0;
+  const a=parseInt(fA)||0, k=parseInt(fK)||0;
+  const ke=s>p?s-p:0;
+  const mgn=s>0?Math.round((ke/s)*100):0;
+  const close=a>0?Math.round((k/a)*100):0;
+
+  const box=document.getElementById('calc-box');
+  if(box) {
+    if(s>0&&p>0) {
+      const col=mgn>=35?'#6bda6b':mgn>=22?'#b4f040':'#da6b6b';
+      const brd=mgn>=35?'#1a3a1a':mgn>=22?'#2a2a0a':'#2a1a1a';
+      box.style.borderColor=brd;
+      box.innerHTML=
+        '<div class="val-number" style="font-size:40px;color:'+col+'">'+mgn+'%</div>'+
+        '<div style="font-size:9px;color:#333;letter-spacing:3px;margin-top:6px">MARGIN</div>'+
+        '<div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:#b4f040;margin-top:8px">'+ke.toLocaleString('en-GB')+' profit</div>';
+    } else {
+      box.style.borderColor='#0f0f1e';
+      box.innerHTML='<div style="font-size:11px;color:#222">Enter purchases & sales</div>';
+    }
+  }
+  const cr=document.getElementById('close-rate');
+  if(cr) {
+    if(a>0&&k>0&&k<=a) {
+      cr.innerHTML='<span style="font-size:13px;color:#6bda6b;font-family:Syne,sans-serif;font-weight:800">'+close+'% close rate</span> <span style="font-size:10px;color:#333">'+k+'/'+a+' deals</span>';
+    } else if(k>a&&a>0) {
+      cr.innerHTML='<span style="color:#da6b6b;font-size:11px">⚠ Closed cannot exceed customers</span>';
+    } else {
+      cr.innerHTML='';
+    }
+  }
+}
+
+// ─── MAIN RENDER ──────────────────────────────────────────────────────────────
+function render() {
+  if(!user) { renderLogin(); return; }
+
+  const w = WORKERS.find(x=>x.id===user.workerId);
+  const isOwner = user.role==='owner';
+  const me = bM(entries, selMonth);
+  const myE = bW(me, user.workerId).sort((a,b)=>a.date.localeCompare(b.date));
+  const myKe=sum(myE,'ke'), myDays=myE.length;
+  const myA=sum(myE,'a'), myK=sum(myE,'k');
+  const myS=sum(myE,'sales');
+  const myConv=myA>0?pct(myK,myA):0;
+  const myMgns=myE.filter(e=>e.mgn>0);
+  const myMgn=myMgns.length>0?Math.round(myMgns.reduce((s,e,_,a)=>s+e.mgn/a.length,0)):0;
+  const prev = selMonth==='2026-05' ? bM(entries,'2026-04') : null;
+  const prevKe = prev ? sum(bW(prev,user.workerId),'ke') : null;
+  const trend = prevKe>0 ? Math.round(((myKe-prevKe)/prevKe)*100) : null;
+  const todayE = entries.find(e=>e.date===(fDate||td())&&e.workerId===user.workerId);
+  const P = calcPL(me, selMonth);
+  const allDates = [...new Set(entries.map(e=>e.date))].sort();
+  const l14 = allDates.slice(-14);
+
+  const tabs = isOwner
+    ? [["entry","Entry"],["worker","My Stats"],["team","Team"],["value","Value"],["owner","P&L"],["manage","Manage"]]
+    : [["entry","Entry"],["worker","My Stats"],["team","Team"],["value","Value"]];
+
+  const nav = tabs.map(([v,l]) =>
+    '<button class="tab'+(view===v?' active':'')+'" onclick="setView(\''+v+'\')">'+l+'</button>'
+  ).join('');
+
+  // ── BUILD HEADER ──
+  let html = '<div class="header">';
+  html += '<div><div class="logo">DEVALOR<span>.</span>TRACK</div>';
+  html += '<div class="logo-sub">'+w.name+' '+rb(w.role)+'</div></div>';
+  html += '<div style="display:flex;gap:6px;align-items:center">';
+  html += '<div class="nav">'+nav+'</div>';
+  html += '<button class="logout-btn" onclick="logout()">⏻</button></div></div>';
+  html += '<div class="controls">';
+  html += '<select class="month-sel" onchange="setMonth(this.value)">';
+  MONTHS.forEach(m => { html += '<option value="'+m+'"'+(m===selMonth?' selected':'')+'>'+MO_LABEL[m]+'</option>'; });
+  html += '</select></div>';
+  html += '<div class="content">';
+
+  // ── ENTRY VIEW ──
+  if(view==='entry') {
+    const entryDate = fDate || td();
+    const isAssistant = w.role==='assistant'||w.role==='trainee';
+    const billingProfit = isAssistant ? (w.billedRate||0)-(w.dailyRate||0) : 0;
+
+    html += '<div class="card">';
+    html += '<span class="lbl">Operator</span>';
+    html += '<div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800">'+w.name+' '+rb(w.role)+'</div>';
+    html += '<div class="note">'+w.note+'</div></div>';
+
+    html += '<div class="card">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+    html += '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">Daily Entry</div>';
+    html += '<button class="btn-sm" onclick="toggleBackdate()">'+(showBackdate?'▲ Today':'▼ Past day')+'</button></div>';
+
+    if(showBackdate) {
+      html += '<div style="margin-bottom:14px">';
+      html += '<span class="lbl">Date</span>';
+      html += '<input type="date" class="inp-date" value="'+entryDate+'" onchange="fDate=this.value;render()" id="idate">';
+      if(entryDate!==td()) html += '<div style="font-size:10px;color:#f0a04a;margin-top:6px">⚠ Adding entry for '+entryDate+'</div>';
+      html += '</div>';
+    } else {
+      html += '<div style="font-size:10px;color:#222;margin-bottom:14px;letter-spacing:1px">'+td()+'</div>';
+    }
+
+    if(todayE) {
+      html += '<div class="ts">Saved for '+entryDate+': ';
+      html += '<span style="color:#b4f040;font-weight:700">'+fc(todayE.ke,w.country||'uk');
+      if(todayE.mgn>0) html += ' · '+todayE.mgn+'%';
+      if(todayE.a>0) html += ' · '+todayE.a+'/'+todayE.k;
+      html += '</span> <button class="btn-del" onclick="delEntry(\''+todayE.id+'\')">✕ delete</button></div>';
+    }
+
+    if(isAssistant) {
+      html += '<div style="background:#06060f;border:1px solid #0f1f0f;border-radius:4px;padding:20px;text-align:center;margin-bottom:14px">';
+      html += '<div style="font-size:9px;color:#333;letter-spacing:3px;margin-bottom:12px">DAILY BILLING SUMMARY</div>';
+      html += '<div class="g2" style="margin-bottom:16px">';
+      html += '<div><div style="font-size:9px;color:#333;letter-spacing:2px">BILLED TO CLIENT</div>';
+      html += '<div style="font-family:Syne,sans-serif;font-size:28px;font-weight:900;color:#b4f040">£'+fmt(w.billedRate||0)+'</div></div>';
+      html += '<div><div style="font-size:9px;color:#333;letter-spacing:2px">YOUR PAY</div>';
+      html += '<div style="font-family:Syne,sans-serif;font-size:28px;font-weight:900">£'+fmt(w.dailyRate||0)+'</div></div></div>';
+      html += '<div style="border-top:1px solid #0f0f1e;padding-top:14px">';
+      html += '<div style="font-size:9px;color:#333;letter-spacing:2px">DEVALOR PROFIT</div>';
+      html += '<div style="font-family:Syne,sans-serif;font-size:36px;font-weight:900;color:#6bda6b">£'+fmt(billingProfit)+'</div></div></div>';
+      html += '<button class="btn-save'+(saved?' saved':'')+'" onclick="save()">'+( saved?'✓ SAVED':'SAVE DAY — '+entryDate)+'</button>';
+    } else {
+      html += '<div class="g2" style="margin-bottom:12px">';
+      html += '<div><span class="lbl" style="text-align:center;display:block">Purchases</span>';
+      html += '<input type="number" class="inp" placeholder="0" value="'+fP+'" oninput="fP=this.value;updateCalc()" id="ip"></div>';
+      html += '<div><span class="lbl" style="text-align:center;display:block">Sales</span>';
+      html += '<input type="number" class="inp ac" placeholder="0" value="'+fS+'" oninput="fS=this.value;updateCalc()" id="is"></div></div>';
+      html += '<div class="calc-box" id="calc-box"><div style="font-size:11px;color:#222">Enter purchases & sales</div></div>';
+      html += '<div class="g2" style="margin-bottom:12px">';
+      html += '<div><span class="lbl" style="text-align:center;display:block">Customers</span>';
+      html += '<input type="number" class="inp" placeholder="0" value="'+fA+'" oninput="fA=this.value;updateCalc()" id="ia"></div>';
+      html += '<div><span class="lbl" style="text-align:center;display:block">Closed</span>';
+      html += '<input type="number" class="inp" placeholder="0" value="'+fK+'" oninput="fK=this.value;updateCalc()" id="ik"></div></div>';
+      html += '<div id="close-rate" style="text-align:center;min-height:20px;margin-bottom:10px"></div>';
+      html += '<button class="btn-save'+(saved?' saved':'')+'" onclick="save()">'+(saved?'✓ SAVED':'SAVE DAY')+'</button>';
+    }
+    html += '</div>';
+  }
+
+  // ── MY STATS ──
+  if(view==='worker') {
+    const maxKe = Math.max(...myE.map(e=>e.ke), 1);
+    const myKpd = myDays>0 ? myKe/myDays : 0;
+
+    html += '<div class="card card-glow">';
+    html += '<span class="lbl">'+MO_LABEL[selMonth]+'</span>';
+    html += '<div class="stat-grid">';
+    html += '<div><div class="stat-val ac">'+fc(myKe,w.country)+'</div>';
+    html += '<div class="stat-lbl">Total Margin</div>';
+    if(trend!==null) html += '<div class="stat-sub '+(trend>=0?'up':'dn')+'">'+(trend>=0?'↑':'↓')+' '+Math.abs(trend)+'% vs prev</div>';
+    html += '</div>';
+    html += '<div><div class="stat-val '+(myMgn>=35?'up':myMgn>=22?'ac':'mu')+'">'+(myMgn>0?myMgn+'%':'—')+'</div>';
+    html += '<div class="stat-lbl">Margin %</div>';
+    html += '<div class="stat-sub mu">'+myDays+' days</div></div>';
+    html += '<div><div class="stat-val">'+(myConv>0?myConv+'%':'—')+'</div>';
+    html += '<div class="stat-lbl">Close %</div>';
+    html += '<div class="stat-sub mu">'+myK+'/'+myA+'</div></div></div></div>';
+
+    html += '<div class="kpi">';
+    html += '<div class="kb"><div class="kv">'+fc(myKpd,w.country)+'</div><div class="kl">Per Day</div></div>';
+    html += '<div class="kb"><div class="kv">'+myDays+'</div><div class="kl">Days</div></div>';
+    html += '<div class="kb"><div class="kv">'+(myMgn>0?myMgn+'%':'—')+'</div><div class="kl">Avg Margin</div></div>';
+    html += '</div>';
+
+    // Pay breakdown
+    if(w.dailyRate>0 && (w.role==='operator'||w.role==='owner')) {
+      const bo = mBonus(myKe, w.bonusTiers||[]);
+      const nd = w.bonusTiers&&w.bonusTiers.length>0 ? Math.max(0,(w.bonusTiers[0].min||100000)-myKe) : 0;
+      html += '<div class="card" style="margin-top:10px">';
+      html += '<span class="lbl">Pay Breakdown</span>';
+      html += '<div class="ri"><div class="rl">Base pay ('+myDays+' days × £'+w.dailyRate+')</div><div class="rv">£'+fmt(myDays*w.dailyRate)+'</div></div>';
+      if(bo>0) html += '<div class="ri"><div class="rl">Monthly bonus</div><div class="rv ac">£'+fmt(bo)+'</div></div>';
+      if(nd>0) html += '<div class="ri"><div class="rl">Needed for bonus</div><div class="rv mu">£'+fmt(nd)+' more</div></div>';
+      html += '</div>';
+    }
+    if(w.role==='assistant'||w.role==='trainee') {
+      html += '<div class="card" style="margin-top:10px">';
+      html += '<span class="lbl">Billing Summary</span>';
+      html += '<div class="ri"><div class="rl">Days worked</div><div class="rv">'+myDays+'</div></div>';
+      html += '<div class="ri"><div class="rl">Billed ('+myDays+' × £'+w.billedRate+')</div><div class="rv ac">£'+fmt(myDays*(w.billedRate||0))+'</div></div>';
+      html += '<div class="ri"><div class="rl">Your pay ('+myDays+' × £'+w.dailyRate+')</div><div class="rv">£'+fmt(myDays*(w.dailyRate||0))+'</div></div>';
+      html += '<div class="ri"><div class="rl">Devalor profit</div><div class="rv up">£'+fmt(myDays*((w.billedRate||0)-(w.dailyRate||0)))+'</div></div>';
+      html += '</div>';
+    }
+
+    html += '<div class="card" style="margin-top:10px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
+    html += '<span class="lbl" style="margin-bottom:0">Daily Breakdown</span>';
+    html += '<span style="font-size:10px;color:#222">'+myDays+' entries</span></div>';
+
+    if(myE.length===0) {
+      html += '<div style="color:#222;font-size:12px;text-align:center;padding:20px">No entries yet</div>';
+    } else {
+      myE.forEach(e => {
+        const barW = Math.round((e.ke/maxKe)*100);
+        const showPct = e.mgn>0 ? e.mgn+'%' : (e.a>0?pct(e.k,e.a)+'%':'');
+        html += '<div class="dr">';
+        html += '<div class="dd">'+e.date.slice(5)+'</div>';
+        html += '<div class="dbw"><div class="db" style="width:'+barW+'%"></div></div>';
+        html += '<div class="dv">'+fc(e.ke,w.country)+'</div>';
+        html += '<div class="dp">'+showPct+'</div>';
+        html += '<button class="btn-del" onclick="delEntry(\''+e.id+'\')">✕</button></div>';
+      });
+    }
+    html += '</div>';
+  }
+
+  // ── TEAM VIEW ──
+  if(view==='team') {
+    const myCountry = w.country||'uk';
+    const team = WORKERS.filter(wk=>wk.country===myCountry&&wk.id!==user.workerId);
+
+    html += '<div class="card" style="background:linear-gradient(135deg,#080f1a 0%,#0d0d1f 100%);border-color:#0f1a2a">';
+    html += '<span class="lbl">'+(myCountry==='uk'?'🇬🇧 UK':'🇫🇮 Finland')+' Team — '+MO_LABEL[selMonth]+'</span>';
+    html += '<div style="font-size:10px;color:#222;margin-top:2px">Your team performance & billing</div></div>';
+
+    team.forEach(tm => {
+      const tmE = bW(me,tm.id).sort((a,b)=>a.date.localeCompare(b.date));
+      const tmKe = sum(tmE,'ke');
+      const tmDays = tmE.length;
+      const maxTm = Math.max(...tmE.map(e=>e.ke),1);
+
+      html += '<div class="card">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
+      html += '<div><div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">'+tm.name+' '+rb(tm.role)+'</div>';
+      html += '<div style="font-size:10px;color:#222;margin-top:3px">'+tm.car+'</div></div>';
+      html += '<div style="text-align:right"><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#b4f040">'+fc(tmKe,tm.country)+'</div>';
+      html += '<div style="font-size:10px;color:#333">'+tmDays+' days</div></div></div>';
+
+      if(tm.role==='assistant'||tm.role==='trainee') {
+        const billed=tmDays*(tm.billedRate||0);
+        const paid=tmDays*(tm.dailyRate||0);
+        html += '<div class="g3" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #0f0f1e">';
+        html += '<div><div style="font-size:9px;color:#333">Billed</div><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#b4f040">£'+fmt(billed)+'</div></div>';
+        html += '<div><div style="font-size:9px;color:#333">Paid</div><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800">£'+fmt(paid)+'</div></div>';
+        html += '<div><div style="font-size:9px;color:#333">Profit</div><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#6bda6b">£'+fmt(billed-paid)+'</div></div>';
+        html += '</div>';
+      }
+
+      if(tmE.length>0) {
+        tmE.forEach(e => {
+          const bW2 = Math.round((e.ke/maxTm)*100);
+          html += '<div class="dr"><div class="dd">'+e.date.slice(5)+'</div>';
+          html += '<div class="dbw"><div class="db" style="width:'+bW2+'%"></div></div>';
+          html += '<div class="dv">'+fc(e.ke,tm.country)+'</div>';
+          html += '<div class="dp">'+(e.mgn>0?e.mgn+'%':'')+'</div></div>';
+        });
+      } else {
+        html += '<div style="font-size:11px;color:#1a1a1a;padding:8px 0">No entries this month</div>';
+      }
+      html += '</div>';
+    });
+  }
+
+  // ── VALUE VIEW ──
+  if(view==='value') {
+    const monthNum = new Date().getMonth()+1;
+    const annualKe = myKe * (12/monthNum);
+    const consLow  = Math.round(annualKe*3);
+    const consHigh = Math.round(annualKe*5);
+    const realLow  = Math.round(annualKe*6);
+    const realHigh = Math.round(annualKe*10);
+
+    // Network
+    const netMe = bM(entries, selMonth);
+    const netKe = sum(netMe,'ke');
+    const netAnnual = netKe*(12/monthNum);
+    const activeOps = [...new Set(netMe.map(e=>e.workerId))].length;
+    const netConsLow  = Math.round(netAnnual*3);
+    const netConsHigh = Math.round(netAnnual*5);
+    const netRealLow  = Math.round(netAnnual*6);
+    const netRealHigh = Math.round(netAnnual*10);
+    const myShare = netKe>0 ? (myKe/netKe*100).toFixed(1) : '0';
+    const cur = w.country==='fi'?'€':'£';
+
+    // My valuation card
+    html += '<div class="card card-glow">';
+    html += '<span class="lbl">📊 My Business Valuation — '+MO_LABEL[selMonth]+'</span>';
+    html += '<div style="font-size:10px;color:#333;margin-bottom:16px">Based on your verified Devalor Track data</div>';
+    html += '<div class="g2" style="margin-bottom:14px">';
+
+    html += '<div class="val-box" style="border-color:#1a3a1a;background:#060f06">';
+    html += '<div style="font-size:9px;color:#6bda6b;letter-spacing:2px;margin-bottom:8px">CONSERVATIVE 3–5x</div>';
+    html += '<div class="val-number" style="font-size:24px;color:#6bda6b">'+cur+fmtM(consLow)+'–'+cur+fmtM(consHigh)+'</div>';
+    html += '<div style="font-size:9px;color:#333;margin-top:6px">Standalone sale</div></div>';
+
+    html += '<div class="val-box" style="border-color:#2a2a1a;background:#0a0a06">';
+    html += '<div style="font-size:9px;color:#b4f040;letter-spacing:2px;margin-bottom:8px">REALISTIC 6–10x</div>';
+    html += '<div class="val-number" style="font-size:24px;color:#b4f040">'+cur+fmtM(realLow)+'–'+cur+fmtM(realHigh)+'</div>';
+    html += '<div style="font-size:9px;color:#333;margin-top:6px">Via Devalor network</div></div>';
+    html += '</div>';
+
+    html += '<div style="background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px">';
+    html += '<div class="ri"><div class="rl">Monthly margin</div><div class="rv ac">'+fc(myKe,w.country)+'</div></div>';
+    html += '<div class="ri"><div class="rl">Annualised estimate</div><div class="rv">'+fc(annualKe,w.country)+'</div></div>';
+    html += '<div class="ri"><div class="rl">Network share</div><div class="rv ac">'+myShare+'%</div></div>';
+    html += '<div class="ri" style="border:none"><div class="rl">Days active this month</div><div class="rv">'+myDays+'</div></div>';
+    html += '</div>';
+    html += '<div style="font-size:9px;color:#1a1a1a;text-align:center;margin-top:8px;font-style:italic">Valuation grows as more data is verified on platform</div>';
+    html += '</div>';
+
+    // Network card - OPEN DATA
+    html += '<div class="card card-blue">';
+    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">';
+    html += '<span class="lbl" style="margin-bottom:0">🌐 Devalor Network</span>';
+    html += '<span style="font-size:9px;padding:2px 8px;border:1px solid #1a2a3a;border-radius:20px;color:#4ab0f0;letter-spacing:2px">OPEN DATA</span></div>';
+    html += '<div style="font-size:10px;color:#222;margin-bottom:16px">Combined value — visible to all network members</div>';
+
+    html += '<div style="text-align:center;margin-bottom:20px">';
+    html += '<div style="font-size:9px;color:#333;letter-spacing:3px;margin-bottom:6px">ACTIVE OPERATORS</div>';
+    html += '<div style="font-family:Syne,sans-serif;font-size:56px;font-weight:900;color:#b4f040;line-height:1">'+activeOps+'</div>';
+    html += '<div style="font-size:10px;color:#333;margin-top:4px">verified on Devalor Track</div></div>';
+
+    html += '<div class="g2" style="margin-bottom:14px">';
+    html += '<div class="val-box" style="border-color:#1a3a1a;background:#060f06">';
+    html += '<div style="font-size:9px;color:#6bda6b;letter-spacing:2px;margin-bottom:8px">NETWORK 3–5x</div>';
+    html += '<div class="val-number" style="font-size:20px;color:#6bda6b">£/€'+fmtM(netConsLow)+'–'+fmtM(netConsHigh)+'</div>';
+    html += '</div>';
+    html += '<div class="val-box" style="border-color:#2a2a1a;background:#0a0a06">';
+    html += '<div style="font-size:9px;color:#b4f040;letter-spacing:2px;margin-bottom:8px">NETWORK 6–10x</div>';
+    html += '<div class="val-number" style="font-size:20px;color:#b4f040">£/€'+fmtM(netRealLow)+'–'+fmtM(netRealHigh)+'</div>';
+    html += '</div></div>';
+
+    html += '<div style="background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px">';
+    html += '<div class="ri"><div class="rl">Network margin this month</div><div class="rv ac">£/€'+fmt(netKe)+'</div></div>';
+    html += '<div class="ri" style="border:none"><div class="rl">Network annualised</div><div class="rv">£/€'+fmt(netAnnual)+'</div></div>';
+    html += '</div>';
+
+    html += '<div style="margin-top:12px;padding:12px;background:#06060f;border:1px solid #0d0d1e;border-radius:3px;text-align:center">';
+    html += '<div style="font-size:10px;color:#4ab0f0">💡 Every new operator grows everyone\'s exit value</div>';
+    html += '</div></div>';
+
+    // Principal Partner - locked
+    html += '<div class="card card-purple">';
+    html += '<span class="lbl">🏢 Full Ecosystem — Principal Partner</span>';
+    html += '<div style="font-size:10px;color:#222;margin-bottom:16px">Combined Devalor Network + Principal</div>';
+
+    html += '<div style="background:#06060f;border:1px solid #2a1a3a;border-radius:4px;padding:20px;text-align:center;margin-bottom:14px">';
+    html += '<div style="font-size:9px;color:#444;letter-spacing:3px;margin-bottom:12px">COMBINED ECOSYSTEM VALUE</div>';
+    html += '<div style="font-family:Syne,sans-serif;font-size:36px;font-weight:900;color:#6b5baa;filter:blur(3px);user-select:none">€1.5B – €2.1B</div>';
+    html += '<div style="margin-top:12px;font-size:11px;color:#333">🔒 Unlocks when Principal Partner joins Devalor</div>';
+    html += '</div>';
+
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:12px;background:#06060f;border:1px solid #0f0f1e;border-radius:3px">';
+    html += '<div style="width:8px;height:8px;border-radius:50%;background:#da6b6b;flex-shrink:0"></div>';
+    html += '<div style="font-size:10px;color:#333">Principal Partner: Not yet connected</div></div>';
+
+    html += '<div style="margin-top:10px;display:flex;align-items:center;gap:10px;padding:12px;background:#06060f;border:1px solid #0f0f1e;border-radius:3px">';
+    html += '<div style="width:8px;height:8px;border-radius:50%;background:#6bda6b;flex-shrink:0"></div>';
+    html += '<div style="font-size:10px;color:#333">Devalor Network: '+activeOps+' operators active</div></div>';
+    html += '</div>';
+  }
+
+  // ── OWNER / P&L ──
+  if(view==='owner' && isOwner) {
+    const tbar = l14.map((ds,i) => {
+      const dE = entries.filter(e => e.date===ds && (cFilter==='all'||WORKERS.find(wk=>wk.id===e.workerId)?.country===cFilter));
+      const dKe = sum(dE,'ke');
+      const mx = Math.max(1,...l14.map(d=>sum(entries.filter(e=>e.date===d&&(cFilter==='all'||WORKERS.find(wk=>wk.id===e.workerId)?.country===cFilter)),'ke')));
+      const h = Math.max(4, Math.round((dKe/mx)*60));
+      const isLast = i===l14.length-1;
+      return '<div class="bc"><div class="bf" style="height:'+h+'px;background:'+(isLast?'#b4f040':'#141428')+'"></div><div class="bd">'+ds.slice(5)+'</div></div>';
+    }).join('');
+
+    // Rankings
+    const allOps = WORKERS.filter(wk=>cFilter==='all'||wk.country===cFilter)
+      .map(wk => ({wk, ke:sum(bW(me,wk.id),'ke'), days:bW(me,wk.id).length}))
+      .filter(x=>x.ke>0)
+      .sort((a,b)=>b.ke-a.ke);
+    const maxRank = allOps.length>0 ? allOps[0].ke : 1;
+
+    html += '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">';
+    html += '<button class="fb'+(cFilter==='all'?' on':'')+'" onclick="setFilter(\'all\')">All</button>';
+    html += '<button class="fb'+(cFilter==='uk'?' on':'')+'" onclick="setFilter(\'uk\')">🇬🇧 UK</button>';
+    html += '<button class="fb'+(cFilter==='fi'?' on':'')+'" onclick="setFilter(\'fi\')">🇫🇮 Finland</button>';
+    html += '</div>';
+
+    if(cFilter==='all') {
+      html += '<div class="tb">';
+      html += '<div class="tc"><span class="lbl">Income</span><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#b4f040">£/€'+fmt(P.tot.income)+'</div></div>';
+      html += '<div class="tc"><span class="lbl">Costs</span><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#da6b6b">-£/€'+fmt(P.tot.cost)+'</div></div>';
+      html += '<div class="tc"><span class="lbl">Net to Kimmo</span><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#6bda6b">£/€'+fmt(P.tot.net)+'</div></div>';
+      html += '</div>';
+    }
+
+    // Rankings card
+    if(allOps.length>0) {
+      html += '<div class="card">';
+      html += '<span class="lbl">🏆 Rankings — '+MO_LABEL[selMonth]+'</span>';
+      allOps.forEach((x,i) => {
+        const pctW = Math.round((x.ke/maxRank)*100);
+        const col = pctW>70?'#6bda6b':pctW>40?'#b4f040':'#4ab0f0';
+        const medal = ['🥇','🥈','🥉'][i]||'';
+        html += '<div style="margin-top:12px">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">';
+        html += '<span style="font-size:12px">'+medal+' '+x.wk.name+' '+rb(x.wk.role)+'</span>';
+        html += '<span style="font-family:Syne,sans-serif;font-weight:800;font-size:13px;color:'+col+'">'+fc(x.ke,x.wk.country)+' <span style="font-size:10px;color:#333">/ '+x.days+'d</span></span></div>';
+        html += '<div class="rank-bar"><div class="rank-fill" style="width:'+pctW+'%;background:'+col+'"></div></div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    // UK P&L
+    if(cFilter==='all'||cFilter==='uk') {
+      html += '<div class="card card-blue">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+      html += '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">🇬🇧 United Kingdom</div>';
+      html += '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:'+(P.uk.net>=0?'#6bda6b':'#da6b6b')+'">£'+fmt(P.uk.net)+'</div></div>';
+      html += '<div class="g2">';
+      // Income
+      html += '<div><div class="st" style="color:#b4f040">INCOME</div>';
+      html += '<div class="ri"><div><div class="rl">Kimmo × 10%</div><div class="rl-sub">£'+fmt(P.uk.kK)+'</div></div><div class="rv">£'+fmt(P.uk.kK*0.10)+'</div></div>';
+      html += '<div class="ri"><div><div class="rl">Shohid × 10%</div><div class="rl-sub">£'+fmt(P.uk.sK)+'</div></div><div class="rv">£'+fmt(P.uk.sK*0.10)+'</div></div>';
+      html += '<div class="ri"><div><div class="rl">Hannan × 10%</div><div class="rl-sub">£'+fmt(P.uk.hK)+'</div></div><div class="rv">£'+fmt(P.uk.hK*0.10)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Rizwan × 10%</div><div class="rv">£'+fmt(P.uk.rK*0.10)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Paige ('+P.uk.pd+'d × £150)</div><div class="rv">£'+fmt(P.uk.pR)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Rizwan ('+P.uk.rd+'d × £150)</div><div class="rv">£'+fmt(P.uk.rR)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Mira ('+P.uk.md+'d × £150)</div><div class="rv">£'+fmt(P.uk.mR)+'</div></div>';
+      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#b4f040">£'+fmt(P.uk.income)+'</span></div>';
+      html += '</div>';
+      // Costs
+      html += '<div><div class="st" style="color:#da6b6b">COSTS</div>';
+      html += '<div class="ri"><div class="rl">Shohid ('+P.uk.sd+'d×£140)</div><div class="rv dn">-£'+fmt(P.uk.sB)+'</div></div>';
+      if(P.uk.sBo>0) html += '<div class="ri"><div class="rl">Shohid bonus</div><div class="rv dn">-£'+fmt(P.uk.sBo)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Hannan ('+P.uk.hd+'d×£100)</div><div class="rv dn">-£'+fmt(P.uk.hB)+'</div></div>';
+      if(P.uk.hBo>0) html += '<div class="ri"><div class="rl">Hannan bonus</div><div class="rv dn">-£'+fmt(P.uk.hBo)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Paige ('+P.uk.pd+'d×£80)</div><div class="rv dn">-£'+fmt(P.uk.pC)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Rizwan ('+P.uk.rd+'d×£100)</div><div class="rv dn">-£'+fmt(P.uk.rC)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Mira ('+P.uk.md+'d×£130)</div><div class="rv dn">-£'+fmt(P.uk.mC)+'</div></div>';
+      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#da6b6b">-£'+fmt(P.uk.cost)+'</span></div>';
+      html += '</div></div></div>';
+    }
+
+    // Finland P&L
+    if(cFilter==='all'||cFilter==='fi') {
+      html += '<div class="card" style="border-color:#1a0a0a">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+      html += '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">🇫🇮 Finland</div>';
+      html += '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:'+(P.fi.net>=0?'#6bda6b':'#da6b6b')+'">€'+fmt(P.fi.net)+'</div></div>';
+      html += '<div class="g2">';
+      html += '<div><div class="st" style="color:#b4f040">INCOME</div>';
+      html += '<div class="ri"><div><div class="rl">Aki × 10%</div><div class="rl-sub">€'+fmt(P.fi.aK)+'</div></div><div class="rv">€'+fmt(P.fi.aK*0.10)+'</div></div>';
+      html += '<div class="ri"><div><div class="rl">Julius × 10%</div><div class="rl-sub">€'+fmt(P.fi.jK)+'</div></div><div class="rv">€'+fmt(P.fi.jK*0.10)+'</div></div>';
+      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#b4f040">€'+fmt(P.fi.income)+'</span></div>';
+      html += '</div>';
+      html += '<div><div class="st" style="color:#da6b6b">COSTS</div>';
+      html += '<div class="ri"><div class="rl">Aki (7.5%)</div><div class="rv dn">-€'+fmt(P.fi.aC)+'</div></div>';
+      html += '<div class="ri"><div class="rl">Julius (5.0%)</div><div class="rv dn">-€'+fmt(P.fi.jC)+'</div></div>';
+      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#da6b6b">-€'+fmt(P.fi.cost)+'</span></div>';
+      html += '</div></div></div>';
+    }
+
+    // Trend chart
+    html += '<div class="card"><span class="lbl">Daily Margin — Last 14 Active Days</span>';
+    html += '<div class="bw">'+tbar+'</div></div>';
+  }
+
+  // ── MANAGE ──
+  if(view==='manage' && isOwner) {
+    html += '<div class="card card-blue">';
+    html += '<span class="lbl">➕ Add New Operator</span>';
+    html += '<div style="font-size:10px;color:#222;margin-bottom:14px">Add operator, assistant, or trainee to the platform</div>';
+
+    html += '<div class="g2" style="margin-bottom:10px">';
+    html += '<div><span class="lbl">Full Name</span><input type="text" class="inp" style="font-size:14px" id="m-name" placeholder="Name" oninput="mState.name=this.value"></div>';
+    html += '<div><span class="lbl">Company (optional)</span><input type="text" class="inp" style="font-size:14px" id="m-company" placeholder="Company Ltd" oninput="mState.company=this.value"></div>';
+    html += '</div>';
+
+    html += '<div class="g2" style="margin-bottom:10px">';
+    html += '<div><span class="lbl">Role</span><select class="sel" onchange="mState.role=this.value;render()">';
+    ['operator','assistant','trainee'].forEach(r => {
+      html += '<option value="'+r+'"'+(mState.role===r?' selected':'')+'>'+r.charAt(0).toUpperCase()+r.slice(1)+'</option>';
+    });
+    html += '</select></div>';
+    html += '<div><span class="lbl">Country</span><select class="sel" onchange="mState.country=this.value">';
+    html += '<option value="uk"'+(mState.country==='uk'?' selected':'')+'>🇬🇧 United Kingdom</option>';
+    html += '<option value="fi"'+(mState.country==='fi'?' selected':'')+'>🇫🇮 Finland</option>';
+    html += '</select></div>';
+    html += '</div>';
+
+    html += '<div class="g2" style="margin-bottom:10px">';
+    html += '<div><span class="lbl">Vehicle / Car reg</span><input type="text" class="inp" style="font-size:14px" id="m-car" placeholder="AB12CDE" oninput="mState.car=this.value"></div>';
+    html += '<div><span class="lbl">PIN Code</span><input type="text" class="inp" style="font-size:14px" id="m-pin" placeholder="4-digit PIN" maxlength="4" oninput="mState.pin=this.value"></div>';
+    html += '</div>';
+
+    if(mState.role==='operator') {
+      html += '<div class="g2" style="margin-bottom:10px">';
+      html += '<div><span class="lbl">Daily Rate (£/€)</span><input type="number" class="inp" style="font-size:16px" placeholder="0" oninput="mState.dailyRate=parseInt(this.value)||0"></div>';
+      html += '<div><span class="lbl">Commission % (FI subcontractors)</span><input type="number" class="inp" style="font-size:16px" placeholder="0" oninput="mState.commRate=parseFloat(this.value)||0"></div>';
+      html += '</div>';
+    }
+    if(mState.role==='assistant'||mState.role==='trainee') {
+      html += '<div class="g2" style="margin-bottom:10px">';
+      html += '<div><span class="lbl">Billed to client (£/€/day)</span><input type="number" class="inp" style="font-size:16px" placeholder="150" oninput="mState.billedRate=parseInt(this.value)||0"></div>';
+      html += '<div><span class="lbl">Paid to worker (£/€/day)</span><input type="number" class="inp" style="font-size:16px" placeholder="80" oninput="mState.dailyRate=parseInt(this.value)||0"></div>';
+      html += '</div>';
+    }
+
+    html += '<div style="margin-bottom:10px">';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:#06060f;border:1px solid #0f0f1e;border-radius:3px">';
+    html += '<input type="checkbox" id="m-ea" onchange="mState.earlyAdopter=this.checked" style="width:16px;height:16px">';
+    html += '<label for="m-ea" style="font-size:12px;cursor:pointer">⭐ Early Adopter — €50/month locked, 5% exit fee, 500 founding points</label>';
+    html += '</div></div>';
+
+    html += '<div id="m-status" style="min-height:20px;margin-bottom:8px;font-size:11px;text-align:center"></div>';
+    html += '<button class="btn-save" onclick="addMember()">ADD TO PLATFORM</button>';
+    html += '</div>';
+
+    // Current members list
+    html += '<div class="card" style="margin-top:10px">';
+    html += '<span class="lbl">Current Platform Members</span>';
+    WORKERS.forEach(wk => {
+      html += '<div class="ri">';
+      html += '<div><div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700">'+wk.name+' '+rb(wk.role)+'</div>';
+      html += '<div style="font-size:10px;color:#333;margin-top:2px">'+wk.country.toUpperCase()+' · '+wk.car+(wk.earlyAdopter?' · ⭐ EA':'')+'</div></div>';
+      html += '<div style="text-align:right">';
+      if(wk.role==='assistant'||wk.role==='trainee') {
+        html += '<div style="font-size:11px;color:#b4f040">£'+wk.billedRate+'/day billed</div>';
+        html += '<div style="font-size:10px;color:#444">£'+wk.dailyRate+'/day paid</div>';
+      } else if(wk.dailyRate>0) {
+        html += '<div style="font-size:11px;color:#b4f040">£'+wk.dailyRate+'/day</div>';
+      } else if(wk.rate>0) {
+        html += '<div style="font-size:11px;color:#b4f040">'+(wk.rate*100)+'% commission</div>';
+      }
+      html += '</div></div>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+  document.getElementById('root').innerHTML = html;
+}
+
+// ─── MANAGE STATE ─────────────────────────────────────────────────────────────
+let mState = {name:'',company:'',role:'operator',country:'uk',car:'',pin:'',
+               dailyRate:0,billedRate:0,commRate:0,earlyAdopter:false};
+
+async function addMember() {
+  const status = document.getElementById('m-status');
+  if(!mState.name) { status.innerHTML='<span style="color:#da6b6b">Name is required</span>'; return; }
+  if(!mState.pin||mState.pin.length<4) { status.innerHTML='<span style="color:#da6b6b">PIN must be 4 digits</span>'; return; }
+  if(USERS.find(u=>u.pin===mState.pin)) { status.innerHTML='<span style="color:#da6b6b">PIN already in use</span>'; return; }
+
+  status.innerHTML='<span style="color:#b4f040">Saving...</span>';
+
+  const id = mState.name.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,12)+Date.now().toString().slice(-4);
+
+  const opData = {
+    id, name:mState.name, company:mState.company||null,
+    country:mState.country, car:mState.car||null, role:mState.role,
+    billed_rate:mState.billedRate||0, daily_rate:mState.dailyRate||0,
+    commission_rate:mState.commRate||0, bonus_tiers:[],
+    note:mState.role==='assistant'?'Assistant — £'+mState.billedRate+' billed / £'+mState.dailyRate+' paid':
+         mState.role==='trainee'?'Trainee — 10-day programme':
+         'Operator — £'+mState.dailyRate+'/day',
+    active:true, early_adopter:mState.earlyAdopter,
+    joined_date:new Date().toISOString().slice(0,10)
+  };
+
+  const userdata = {
+    id: id+'-user', operator_id:id, pin:mState.pin, role:'worker'
+  };
+
+  const ok1 = await supa.upsert("operators", opData);
+  const ok2 = await supa.upsert("users", userdata);
+
+  if(ok1 && ok2) {
+    // Add to local state
+    WORKERS.push({
+      id, name:mState.name, country:mState.country, car:mState.car||'',
+      role:mState.role, billedRate:mState.billedRate||0, dailyRate:mState.dailyRate||0,
+      rate:mState.commRate||0, bonusTiers:[], note:opData.note,
+      earlyAdopter:mState.earlyAdopter
+    });
+    USERS.push({pin:mState.pin, workerId:id, role:'worker'});
+
+    // Reset state
+    mState = {name:'',company:'',role:'operator',country:'uk',car:'',pin:'',
+              dailyRate:0,billedRate:0,commRate:0,earlyAdopter:false};
+    status.innerHTML='<span style="color:#6bda6b">✓ Member added successfully!</span>';
+    setTimeout(()=>render(), 1500);
+  } else {
+    status.innerHTML='<span style="color:#da6b6b">Error saving — check Supabase connection</span>';
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderLogin();
+loadFromSupabase();
+</script>
+</body>
+</html>

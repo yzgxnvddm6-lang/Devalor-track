@@ -6,155 +6,185 @@
 <title>Devalor Track</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'DM Mono','Courier New',monospace;background:#06060f;min-height:100vh;color:#e8e4d9;overflow-x:hidden}
-input[type=number],input[type=text],input[type=date]{-moz-appearance:textfield;-webkit-appearance:none;font-family:inherit}
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
-select,button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800;900&family=DM+Mono:wght@300;400;500&display=swap');
 
-/* ── LOGIN ── */
-.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:radial-gradient(ellipse at center, #0d0d1f 0%, #06060f 70%)}
-.login-box{width:100%;max-width:340px}
-.login-logo{font-family:'Syne',sans-serif;font-size:32px;font-weight:900;text-align:center;letter-spacing:-1px;margin-bottom:4px}
-.login-logo span{color:#b4f040}
-.login-tagline{font-size:9px;color:#222;letter-spacing:4px;text-transform:uppercase;text-align:center;margin-bottom:40px}
-.pin-display{display:flex;justify-content:center;gap:16px;margin-bottom:32px}
-.pin-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #1a1a2a;transition:all .25s cubic-bezier(.4,0,.2,1)}
-.pin-dot.filled{background:#b4f040;border-color:#b4f040;box-shadow:0 0 12px rgba(180,240,64,0.4)}
-.pin-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.pin-btn{padding:20px;background:#0d0d1f;border:1px solid #141428;color:#e8e4d9;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;border-radius:4px;transition:all .15s;position:relative;overflow:hidden}
-.pin-btn::after{content:'';position:absolute;inset:0;background:rgba(180,240,64,0);transition:background .15s}
-.pin-btn:active::after{background:rgba(180,240,64,0.1)}
-.pin-btn:active{transform:scale(0.94);border-color:#b4f040}
-.pin-btn.del{font-size:16px;color:#333}
-.login-error{color:#da6b6b;font-size:11px;text-align:center;margin-top:16px;min-height:18px;letter-spacing:1px}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --lime:#b4f040; --dark:#06060f; --mid:#0f0f1e;
+  --border:#12121e; --text:#e8e4d9; --muted:#555; --faint:#222;
+  --green:#6bda6b; --red:#da6b6b; --amber:#f0a04a; --blue:#4ab0f0;
+}
+html,body{height:100%;background:var(--dark);color:var(--text);font-family:'DM Mono',monospace;font-size:14px;-webkit-font-smoothing:antialiased}
+input,select,button{font-family:'DM Mono',monospace}
+
+/* ── LOGO MARK ── */
+.logo-mark{display:inline-flex;align-items:center;gap:0;line-height:1;text-decoration:none}
+.lm-text{font-family:'Bebas Neue',sans-serif;color:var(--text);letter-spacing:1px;line-height:1}
+.lm-para{background:var(--lime);clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);display:inline-flex;align-items:center;justify-content:center;margin:0 3px;flex-shrink:0}
+.lm-v{font-family:'Bebas Neue',sans-serif;color:var(--dark);line-height:1}
+.logo-sm .lm-text{font-size:22px}.logo-sm .lm-para{padding:0 5px 2px 4px;margin:0 1px}.logo-sm .lm-v{font-size:22px}
+.logo-md .lm-text{font-size:32px}.logo-md .lm-para{padding:0 8px 3px 7px;margin:0 2px}.logo-md .lm-v{font-size:32px}
+.logo-nav .lm-text{font-size:26px}.logo-nav .lm-para{padding:0 7px 2px 6px;margin:0 2px}.logo-nav .lm-v{font-size:26px}
 
 /* ── LAYOUT ── */
-.header{border-bottom:1px solid #0f0f1e;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;background:rgba(6,6,15,0.95);backdrop-filter:blur(12px);z-index:100}
-.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;letter-spacing:-0.5px}
-.logo span{color:#b4f040}
-.logo-sub{font-size:8px;color:#111;letter-spacing:4px;text-transform:uppercase;margin-top:2px}
-.nav{display:flex;flex-wrap:wrap;gap:2px}
-.tab{padding:7px 11px;border:1px solid #0f0f1e;background:transparent;color:#333;font-size:9px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;border-radius:2px}
-.tab:hover{color:#666;border-color:#1a1a2a}
-.tab.active{background:#b4f040;color:#06060f;border-color:#b4f040;font-weight:700}
-.logout-btn{width:32px;height:32px;border:1px solid #111;background:transparent;color:#333;font-size:14px;cursor:pointer;border-radius:2px;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.logout-btn:hover{border-color:#da6b6b;color:#da6b6b}
-.controls{padding:12px 18px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.month-sel{background:#0d0d1f;border:1px solid #141428;color:#e8e4d9;font-family:inherit;font-size:11px;padding:7px 12px;border-radius:2px;outline:none;transition:border .2s}
-.month-sel:focus{border-color:#b4f040}
-.content{max-width:960px;margin:0 auto;padding:14px 16px;padding-bottom:40px}
+#root{min-height:100vh;display:flex;flex-direction:column}
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--dark);position:sticky;top:0;z-index:100}
+.header-right{display:flex;align-items:center;gap:8px}
+.logout-btn{width:30px;height:30px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.logout-btn:hover{border-color:var(--red);color:var(--red)}
+.controls{padding:10px 20px;border-bottom:1px solid var(--border);background:var(--dark)}
+.month-sel{background:var(--dark);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:7px 10px;letter-spacing:1px;outline:none;width:100%;transition:border .2s}
+.month-sel:focus{border-color:var(--lime)}
+.content{flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:10px;max-width:600px;width:100%;margin:0 auto}
+
+/* ── NAV TABS ── */
+.nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.tab{padding:6px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .2s;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%)}
+.tab.active{background:var(--lime);color:var(--dark);border-color:var(--lime)}
+.tab:hover:not(.active){border-color:var(--lime);color:var(--lime)}
 
 /* ── CARDS ── */
-.card{background:#0d0d1f;border:1px solid #111827;border-radius:4px;padding:16px;margin-bottom:10px;transition:border .2s}
-.card-glow{background:linear-gradient(135deg,#0f1a08 0%,#0d0d1f 100%);border-color:#1a2a1a}
-.card-blue{background:linear-gradient(135deg,#080f1a 0%,#0d0d1f 100%);border-color:#1a1a3a}
-.card-purple{background:linear-gradient(135deg,#0f0818 0%,#0d0d1f 100%);border-color:#2a1a3a}
+.card{background:var(--mid);border:1px solid var(--border);padding:16px;position:relative}
+.card-lime{border-color:#1a3a08;background:#060f06}
+.card-blue{border-color:#0f1a2a;background:#060a14}
+.card-glow{border-color:#1a3a08;background:linear-gradient(135deg,#060f06 0%,var(--mid) 100%)}
+
+/* ── TYPOGRAPHY ── */
+.lbl{font-size:8px;color:var(--muted);letter-spacing:4px;text-transform:uppercase;display:block;margin-bottom:8px}
+.hero-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--lime);line-height:1}
+.hero-num.white{color:var(--text)}
+.hero-num.green{color:var(--green)}
+.hero-num.red{color:var(--red)}
+.sect-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);letter-spacing:1px;margin-bottom:4px}
 
 /* ── INPUTS ── */
-.lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#333;margin-bottom:6px;display:block}
-.inp{width:100%;background:#06060f;border:1px solid #111827;color:#e8e4d9;font-family:inherit;font-size:20px;padding:12px 8px;text-align:center;border-radius:3px;outline:none;transition:all .2s}
-.inp:focus{border-color:#b4f040;box-shadow:0 0 0 3px rgba(180,240,64,0.06)}
-.inp.ac{border-color:#b4f040}
-.inp-date{width:100%;background:#06060f;border:1px solid #111827;color:#e8e4d9;font-family:inherit;font-size:14px;padding:10px 10px;border-radius:3px;outline:none;transition:all .2s}
-.inp-date:focus{border-color:#b4f040}
+.inp{width:100%;background:var(--dark);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:22px;padding:12px;outline:none;transition:border .2s;-webkit-appearance:none}
+.inp:focus{border-color:var(--lime)}
+.inp.lime{color:var(--lime)}
+.sel{width:100%;background:var(--dark);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:10px;outline:none;transition:border .2s}
+.sel:focus{border-color:var(--lime)}
+.inp-date{width:100%;background:var(--dark);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:14px;padding:10px;outline:none}
+.inp-date:focus{border-color:var(--lime)}
 
 /* ── BUTTONS ── */
-.btn-save{width:100%;padding:14px;background:#b4f040;color:#06060f;border:none;font-family:'Syne',sans-serif;font-size:12px;font-weight:900;letter-spacing:4px;text-transform:uppercase;border-radius:3px;margin-top:12px;transition:all .2s;position:relative;overflow:hidden}
-.btn-save:active{transform:scale(0.98)}
-.btn-save.saved{background:#0a1f0a;color:#4bda4b;border:1px solid #1a3a1a}
-.btn-sm{padding:6px 12px;border:1px solid #111827;background:transparent;color:#333;font-size:9px;letter-spacing:2px;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all .2s}
-.btn-sm:hover{border-color:#b4f040;color:#b4f040}
-.btn-del{padding:3px 8px;border:1px solid #1a0a0a;background:transparent;color:#444;font-size:10px;border-radius:2px;cursor:pointer;transition:all .2s}
-.btn-del:hover{border-color:#da6b6b;color:#da6b6b}
-
-/* ── GRID ── */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
-
-/* ── STATS ── */
-.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:12px}
-.stat-val{font-family:'Syne',sans-serif;font-weight:900;font-size:22px;line-height:1}
-.stat-lbl{font-size:8px;color:#333;margin-top:5px;letter-spacing:3px;text-transform:uppercase}
-.stat-sub{font-size:11px;margin-top:4px}
-
-/* ── COLORS ── */
-.up{color:#6bda6b}.dn{color:#da6b6b}.mu{color:#333}.ac{color:#b4f040}.bl{color:#4ab0f0}
-
-/* ── ROW ITEMS ── */
-.ri{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #0f0f1e}
-.ri:last-child{border-bottom:none}
-.rl{font-size:11px;color:#444}
-.rl-sub{font-size:9px;color:#222;margin-top:2px}
-.rv{font-family:'Syne',sans-serif;font-weight:700;font-size:13px}
-
-/* ── DAY ROWS ── */
-.dr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.dd{width:52px;font-size:10px;color:#333}
-.dbw{flex:1;height:3px;background:#0f0f1e;border-radius:2px;overflow:hidden}
-.db{height:100%;background:#b4f040;border-radius:2px;transition:width .5s}
-.dv{width:76px;text-align:right;font-size:11px;font-family:'Syne',sans-serif;font-weight:700}
-.dp{width:38px;text-align:right;font-size:10px;color:#444}
-
-/* ── KPI BOX ── */
-.kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
-.kb{background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px}
-.kv{font-family:'Syne',sans-serif;font-weight:800;font-size:18px}
-.kl{font-size:8px;color:#333;letter-spacing:3px;text-transform:uppercase;margin-top:4px}
-
-/* ── FILTERS ── */
-.fb{padding:6px 14px;border:1px solid #0f0f1e;background:transparent;color:#333;font-size:9px;letter-spacing:2px;text-transform:uppercase;border-radius:2px;transition:all .2s}
-.fb.on{background:#0f1a08;color:#b4f040;border-color:#b4f040}
-.sel{width:100%;background:#06060f;border:1px solid #111827;color:#e8e4d9;font-family:inherit;font-size:14px;padding:10px 8px;border-radius:3px;outline:none;transition:border .2s}
-.sel:focus{border-color:#b4f040}
-
-/* ── TOTAL CARDS ── */
-.tb{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.tc{background:#0d0d1f;border:1px solid #0f0f1e;border-radius:3px;padding:14px}
-
-/* ── BAR CHART ── */
-.bw{display:flex;align-items:flex-end;gap:3px;height:60px;margin-top:12px}
-.bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.bf{width:100%;border-radius:2px 2px 0 0;transition:height .3s}
-.bd{font-size:7px;color:#1a1a2a}
-
-/* ── ROLE BADGES ── */
-.rb{display:inline-block;padding:2px 7px;border-radius:2px;font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-left:6px;vertical-align:middle}
-.rb-operator{background:#0f1a08;color:#b4f040;border:1px solid #1a2a14}
-.rb-assistant{background:#080f1a;color:#4ab0f0;border:1px solid #14201a}
-.rb-trainee{background:#1a0f08;color:#f0a04a;border:1px solid #2a1a14}
-.rb-owner{background:#180a18;color:#d040f0;border:1px solid #280a28}
+.btn-save{width:100%;padding:14px;background:var(--lime);color:var(--dark);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;border:none;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100%-6px) 100%,0% 100%);transition:filter .2s}
+.btn-save:hover{filter:brightness(1.1)}
+.btn-save.saved{background:var(--green)}
+.btn-sm{padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-sm:hover{border-color:var(--lime);color:var(--lime)}
+.btn-del{width:24px;height:24px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.btn-del:hover{border-color:var(--red);color:var(--red)}
 
 /* ── CALC BOX ── */
-.calc-box{background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:16px;margin-bottom:12px;text-align:center;transition:all .3s}
+.calc-box{background:var(--dark);border:1px solid var(--border);padding:14px;text-align:center;margin-bottom:12px}
+.calc-main{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--lime);line-height:1}
+.calc-pct{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:4px}
 
-/* ── NOTIFICATION ── */
-.ts{background:#060f06;border:1px solid #0f1f0f;border-radius:3px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#333}
+/* ── DAY ROWS ── */
+.dr{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.dr:last-child{border-bottom:none}
+.dd{font-size:11px;color:var(--muted);width:38px;flex-shrink:0;font-family:'DM Mono',monospace}
+.dbw{flex:1;height:4px;background:var(--dark);border-radius:0;overflow:hidden;clip-path:polygon(2px 0%,100% 0%,calc(100%-2px) 100%,0% 100%)}
+.db{height:100%;background:var(--lime);border-radius:0;transition:width .4s}
+.dv{width:70px;text-align:right;font-size:12px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;flex-shrink:0}
+.dp{width:36px;text-align:right;font-size:10px;color:var(--muted);flex-shrink:0}
 
-/* ── NOTE ── */
-.note{padding:8px 12px;background:#06060f;border:1px solid #0f0f1e;border-radius:2px;font-size:10px;color:#333;margin-top:8px;line-height:1.6}
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.stat-box{background:var(--dark);border:1px solid var(--border);padding:12px;text-align:center}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;color:var(--text)}
+.stat-val.lime{color:var(--lime)}
+.stat-val.green{color:var(--green)}
+.stat-val.red{color:var(--red)}
+.stat-lbl{font-size:8px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:4px}
+.stat-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.stat-sub.up{color:var(--green)}.stat-sub.dn{color:var(--red)}
 
-/* ── SECTION TITLE ── */
-.st{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #0f0f1e}
+/* ── SUMMARY GRID ── */
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.sum-box{background:var(--dark);border:1px solid var(--border);padding:12px}
+.sum-label{font-size:8px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.sum-val{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1}
 
-/* ── RANK BAR ── */
-.rank-bar{height:5px;background:#0f0f1e;border-radius:3px;overflow:hidden;margin-top:5px}
-.rank-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+/* ── EARNINGS ── */
+.earn-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.earn-row:last-child{border-bottom:none}
+.earn-label{font-size:12px;color:var(--text)}
+.earn-note{font-size:9px;color:var(--muted);margin-top:2px}
+.earn-val{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1}
 
-/* ── VALUATION ── */
-.val-box{border-radius:4px;padding:16px;text-align:center;border:1px solid}
-.val-number{font-family:'Syne',sans-serif;font-weight:900;line-height:1;letter-spacing:-1px}
-.val-locked{filter:blur(4px);user-select:none}
+/* ── PROGRESS BAR ── */
+.prog-wrap{padding:10px 0}
+.prog-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.prog-bar{height:6px;background:var(--dark);clip-path:polygon(2px 0%,100% 0%,calc(100%-2px) 100%,0% 100%);overflow:hidden}
+.prog-fill{height:100%;transition:width .5s}
 
-/* ── RESPONSIVE ── */
-@media(max-width:480px){
-  .stat-grid{grid-template-columns:1fr 1fr}
-  .g2{grid-template-columns:1fr}
-  .tb{grid-template-columns:1fr}
-  .kpi{grid-template-columns:1fr 1fr}
-  .g4{grid-template-columns:1fr 1fr}
-}
+/* ── RANKINGS ── */
+.rank-row{margin-bottom:14px}
+.rank-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.rank-bar{height:4px;background:var(--dark);clip-path:polygon(2px 0%,100% 0%,calc(100%-2px) 100%,0% 100%);overflow:hidden}
+.rank-fill{height:100%}
+
+/* ── VALUE BOXES ── */
+.val-box{background:var(--dark);border:1px solid var(--border);padding:14px;text-align:center}
+.val-num{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;margin:6px 0}
+
+/* ── ROWS ── */
+.ri{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.ri:last-child{border-bottom:none}
+.rl{font-size:11px;color:var(--muted)}
+.rv{font-family:'Bebas Neue',sans-serif;font-size:16px}
+.rv.lime{color:var(--lime)}.rv.green{color:var(--green)}.rv.red{color:var(--red)}
+
+/* ── ROLE BADGES ── */
+.rb{font-size:8px;padding:2px 7px;letter-spacing:2px;text-transform:uppercase;clip-path:polygon(3px 0%,100% 0%,calc(100%-3px) 100%,0% 100%)}
+.rb-owner{background:var(--lime);color:var(--dark)}
+.rb-operator{background:#1a2a08;color:var(--lime);border:1px solid #1a3a08}
+.rb-assistant{background:#0f1a2a;color:var(--blue);border:1px solid #0f2a3a}
+.rb-trainee{background:#1a0f0f;color:var(--amber);border:1px solid #2a1a0f}
+
+/* ── BAR CHART ── */
+.bw{display:flex;align-items:flex-end;gap:4px;height:70px;margin-top:10px}
+.bc{display:flex;flex-direction:column;align-items:center;flex:1;gap:3px}
+.bf{width:100%;background:var(--border);min-height:4px;clip-path:polygon(2px 0%,100% 0%,calc(100%-2px) 100%,0% 100%);transition:height .4s}
+.bd{font-size:7px;color:var(--muted);letter-spacing:1px;white-space:nowrap}
+
+/* ── FILTER BUTTONS ── */
+.fb{padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;clip-path:polygon(4px 0%,100% 0%,calc(100%-4px) 100%,0% 100%)}
+.fb.on{background:var(--lime);color:var(--dark);border-color:var(--lime)}
+.fb:hover:not(.on){border-color:var(--lime);color:var(--lime)}
+
+/* ── LOGIN ── */
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:32px;background:var(--dark);position:relative;overflow:hidden}
+.login-wrap::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(180,240,64,0.05) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
+.pin-dots{display:flex;gap:10px;justify-content:center;margin:8px 0}
+.pin-dot{width:12px;height:12px;border:1.5px solid var(--border);background:transparent;clip-path:polygon(3px 0%,100% 0%,calc(100%-3px) 100%,0% 100%);transition:all .2s}
+.pin-dot.filled{background:var(--lime);border-color:var(--lime)}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:220px}
+.pin-btn{padding:18px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:28px;cursor:pointer;transition:all .2s;clip-path:polygon(4px 0%,100% 0%,calc(100%-4px) 100%,0% 100%)}
+.pin-btn:hover{border-color:var(--lime);color:var(--lime)}
+.pin-btn:active{background:var(--lime);color:var(--dark)}
+.login-error{font-size:10px;color:var(--red);letter-spacing:2px;text-transform:uppercase;min-height:18px;text-align:center}
+.ts{font-size:10px;color:var(--lime);letter-spacing:1px;padding:8px 0;margin-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* ── MANAGE ── */
+.pay-card{border:1px solid var(--border);background:#08080f;padding:14px;margin-bottom:8px}
+.pay-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.pay-grid{display:grid;gap:6px;margin-bottom:8px}
+.pay-cell{background:var(--dark);padding:10px;border:1px solid var(--border)}
+.pay-cell-label{font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.pay-cell-val{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1}
+
+/* ── TOTALS ── */
+.totals-strip{display:grid;gap:2px;margin-bottom:2px}
+.total-box{background:var(--mid);border:1px solid var(--border);padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.total-label{font-size:9px;color:var(--muted);letter-spacing:3px;text-transform:uppercase}
+.total-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--lime);line-height:1}
+
+/* ── GRID HELPERS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 </style>
 </head>
 <body>
@@ -233,7 +263,7 @@ async function loadFromSupabase() {
       }
     });
   }
-  render();
+  if(!user) render();
 }
 
 // ─── USERS ────────────────────────────────────────────────────────────────────
@@ -412,6 +442,7 @@ let cFilter = "all";
 let pin = "";
 let fP="", fS="", fA="", fK="", fDate="";
 let showBackdate = false;
+let fillForWorker = "";
 let saved = false;
 let saveT = null;
 
@@ -465,37 +496,68 @@ function calcPL(me, month) {
 
 // ─── LOGIN ────────────────────────────────────────────────────────────────────
 function renderLogin() {
-  const maxLen = 6;
-  const dots = [0,1,2,3,4,5].map(i =>
+  const dots = [0,1,2,3,4,5].map(i=>
     '<div class="pin-dot'+(i<pin.length?' filled':'')+'"></div>'
   ).join('');
-  const btns = [1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(n => {
+  const btns = [1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(n=>{
     if(n==='') return '<div></div>';
-    return '<button class="pin-btn'+(n==='⌫'?' del':'')+'" onclick="pp(\''+n+'\')">'+n+'</button>';
+    return '<button class="pin-btn" onclick="pp(\''+ n +'\')">'+n+'</button>';
   }).join('');
   document.getElementById('root').innerHTML =
-    '<div class="login-wrap"><div class="login-box">'+
-    '<div class="login-logo">DEVALOR<span>.</span>TRACK</div>'+
-    '<div class="login-tagline">Performance · Value · Exit</div>'+
-    '<div class="pin-display">'+dots+'</div>'+
+    '<div class="login-wrap">'+
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:6px">'+
+      '<div class="logo-mark logo-md">'+
+        '<span class="lm-text">de</span>'+
+        '<div class="lm-para" style="padding:0 8px 3px 7px"><span class="lm-v" style="font-size:32px">V</span></div>'+
+        '<span class="lm-text">alor</span>'+
+      '</div>'+
+      '<span style="font-family:DM Mono,monospace;font-size:9px;color:var(--lime);letter-spacing:4px;text-transform:uppercase">TRACK <sup style=\"font-size:7px\">™</sup></span>'+
+    '</div>'+
+    '<div style="text-align:center">'+
+      '<div style="font-size:8px;color:var(--muted);letter-spacing:4px;text-transform:uppercase;margin-bottom:16px">Enter PIN</div>'+
+      '<div class="pin-dots">'+dots+'</div>'+
+    '</div>'+
     '<div class="pin-grid">'+btns+'</div>'+
     '<div class="login-error" id="pe"></div>'+
-    '</div></div>';
+    '</div>';
 }
 
 function pp(v) {
-  if(v==='⌫') { pin=pin.slice(0,-1); }
-  else if(pin.length<6) { pin+=v; }
+  if(v==='⌫') { pin=pin.slice(0,-1); updateDots(); return; }
+  if(pin.length>=6) return;
+  pin += v;
+  updateDots();
+
   const matched = USERS.find(x => x.pin===pin);
   if(matched) {
-    user=matched; pin=""; view="entry"; fDate=td(); render();
-  } else if(pin.length>=6 || (pin.length===4 && !USERS.some(x=>x.pin.startsWith(pin)&&x.pin.length>4))) {
-    renderLogin();
-    document.getElementById('pe').textContent = "Incorrect PIN";
-    setTimeout(() => { pin=""; renderLogin(); }, 900);
-  } else {
-    renderLogin();
+    user=matched; pin=""; view="entry"; fDate=td();
+    render();
+    return;
   }
+
+  const couldMatch = USERS.some(x => x.pin.startsWith(pin) && x.pin.length > pin.length);
+  if(couldMatch) return;
+
+  // No match
+  const pe = document.getElementById('pe');
+  if(pe) pe.textContent = "Incorrect PIN";
+  setTimeout(() => { pin=""; updateDots(); if(pe) pe.textContent=""; }, 1000);
+}
+
+function testLogin() {
+  user = USERS.find(x => x.workerId==='kimmo');
+  view = 'entry';
+  fDate = td();
+
+  render();
+}
+
+function updateDots() {
+  const dots = document.querySelectorAll('.pin-dot');
+  dots.forEach((d,i) => {
+    if(i<pin.length) d.classList.add('filled');
+    else d.classList.remove('filled');
+  });
 }
 
 function logout() { user=null; pin=""; renderLogin(); }
@@ -506,7 +568,8 @@ function toggleBackdate() { showBackdate=!showBackdate; render(); }
 
 // ─── SAVE ─────────────────────────────────────────────────────────────────────
 async function save() {
-  const w = WORKERS.find(x => x.id===user.workerId);
+  const targetId = (user.role==='owner' && fillForWorker) ? fillForWorker : user.workerId;
+  const w = WORKERS.find(x => x.id===targetId) || WORKERS.find(x => x.id===user.workerId);
   const entryDate = fDate || td();
   let ke=0, mgn=0, purchases=0, sales=0;
   const a=parseInt(fA)||0, k=parseInt(fK)||0;
@@ -522,14 +585,14 @@ async function save() {
     mgn=sales>0?Math.round((ke/sales)*100):0;
   }
 
-  const id = entryDate+user.workerId;
-  const entry = {id, date:entryDate, workerId:user.workerId, ke, purchases, sales, mgn, a, k};
+  const id = entryDate+targetId;
+  const entry = {id, date:entryDate, workerId:targetId, ke, purchases, sales, mgn, a, k};
   entries = entries.filter(e=>e.id!==id);
   entries.push(entry);
 
-  await supa.upsert("entries", {id, date:entryDate, workerId:user.workerId, ke, purchases, sales, mgn, a, k});
+  await supa.upsert("entries", {id, date:entryDate, workerId:targetId, ke, purchases, sales, mgn, a, k});
 
-  fP=""; fS=""; fA=""; fK=""; fDate=td(); showBackdate=false;
+  fP=""; fS=""; fA=""; fK=""; fDate=td(); showBackdate=false; fillForWorker="";
   saved=true; render();
   clearTimeout(saveT);
   saveT=setTimeout(() => { saved=false; render(); }, 2500);
@@ -557,7 +620,7 @@ function updateCalc() {
       box.style.borderColor=brd;
       box.innerHTML=
         '<div class="val-number" style="font-size:40px;color:'+col+'">'+mgn+'%</div>'+
-        '<div style="font-size:9px;color:#333;letter-spacing:3px;margin-top:6px">MARGIN</div>'+
+        '<div style="font-size:9px;color:#777;letter-spacing:3px;margin-top:6px">MARGIN</div>'+
         '<div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:#b4f040;margin-top:8px">'+ke.toLocaleString('en-GB')+' profit</div>';
     } else {
       box.style.borderColor='#0f0f1e';
@@ -567,7 +630,7 @@ function updateCalc() {
   const cr=document.getElementById('close-rate');
   if(cr) {
     if(a>0&&k>0&&k<=a) {
-      cr.innerHTML='<span style="font-size:13px;color:#6bda6b;font-family:Syne,sans-serif;font-weight:800">'+close+'% close rate</span> <span style="font-size:10px;color:#333">'+k+'/'+a+' deals</span>';
+      cr.innerHTML='<span style="font-size:13px;color:#6bda6b;font-family:Syne,sans-serif;font-weight:800">'+close+'% close rate</span> <span style="font-size:10px;color:#666">'+k+'/'+a+' deals</span>';
     } else if(k>a&&a>0) {
       cr.innerHTML='<span style="color:#da6b6b;font-size:11px">⚠ Closed cannot exceed customers</span>';
     } else {
@@ -581,553 +644,665 @@ function render() {
   if(!user) { renderLogin(); return; }
 
   const w = WORKERS.find(x=>x.id===user.workerId);
-  const isOwner = user.role==='owner';
+  if(!w) { renderLogin(); return; }
+
+  const isOwner = user.role==="owner";
   const me = bM(entries, selMonth);
   const myE = bW(me, user.workerId).sort((a,b)=>a.date.localeCompare(b.date));
-  const myKe=sum(myE,'ke'), myDays=myE.length;
-  const myA=sum(myE,'a'), myK=sum(myE,'k');
-  const myS=sum(myE,'sales');
-  const myConv=myA>0?pct(myK,myA):0;
+  const myKe=sum(myE,"ke"), myDays=myE.length;
+  const myA=sum(myE,"a"), myK=sum(myE,"k");
   const myMgns=myE.filter(e=>e.mgn>0);
   const myMgn=myMgns.length>0?Math.round(myMgns.reduce((s,e,_,a)=>s+e.mgn/a.length,0)):0;
-  const prev = selMonth==='2026-05' ? bM(entries,'2026-04') : null;
-  const prevKe = prev ? sum(bW(prev,user.workerId),'ke') : null;
-  const trend = prevKe>0 ? Math.round(((myKe-prevKe)/prevKe)*100) : null;
-  const todayE = entries.find(e=>e.date===(fDate||td())&&e.workerId===user.workerId);
-  const P = calcPL(me, selMonth);
-  const allDates = [...new Set(entries.map(e=>e.date))].sort();
-  const l14 = allDates.slice(-14);
+  const myConv=myA>0?pct(myK,myA):0;
+  const prev=selMonth==="2026-05"?bM(entries,"2026-04"):null;
+  const prevKe=prev?sum(bW(prev,user.workerId),"ke"):null;
+  const trend=prevKe>0?Math.round(((myKe-prevKe)/prevKe)*100):null;
+  const fillTarget=(user.role==="owner"&&fillForWorker)?fillForWorker:user.workerId;
+  const todayE=entries.find(e=>e.date===(fDate||td())&&e.workerId===fillTarget);
+  const P=calcPL(me,selMonth);
+  const allDates=[...new Set(entries.map(e=>e.date))].sort();
+  const l14=allDates.slice(-14);
+  const maxKe=Math.max(...myE.map(e=>e.ke),1);
 
-  const tabs = isOwner
-    ? [["entry","Entry"],["worker","My Stats"],["team","Team"],["value","Value"],["owner","P&L"],["manage","Manage"]]
-    : [["entry","Entry"],["worker","My Stats"],["team","Team"],["value","Value"]];
+  const tabs=isOwner
+    ?[["entry","Entry"],["worker","My Stats"],["team","Team"],["totals","Totals"],["value","Value"],["owner","P&L"],["manage","Manage"]]
+    :[["entry","Entry"],["worker","My Stats"],["team","Team"],["value","Value"]];
 
-  const nav = tabs.map(([v,l]) =>
-    '<button class="tab'+(view===v?' active':'')+'" onclick="setView(\''+v+'\')">'+l+'</button>'
-  ).join('');
+  const nav=tabs.map(([v,l])=>
+    "<button class=\"tab"+(view===v?" active":"")+"\" onclick=\"setView(\'"+v+"\')\">"+l+"</button>"
+  ).join("");
 
-  // ── BUILD HEADER ──
-  let html = '<div class="header">';
-  html += '<div><div class="logo">DEVALOR<span>.</span>TRACK</div>';
-  html += '<div class="logo-sub">'+w.name+' '+rb(w.role)+'</div></div>';
-  html += '<div style="display:flex;gap:6px;align-items:center">';
-  html += '<div class="nav">'+nav+'</div>';
-  html += '<button class="logout-btn" onclick="logout()">⏻</button></div></div>';
-  html += '<div class="controls">';
-  html += '<select class="month-sel" onchange="setMonth(this.value)">';
-  MONTHS.forEach(m => { html += '<option value="'+m+'"'+(m===selMonth?' selected':'')+'>'+MO_LABEL[m]+'</option>'; });
-  html += '</select></div>';
-  html += '<div class="content">';
+  let html='<div class="header">';
+  html+='<div style="display:flex;align-items:baseline;gap:0;line-height:1">'+
+    '<div class="logo-mark logo-nav">'+
+      '<span class="lm-text">de</span>'+
+      '<div class="lm-para" style="padding:0 7px 2px 6px"><span class="lm-v" style="font-size:26px">V</span></div>'+
+      '<span class="lm-text">alor</span>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;margin-left:8px;justify-content:center">'+
+      '<span style="font-family:DM Mono,monospace;font-size:8px;color:var(--lime);letter-spacing:3px;text-transform:uppercase;line-height:1">TRACK <sup style=\"font-size:6px\">™</sup></span>'+
+    '</div>'+
+  '</div>';
+  html+='<div class="header-right">';
+  html+='<div class="nav">'+nav+'</div>';
+  html+='<button class="logout-btn" onclick="logout()">⏻</button>';
+  html+='</div></div>';
+  html+='<div class="controls">';
+  html+='<select class="month-sel" onchange="setMonth(this.value)">';
+  MONTHS.forEach(m=>{html+='<option value="'+m+'"'+(m===selMonth?' selected':'')+'>'+MO_LABEL[m]+'</option>';});
+  html+='</select></div>';
+  html+='<div class="content">';
 
-  // ── ENTRY VIEW ──
-  if(view==='entry') {
-    const entryDate = fDate || td();
-    const isAssistant = w.role==='assistant'||w.role==='trainee';
-    const billingProfit = isAssistant ? (w.billedRate||0)-(w.dailyRate||0) : 0;
+  // ── ENTRY ──────────────────────────────────────────────────────────────────
+  if(view==="entry"){
+    const entryDate=fDate||td();
+    const isAssistant=w.role==="assistant"||w.role==="trainee";
+    const billingProfit=isAssistant?(w.billedRate||0)-(w.dailyRate||0):0;
 
-    html += '<div class="card">';
-    html += '<span class="lbl">Operator</span>';
-    html += '<div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800">'+w.name+' '+rb(w.role)+'</div>';
-    html += '<div class="note">'+w.note+'</div></div>';
+    html+="<div class=\"card\">";
+    html+="<span class=\"lbl\">Operator</span>";
+    html+="<div style=\"font-family:Syne,sans-serif;font-size:15px;font-weight:800\">"+w.name+" "+rb(w.role)+"</div>";
+    html+="</div>";
 
-    html += '<div class="card">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
-    html += '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">Daily Entry</div>';
-    html += '<button class="btn-sm" onclick="toggleBackdate()">'+(showBackdate?'▲ Today':'▼ Past day')+'</button></div>';
-
-    if(showBackdate) {
-      html += '<div style="margin-bottom:14px">';
-      html += '<span class="lbl">Date</span>';
-      html += '<input type="date" class="inp-date" value="'+entryDate+'" onchange="fDate=this.value;render()" id="idate">';
-      if(entryDate!==td()) html += '<div style="font-size:10px;color:#f0a04a;margin-top:6px">⚠ Adding entry for '+entryDate+'</div>';
-      html += '</div>';
-    } else {
-      html += '<div style="font-size:10px;color:#222;margin-bottom:14px;letter-spacing:1px">'+td()+'</div>';
-    }
-
-    if(todayE) {
-      html += '<div class="ts">Saved for '+entryDate+': ';
-      html += '<span style="color:#b4f040;font-weight:700">'+fc(todayE.ke,w.country||'uk');
-      if(todayE.mgn>0) html += ' · '+todayE.mgn+'%';
-      if(todayE.a>0) html += ' · '+todayE.a+'/'+todayE.k;
-      html += '</span> <button class="btn-del" onclick="delEntry(\''+todayE.id+'\')">✕ delete</button></div>';
-    }
-
-    if(isAssistant) {
-      html += '<div style="background:#06060f;border:1px solid #0f1f0f;border-radius:4px;padding:20px;text-align:center;margin-bottom:14px">';
-      html += '<div style="font-size:9px;color:#333;letter-spacing:3px;margin-bottom:12px">DAILY BILLING SUMMARY</div>';
-      html += '<div class="g2" style="margin-bottom:16px">';
-      html += '<div><div style="font-size:9px;color:#333;letter-spacing:2px">BILLED TO CLIENT</div>';
-      html += '<div style="font-family:Syne,sans-serif;font-size:28px;font-weight:900;color:#b4f040">£'+fmt(w.billedRate||0)+'</div></div>';
-      html += '<div><div style="font-size:9px;color:#333;letter-spacing:2px">YOUR PAY</div>';
-      html += '<div style="font-family:Syne,sans-serif;font-size:28px;font-weight:900">£'+fmt(w.dailyRate||0)+'</div></div></div>';
-      html += '<div style="border-top:1px solid #0f0f1e;padding-top:14px">';
-      html += '<div style="font-size:9px;color:#333;letter-spacing:2px">DEVALOR PROFIT</div>';
-      html += '<div style="font-family:Syne,sans-serif;font-size:36px;font-weight:900;color:#6bda6b">£'+fmt(billingProfit)+'</div></div></div>';
-      html += '<button class="btn-save'+(saved?' saved':'')+'" onclick="save()">'+( saved?'✓ SAVED':'SAVE DAY — '+entryDate)+'</button>';
-    } else {
-      html += '<div class="g2" style="margin-bottom:12px">';
-      html += '<div><span class="lbl" style="text-align:center;display:block">Purchases</span>';
-      html += '<input type="number" class="inp" placeholder="0" value="'+fP+'" oninput="fP=this.value;updateCalc()" id="ip"></div>';
-      html += '<div><span class="lbl" style="text-align:center;display:block">Sales</span>';
-      html += '<input type="number" class="inp ac" placeholder="0" value="'+fS+'" oninput="fS=this.value;updateCalc()" id="is"></div></div>';
-      html += '<div class="calc-box" id="calc-box"><div style="font-size:11px;color:#222">Enter purchases & sales</div></div>';
-      html += '<div class="g2" style="margin-bottom:12px">';
-      html += '<div><span class="lbl" style="text-align:center;display:block">Customers</span>';
-      html += '<input type="number" class="inp" placeholder="0" value="'+fA+'" oninput="fA=this.value;updateCalc()" id="ia"></div>';
-      html += '<div><span class="lbl" style="text-align:center;display:block">Closed</span>';
-      html += '<input type="number" class="inp" placeholder="0" value="'+fK+'" oninput="fK=this.value;updateCalc()" id="ik"></div></div>';
-      html += '<div id="close-rate" style="text-align:center;min-height:20px;margin-bottom:10px"></div>';
-      html += '<button class="btn-save'+(saved?' saved':'')+'" onclick="save()">'+(saved?'✓ SAVED':'SAVE DAY')+'</button>';
-    }
-    html += '</div>';
-  }
-
-  // ── MY STATS ──
-  if(view==='worker') {
-    const maxKe = Math.max(...myE.map(e=>e.ke), 1);
-    const myKpd = myDays>0 ? myKe/myDays : 0;
-
-    html += '<div class="card card-glow">';
-    html += '<span class="lbl">'+MO_LABEL[selMonth]+'</span>';
-    html += '<div class="stat-grid">';
-    html += '<div><div class="stat-val ac">'+fc(myKe,w.country)+'</div>';
-    html += '<div class="stat-lbl">Total Margin</div>';
-    if(trend!==null) html += '<div class="stat-sub '+(trend>=0?'up':'dn')+'">'+(trend>=0?'↑':'↓')+' '+Math.abs(trend)+'% vs prev</div>';
-    html += '</div>';
-    html += '<div><div class="stat-val '+(myMgn>=35?'up':myMgn>=22?'ac':'mu')+'">'+(myMgn>0?myMgn+'%':'—')+'</div>';
-    html += '<div class="stat-lbl">Margin %</div>';
-    html += '<div class="stat-sub mu">'+myDays+' days</div></div>';
-    html += '<div><div class="stat-val">'+(myConv>0?myConv+'%':'—')+'</div>';
-    html += '<div class="stat-lbl">Close %</div>';
-    html += '<div class="stat-sub mu">'+myK+'/'+myA+'</div></div></div></div>';
-
-    html += '<div class="kpi">';
-    html += '<div class="kb"><div class="kv">'+fc(myKpd,w.country)+'</div><div class="kl">Per Day</div></div>';
-    html += '<div class="kb"><div class="kv">'+myDays+'</div><div class="kl">Days</div></div>';
-    html += '<div class="kb"><div class="kv">'+(myMgn>0?myMgn+'%':'—')+'</div><div class="kl">Avg Margin</div></div>';
-    html += '</div>';
-
-    // Pay breakdown
-    if(w.dailyRate>0 && (w.role==='operator'||w.role==='owner')) {
-      const bo = mBonus(myKe, w.bonusTiers||[]);
-      const nd = w.bonusTiers&&w.bonusTiers.length>0 ? Math.max(0,(w.bonusTiers[0].min||100000)-myKe) : 0;
-      html += '<div class="card" style="margin-top:10px">';
-      html += '<span class="lbl">Pay Breakdown</span>';
-      html += '<div class="ri"><div class="rl">Base pay ('+myDays+' days × £'+w.dailyRate+')</div><div class="rv">£'+fmt(myDays*w.dailyRate)+'</div></div>';
-      if(bo>0) html += '<div class="ri"><div class="rl">Monthly bonus</div><div class="rv ac">£'+fmt(bo)+'</div></div>';
-      if(nd>0) html += '<div class="ri"><div class="rl">Needed for bonus</div><div class="rv mu">£'+fmt(nd)+' more</div></div>';
-      html += '</div>';
-    }
-    if(w.role==='assistant'||w.role==='trainee') {
-      html += '<div class="card" style="margin-top:10px">';
-      html += '<span class="lbl">Billing Summary</span>';
-      html += '<div class="ri"><div class="rl">Days worked</div><div class="rv">'+myDays+'</div></div>';
-      html += '<div class="ri"><div class="rl">Billed ('+myDays+' × £'+w.billedRate+')</div><div class="rv ac">£'+fmt(myDays*(w.billedRate||0))+'</div></div>';
-      html += '<div class="ri"><div class="rl">Your pay ('+myDays+' × £'+w.dailyRate+')</div><div class="rv">£'+fmt(myDays*(w.dailyRate||0))+'</div></div>';
-      html += '<div class="ri"><div class="rl">Devalor profit</div><div class="rv up">£'+fmt(myDays*((w.billedRate||0)-(w.dailyRate||0)))+'</div></div>';
-      html += '</div>';
-    }
-
-    html += '<div class="card" style="margin-top:10px">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
-    html += '<span class="lbl" style="margin-bottom:0">Daily Breakdown</span>';
-    html += '<span style="font-size:10px;color:#222">'+myDays+' entries</span></div>';
-
-    if(myE.length===0) {
-      html += '<div style="color:#222;font-size:12px;text-align:center;padding:20px">No entries yet</div>';
-    } else {
-      myE.forEach(e => {
-        const barW = Math.round((e.ke/maxKe)*100);
-        const showPct = e.mgn>0 ? e.mgn+'%' : (e.a>0?pct(e.k,e.a)+'%':'');
-        html += '<div class="dr">';
-        html += '<div class="dd">'+e.date.slice(5)+'</div>';
-        html += '<div class="dbw"><div class="db" style="width:'+barW+'%"></div></div>';
-        html += '<div class="dv">'+fc(e.ke,w.country)+'</div>';
-        html += '<div class="dp">'+showPct+'</div>';
-        html += '<button class="btn-del" onclick="delEntry(\''+e.id+'\')">✕</button></div>';
+    if(isOwner){
+      html+="<div class=\"card\" style=\"border-color:#1a2a3a\">";
+      html+="<span class=\"lbl\">Fill for team member</span>";
+      html+="<select class=\"sel\" onchange=\"fillForWorker=this.value;render()\">";
+      html+="<option value=\"\">— My own entry —</option>";
+      WORKERS.filter(wk=>wk.id!==user.workerId).forEach(wk=>{
+        html+="<option value=\""+wk.id+"\""+( fillForWorker===wk.id?" selected":"")+">"+wk.name+" "+ROLE_LABELS[wk.role]+"</option>";
       });
+      html+="</select></div>";
     }
-    html += '</div>';
+
+    html+="<div class=\"card\">";
+    html+="<div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\">";
+    html+="<div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:800\">Daily Entry</div>";
+    html+="<button class=\"btn-sm\" onclick=\"toggleBackdate()\">"+(showBackdate?"▲ Today":"▼ Past day")+"</button></div>";
+
+    if(showBackdate){
+      html+="<div style=\"margin-bottom:14px\">";
+      html+="<span class=\"lbl\">Date</span>";
+      html+="<input type=\"date\" class=\"inp-date\" value=\""+entryDate+"\" onchange=\"fDate=this.value;render()\" id=\"idate\">";
+      if(entryDate!==td()) html+="<div style=\"font-size:10px;color:#f0a04a;margin-top:6px\">⚠ Adding entry for "+entryDate+"</div>";
+      html+="</div>";
+    } else {
+      html+="<div style=\"font-size:10px;color:#666;margin-bottom:14px;letter-spacing:1px\">"+td()+"</div>";
+    }
+
+    if(todayE){
+      html+="<div class=\"ts\">Saved for "+entryDate+": ";
+      html+="<span style=\"color:#b4f040;font-weight:700\">"+fc(todayE.ke,w.country||"uk");
+      if(todayE.mgn>0) html+=" · "+todayE.mgn+"%";
+      if(todayE.a>0) html+=" · "+todayE.a+"/"+todayE.k;
+      html+="</span> <button class=\"btn-del\" onclick=\"delEntry(\'"+todayE.id+"\')\">✕ delete</button></div>";
+    }
+
+    if(isAssistant){
+      html+="<div style=\"background:#06060f;border:1px solid #0f1f0f;border-radius:4px;padding:20px;text-align:center;margin-bottom:14px\">";
+      html+="<div style=\"font-size:9px;color:#777;letter-spacing:3px;margin-bottom:12px\">DAILY BILLING SUMMARY</div>";
+      html+="<div class=\"g2\" style=\"margin-bottom:16px\">";
+      html+="<div><div style=\"font-size:9px;color:#777;letter-spacing:2px\">BILLED TO CLIENT</div>";
+      html+="<div style=\"font-family:Syne,sans-serif;font-size:28px;font-weight:900;color:#b4f040\">£"+fmt(w.billedRate||0)+"</div></div>";
+      html+="<div><div style=\"font-size:9px;color:#777;letter-spacing:2px\">YOUR PAY</div>";
+      html+="<div style=\"font-family:Syne,sans-serif;font-size:28px;font-weight:900\">£"+fmt(w.dailyRate||0)+"</div></div></div>";
+      html+="<div style=\"border-top:1px solid #0f0f1e;padding-top:14px\">";
+      html+="<div style=\"font-size:9px;color:#777;letter-spacing:2px\">DEVALOR PROFIT</div>";
+      html+="<div style=\"font-family:Syne,sans-serif;font-size:36px;font-weight:900;color:#6bda6b\">£"+fmt(billingProfit)+"</div></div></div>";
+      html+="<button class=\"btn-save"+(saved?" saved":"")+"\"\ onclick=\"save()\">"+( saved?"✓ SAVED":"SAVE DAY — "+entryDate)+"</button>";
+    } else {
+      html+="<div class=\"g2\" style=\"margin-bottom:12px\">";
+      html+="<div><span class=\"lbl\" style=\"text-align:center;display:block\">Purchases</span>";
+      html+="<input type=\"number\" class=\"inp\" placeholder=\"0\" value=\""+fP+"\" oninput=\"fP=this.value;updateCalc()\" id=\"ip\"></div>";
+      html+="<div><span class=\"lbl\" style=\"text-align:center;display:block\">Sales</span>";
+      html+="<input type=\"number\" class=\"inp ac\" placeholder=\"0\" value=\""+fS+"\" oninput=\"fS=this.value;updateCalc()\" id=\"is\"></div></div>";
+      html+="<div class=\"calc-box\" id=\"calc-box\"><div style=\"font-size:11px;color:#222\">Enter purchases & sales</div></div>";
+      html+="<div class=\"g2\" style=\"margin-bottom:12px\">";
+      html+="<div><span class=\"lbl\" style=\"text-align:center;display:block\">Customers</span>";
+      html+="<input type=\"number\" class=\"inp\" placeholder=\"0\" value=\""+fA+"\" oninput=\"fA=this.value;updateCalc()\" id=\"ia\"></div>";
+      html+="<div><span class=\"lbl\" style=\"text-align:center;display:block\">Closed</span>";
+      html+="<input type=\"number\" class=\"inp\" placeholder=\"0\" value=\""+fK+"\" oninput=\"fK=this.value;updateCalc()\" id=\"ik\"></div></div>";
+      html+="<div id=\"close-rate\" style=\"text-align:center;min-height:20px;margin-bottom:10px\"></div>";
+      html+="<button class=\"btn-save"+(saved?" saved":"")+"\"\ onclick=\"save()\">"+(saved?"✓ SAVED":"SAVE DAY")+"</button>";
+    }
+    html+="</div>";
   }
 
-  // ── TEAM VIEW ──
-  if(view==='team') {
-    const myCountry = w.country||'uk';
-    const team = WORKERS.filter(wk=>wk.country===myCountry&&wk.id!==user.workerId);
+  // ── MY STATS ───────────────────────────────────────────────────────────────
+  if(view==="worker"){
+    const myKpd=myDays>0?myKe/myDays:0;
+    const myTurnover=sum(myE,"sales");
+    const myIncome=w.role==="assistant"||w.role==="trainee"
+      ?myDays*(w.dailyRate||0)
+      :w.dailyRate>0?myDays*w.dailyRate+mBonus(myKe,w.bonusTiers||[])
+      :w.rate>0?myKe*(1-w.rate):0;
+    const prevMyE=prev?bW(prev,user.workerId):[];
+    const prevMyKe=sum(prevMyE,"ke");
+    const prevDays=prevMyE.length;
+    const prevIncome=prev&&w.dailyRate>0?prevDays*w.dailyRate+mBonus(prevMyKe,w.bonusTiers||[]):0;
+    const incomeTrend=prevIncome>0?Math.round(((myIncome-prevIncome)/prevIncome)*100):null;
 
-    html += '<div class="card" style="background:linear-gradient(135deg,#080f1a 0%,#0d0d1f 100%);border-color:#0f1a2a">';
-    html += '<span class="lbl">'+(myCountry==='uk'?'🇬🇧 UK':'🇫🇮 Finland')+' Team — '+MO_LABEL[selMonth]+'</span>';
-    html += '<div style="font-size:10px;color:#222;margin-top:2px">Your team performance & billing</div></div>';
+    html+="<div class=\"card card-glow\">";
+    html+="<span class=\"lbl\">"+MO_LABEL[selMonth]+"</span>";
+    html+="<div class=\"stat-grid\">";
+    html+="<div><div class=\"stat-val ac\">"+fc(myKe,w.country)+"</div><div class=\"stat-lbl\">Margin</div>";
+    if(trend!==null) html+="<div class=\"stat-sub "+(trend>=0?"up":"dn")+"\">"+(trend>=0?"↑":"↓")+Math.abs(trend)+"% vs prev</div>";
+    html+="</div>";
+    html+="<div><div class=\"stat-val "+(myMgn>=35?"up":myMgn>=22?"ac":"mu")+"\">"+( myMgn>0?myMgn+"%":"—")+"</div><div class=\"stat-lbl\">Margin %</div><div class=\"stat-sub mu\">"+myDays+" days</div></div>";
+    html+="<div><div class=\"stat-val\">"+(myConv>0?myConv+"%":"—")+"</div><div class=\"stat-lbl\">Close %</div><div class=\"stat-sub mu\">"+myK+"/"+myA+"</div></div>";
+    html+="</div>";
 
-    team.forEach(tm => {
-      const tmE = bW(me,tm.id).sort((a,b)=>a.date.localeCompare(b.date));
-      const tmKe = sum(tmE,'ke');
-      const tmDays = tmE.length;
-      const maxTm = Math.max(...tmE.map(e=>e.ke),1);
+    // ── EARNINGS CARD ──
+    if(w.dailyRate>0||(w.role==="assistant"||w.role==="trainee")){
+      const basePay=myDays*(w.dailyRate||0);
+      const curBonus=mBonus(myKe,w.bonusTiers||[]);
+      const totalPay=basePay+curBonus;
+      const cur=w.country==="fi"?"€":"£";
 
-      html += '<div class="card">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
-      html += '<div><div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">'+tm.name+' '+rb(tm.role)+'</div>';
-      html += '<div style="font-size:10px;color:#222;margin-top:3px">'+tm.car+'</div></div>';
-      html += '<div style="text-align:right"><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#b4f040">'+fc(tmKe,tm.country)+'</div>';
-      html += '<div style="font-size:10px;color:#333">'+tmDays+' days</div></div></div>';
+      html+="<div style=\"background:#0a180a;border:1px solid #1a3a1a;border-radius:4px;padding:16px;margin-top:10px\">";
+      html+="<div style=\"font-size:9px;color:#888;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px\">My Earnings — "+MO_LABEL[selMonth]+"</div>";
 
-      if(tm.role==='assistant'||tm.role==='trainee') {
-        const billed=tmDays*(tm.billedRate||0);
-        const paid=tmDays*(tm.dailyRate||0);
-        html += '<div class="g3" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #0f0f1e">';
-        html += '<div><div style="font-size:9px;color:#333">Billed</div><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#b4f040">£'+fmt(billed)+'</div></div>';
-        html += '<div><div style="font-size:9px;color:#333">Paid</div><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800">£'+fmt(paid)+'</div></div>';
-        html += '<div><div style="font-size:9px;color:#333">Profit</div><div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#6bda6b">£'+fmt(billed-paid)+'</div></div>';
-        html += '</div>';
+      // Base pay
+      html+="<div style=\"display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2a1a\">";
+      html+="<div><div style=\"font-size:13px;color:#e8e4d9\">Base pay</div>";
+      html+="<div style=\"font-size:10px;color:#777;margin-top:2px\">"+myDays+" days × "+cur+(w.dailyRate||0)+"/day</div></div>";
+      html+="<div style=\"font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#e8e4d9\">"+cur+fmt(basePay)+"</div></div>";
+
+      // Bonus
+      if(w.bonusTiers&&w.bonusTiers.length>0){
+        const nextTier=w.bonusTiers.find(t=>myKe<t.min);
+        if(curBonus>0){
+          html+="<div style=\"display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2a1a\">";
+          html+="<div><div style=\"font-size:13px;color:#6bda6b\">🎯 Bonus</div>";
+          const earnedTier=w.bonusTiers.filter(t=>myKe>=t.min).pop();
+          html+="<div style=\"font-size:10px;color:#777;margin-top:2px\">"+(earnedTier?(earnedTier.rate*100)+"% of margin":"")+"</div></div>";
+          html+="<div style=\"font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#6bda6b\">+"+cur+fmt(curBonus)+"</div></div>";
+        } else if(nextTier){
+          html+="<div style=\"display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1a2a1a\">";
+          html+="<div><div style=\"font-size:13px;color:#666\">Bonus</div>";
+          html+="<div style=\"font-size:10px;color:#777;margin-top:2px\">Starts at "+cur+fmt(nextTier.min)+" margin</div></div>";
+          html+="<div style=\"font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#555\">—</div></div>";
+        }
+        // Progress bar
+        if(nextTier){
+          const pct=Math.min(100,Math.round((myKe/nextTier.min)*100));
+          const needed=nextTier.min-myKe;
+          const barCol=pct>=80?"#6bda6b":pct>=50?"#b4f040":"#f0a04a";
+          html+="<div style=\"padding:10px 0;border-bottom:1px solid #1a2a1a\">";
+          html+="<div style=\"display:flex;justify-content:space-between;margin-bottom:6px\">";
+          html+="<div style=\"font-size:10px;color:#888\">Bonus progress</div>";
+          html+="<div style=\"font-size:10px;color:"+barCol+";font-weight:700\">"+cur+fmt(needed)+" to go ("+pct+"%)</div></div>";
+          html+="<div style=\"height:8px;background:#0f0f1e;border-radius:4px;overflow:hidden\">";
+          html+="<div style=\"height:100%;width:"+pct+"%;background:"+barCol+";border-radius:4px\"></div></div></div>";
+        }
       }
 
-      if(tmE.length>0) {
-        tmE.forEach(e => {
-          const bW2 = Math.round((e.ke/maxTm)*100);
-          html += '<div class="dr"><div class="dd">'+e.date.slice(5)+'</div>';
-          html += '<div class="dbw"><div class="db" style="width:'+bW2+'%"></div></div>';
-          html += '<div class="dv">'+fc(e.ke,tm.country)+'</div>';
-          html += '<div class="dp">'+(e.mgn>0?e.mgn+'%':'')+'</div></div>';
+      // Total
+      html+="<div style=\"display:flex;justify-content:space-between;align-items:center;padding:10px 0 0\">";
+      html+="<div style=\"font-size:13px;font-weight:700;color:#e8e4d9\">Total this month</div>";
+      html+="<div style=\"font-family:Syne,sans-serif;font-size:26px;font-weight:900;color:#6bda6b\">"+cur+fmt(totalPay)+"</div></div>";
+
+      if(incomeTrend!==null){
+        html+="<div style=\"text-align:right;margin-top:4px;font-size:10px;color:"+(incomeTrend>=0?"#6bda6b":"#da6b6b")+"\">";
+        html+=(incomeTrend>=0?"↑":"↓")+Math.abs(incomeTrend)+"% vs last month</div>";
+      }
+      html+="</div>";
+    }
+    html+="</div>";
+
+    // Monthly summary
+    html+="<div class=\"card\" style=\"margin-top:10px;background:linear-gradient(135deg,#0a0a18 0%,#0d0d1f 100%);border-color:#1a1a3a\">";
+    html+="<span class=\"lbl\">Monthly Summary</span>";
+    html+="<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px\">";
+    html+="<div style=\"background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px\"><div style=\"font-size:9px;color:#777;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px\">Turnover</div><div style=\"font-family:Syne,sans-serif;font-size:20px;font-weight:900;color:#e8e4d9\">"+fc(myTurnover,w.country)+"</div></div>";
+    html+="<div style=\"background:#06060f;border:1px solid #1a2a1a;border-radius:3px;padding:12px\"><div style=\"font-size:9px;color:#777;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px\">Margin</div><div style=\"font-family:Syne,sans-serif;font-size:20px;font-weight:900;color:#b4f040\">"+fc(myKe,w.country)+"</div></div>";
+    html+="<div style=\"background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px\"><div style=\"font-size:9px;color:#777;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px\">Margin %</div><div style=\"font-family:Syne,sans-serif;font-size:20px;font-weight:900;color:"+(myMgn>=35?"#6bda6b":myMgn>=22?"#b4f040":"#da6b6b")+"\">"+(myMgn>0?myMgn+"%":"—")+"</div></div>";
+    html+="<div style=\"background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px\"><div style=\"font-size:9px;color:#777;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px\">Days</div><div style=\"font-family:Syne,sans-serif;font-size:20px;font-weight:900\">"+myDays+"</div></div>";
+    html+="</div></div>";
+
+    // Day-by-day calendar
+    html+="<div class=\"card\" style=\"margin-top:10px\">";
+    html+="<div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:12px\"><span class=\"lbl\" style=\"margin-bottom:0\">Day-by-Day</span><span style=\"font-size:10px;color:#666\">"+myDays+" logged</span></div>";
+    const yr1=parseInt(selMonth.slice(0,4)), mo1=parseInt(selMonth.slice(5,7));
+    const dim=new Date(yr1,mo1,0).getDate();
+    const tod=td();
+    const eMap={};
+    myE.forEach(e=>{eMap[e.date]=e;});
+    for(let d=1;d<=dim;d++){
+      const ds=selMonth+"-"+(d<10?"0":"")+d;
+      const e=eMap[ds];
+      const isT=ds===tod, isF=ds>tod;
+      if(isF){
+        html+="<div class=\"dr\" style=\"opacity:0.2\"><div class=\"dd\">"+ds.slice(5)+"</div><div class=\"dbw\"></div><div class=\"dv\" style=\"font-size:10px;color:#222\">—</div><div class=\"dp\"></div><div style=\"width:28px\"></div></div>";
+      } else if(e){
+        const bw=Math.round((e.ke/Math.max(maxKe,1))*100);
+        const sp=e.mgn>0?e.mgn+"%":(e.a>0?pct(e.k,e.a)+"%":"");
+        html+="<div class=\"dr\"><div class=\"dd\" style=\""+(isT?"color:#b4f040;font-weight:700":"")+"\">"+ ds.slice(5)+"</div><div class=\"dbw\"><div class=\"db\" style=\"width:"+bw+"%\"></div></div><div class=\"dv\">"+fc(e.ke,w.country)+"</div><div class=\"dp\">"+sp+"</div><button class=\"btn-del\" data-id=\""+e.id+"\" onclick=\"delEntry(this.dataset.id)\">✕</button></div>";
+      } else {
+        html+="<div class=\"dr\" style=\"opacity:0.38\"><div class=\"dd\" style=\"color:#666\">"+ds.slice(5)+"</div><div class=\"dbw\"><div style=\"height:2px;background:#111;width:100%;border-radius:2px\"></div></div><div class=\"dv\" style=\"font-size:10px;color:#222\">—</div><div class=\"dp\"></div><button class=\"btn-sm\" style=\"padding:2px 8px;font-size:9px;\" data-date=\""+ds+"\" onclick=\"addMissingDay(this.dataset.date)\">+</button></div>";
+      }
+    }
+    html+="</div>";
+  }
+
+  // ── TEAM ───────────────────────────────────────────────────────────────────
+  if(view==="team"){
+    const myCountry=w.country||"uk";
+    const team=WORKERS.filter(wk=>wk.country===myCountry&&wk.id!==user.workerId);
+    html+="<div class=\"card\" style=\"background:linear-gradient(135deg,#080f1a 0%,#0d0d1f 100%);border-color:#0f1a2a\">";
+    html+="<span class=\"lbl\">"+(myCountry==="uk"?"🇬🇧 UK":"🇫🇮 Finland")+" Team — "+MO_LABEL[selMonth]+"</span></div>";
+    team.forEach(tm=>{
+      const tmE=bW(me,tm.id).sort((a,b)=>a.date.localeCompare(b.date));
+      const tmKe=sum(tmE,"ke"), tmDays=tmE.length;
+      const maxTm=Math.max(...tmE.map(e=>e.ke),1);
+      html+="<div class=\"card\">";
+      html+="<div style=\"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px\">";
+      html+="<div><div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:800\">"+tm.name+" "+rb(tm.role)+"</div>";
+      html+="<div style=\"font-size:10px;color:#666;margin-top:3px\">"+tm.car+"</div></div>";
+      html+="<div style=\"text-align:right\"><div style=\"font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#b4f040\">"+fc(tmKe,tm.country)+"</div>";
+      html+="<div style=\"font-size:10px;color:#666\">"+tmDays+" days</div></div></div>";
+      if(isOwner&&(tm.role==="assistant"||tm.role==="trainee")){
+        const bl=tmDays*(tm.billedRate||0), pd=tmDays*(tm.dailyRate||0);
+        html+="<div class=\"g3\" style=\"margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #0f0f1e\">";
+        html+="<div><div style=\"font-size:9px;color:#666\">Billed</div><div style=\"font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#b4f040\">£"+fmt(bl)+"</div></div>";
+        html+="<div><div style=\"font-size:9px;color:#666\">Paid</div><div style=\"font-family:Syne,sans-serif;font-size:15px;font-weight:800\">£"+fmt(pd)+"</div></div>";
+        html+="<div><div style=\"font-size:9px;color:#666\">Profit</div><div style=\"font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#6bda6b\">£"+fmt(bl-pd)+"</div></div></div>";
+      }
+      if(tmE.length>0){
+        tmE.forEach(e=>{
+          const bw=Math.round((e.ke/maxTm)*100);
+          html+="<div class=\"dr\"><div class=\"dd\">"+e.date.slice(5)+"</div><div class=\"dbw\"><div class=\"db\" style=\"width:"+bw+"%\"></div></div><div class=\"dv\">"+fc(e.ke,tm.country)+"</div><div class=\"dp\">"+(e.mgn>0?e.mgn+"%":"")+"</div></div>";
         });
       } else {
-        html += '<div style="font-size:11px;color:#1a1a1a;padding:8px 0">No entries this month</div>';
+        html+="<div style=\"font-size:11px;color:#1a1a1a;padding:8px 0\">No entries this month</div>";
       }
-      html += '</div>';
+      html+="</div>";
     });
   }
 
-  // ── VALUE VIEW ──
-  if(view==='value') {
-    const monthNum = new Date().getMonth()+1;
-    const annualKe = myKe * (12/monthNum);
-    const consLow  = Math.round(annualKe*3);
-    const consHigh = Math.round(annualKe*5);
-    const realLow  = Math.round(annualKe*6);
-    const realHigh = Math.round(annualKe*10);
+  // ── TOTALS ─────────────────────────────────────────────────────────────────
+  if(view==="totals"){
+    // All operators total
+    const allMe = bM(entries, selMonth);
+    const ukOps = WORKERS.filter(wk=>wk.country==="uk");
+    const fiOps = WORKERS.filter(wk=>wk.country==="fi");
 
-    // Network
-    const netMe = bM(entries, selMonth);
-    const netKe = sum(netMe,'ke');
-    const netAnnual = netKe*(12/monthNum);
-    const activeOps = [...new Set(netMe.map(e=>e.workerId))].length;
-    const netConsLow  = Math.round(netAnnual*3);
-    const netConsHigh = Math.round(netAnnual*5);
-    const netRealLow  = Math.round(netAnnual*6);
-    const netRealHigh = Math.round(netAnnual*10);
-    const myShare = netKe>0 ? (myKe/netKe*100).toFixed(1) : '0';
-    const cur = w.country==='fi'?'€':'£';
+    // Per-operator totals
+    const opTotals = WORKERS.map(wk=>{
+      const wkE = bW(allMe, wk.id);
+      const wkKe = sum(wkE,"ke");
+      const wkDays = wkE.length;
+      const wkSales = sum(wkE,"sales");
+      return {wk, ke:wkKe, days:wkDays, sales:wkSales};
+    }).filter(x=>x.ke>0||x.days>0).sort((a,b)=>b.ke-a.ke);
 
-    // My valuation card
-    html += '<div class="card card-glow">';
-    html += '<span class="lbl">📊 My Business Valuation — '+MO_LABEL[selMonth]+'</span>';
-    html += '<div style="font-size:10px;color:#333;margin-bottom:16px">Based on your verified Devalor Track data</div>';
-    html += '<div class="g2" style="margin-bottom:14px">';
+    // Country totals
+    const ukTotal = opTotals.filter(x=>x.wk.country==="uk").reduce((s,x)=>s+x.ke,0);
+    const fiTotal = opTotals.filter(x=>x.wk.country==="fi").reduce((s,x)=>s+x.ke,0);
+    const ukSales = opTotals.filter(x=>x.wk.country==="uk").reduce((s,x)=>s+x.sales,0);
+    const fiSales = opTotals.filter(x=>x.wk.country==="fi").reduce((s,x)=>s+x.sales,0);
+    const grandKe = ukTotal + fiTotal;
+    const grandSales = ukSales + fiSales;
+    const grandDays = opTotals.reduce((s,x)=>s+x.days,0);
 
-    html += '<div class="val-box" style="border-color:#1a3a1a;background:#060f06">';
-    html += '<div style="font-size:9px;color:#6bda6b;letter-spacing:2px;margin-bottom:8px">CONSERVATIVE 3–5x</div>';
-    html += '<div class="val-number" style="font-size:24px;color:#6bda6b">'+cur+fmtM(consLow)+'–'+cur+fmtM(consHigh)+'</div>';
-    html += '<div style="font-size:9px;color:#333;margin-top:6px">Standalone sale</div></div>';
+    // ── Grand total ──
+    html+='<div class="card card-lime">';
+    html+='<span class="lbl">Combined Total — '+MO_LABEL[selMonth]+'</span>';
+    html+='<div class="sum-grid">';
+    html+='<div class="sum-box"><div class="sum-label">Turnover</div><div class="sum-val" style="color:var(--text);font-family:Bebas Neue,sans-serif;font-size:32px">£/€'+fmt(grandSales)+'</div></div>';
+    html+='<div class="sum-box"><div class="sum-label">Margin</div><div class="sum-val" style="color:var(--lime);font-family:Bebas Neue,sans-serif;font-size:32px">£/€'+fmt(grandKe)+'</div></div>';
+    html+='<div class="sum-box"><div class="sum-label">Margin %</div><div class="sum-val" style="color:var(--lime);font-family:Bebas Neue,sans-serif;font-size:32px">'+(grandSales>0?Math.round(grandKe/grandSales*100)+'%':'—')+'</div></div>';
+    html+='<div class="sum-box"><div class="sum-label">Days Worked</div><div class="sum-val" style="font-family:Bebas Neue,sans-serif;font-size:32px">'+grandDays+'</div></div>';
+    html+='</div></div>';
 
-    html += '<div class="val-box" style="border-color:#2a2a1a;background:#0a0a06">';
-    html += '<div style="font-size:9px;color:#b4f040;letter-spacing:2px;margin-bottom:8px">REALISTIC 6–10x</div>';
-    html += '<div class="val-number" style="font-size:24px;color:#b4f040">'+cur+fmtM(realLow)+'–'+cur+fmtM(realHigh)+'</div>';
-    html += '<div style="font-size:9px;color:#333;margin-top:6px">Via Devalor network</div></div>';
-    html += '</div>';
+    // ── Country totals ──
+    html+='<div class="g2" style="gap:2px">';
 
-    html += '<div style="background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px">';
-    html += '<div class="ri"><div class="rl">Monthly margin</div><div class="rv ac">'+fc(myKe,w.country)+'</div></div>';
-    html += '<div class="ri"><div class="rl">Annualised estimate</div><div class="rv">'+fc(annualKe,w.country)+'</div></div>';
-    html += '<div class="ri"><div class="rl">Network share</div><div class="rv ac">'+myShare+'%</div></div>';
-    html += '<div class="ri" style="border:none"><div class="rl">Days active this month</div><div class="rv">'+myDays+'</div></div>';
-    html += '</div>';
-    html += '<div style="font-size:9px;color:#1a1a1a;text-align:center;margin-top:8px;font-style:italic">Valuation grows as more data is verified on platform</div>';
-    html += '</div>';
+    // UK
+    html+='<div class="card card-blue">';
+    html+='<span class="lbl">🇬🇧 United Kingdom</span>';
+    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:36px;color:var(--lime);line-height:1;margin:6px 0">£'+fmt(ukTotal)+'</div>';
+    html+='<div style="font-size:9px;color:var(--muted)">Turnover: £'+fmt(ukSales)+'</div>';
+    if(ukSales>0) html+='<div style="font-size:9px;color:var(--muted)">Margin: '+Math.round(ukTotal/ukSales*100)+'%</div>';
+    html+='</div>';
 
-    // Network card - OPEN DATA
-    html += '<div class="card card-blue">';
-    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">';
-    html += '<span class="lbl" style="margin-bottom:0">🌐 Devalor Network</span>';
-    html += '<span style="font-size:9px;padding:2px 8px;border:1px solid #1a2a3a;border-radius:20px;color:#4ab0f0;letter-spacing:2px">OPEN DATA</span></div>';
-    html += '<div style="font-size:10px;color:#222;margin-bottom:16px">Combined value — visible to all network members</div>';
+    // Finland
+    html+='<div class="card" style="border-color:#1a1a0f;background:#0a0a06">';
+    html+='<span class="lbl">🇫🇮 Finland</span>';
+    html+='<div style="font-family:Bebas Neue,sans-serif;font-size:36px;color:var(--lime);line-height:1;margin:6px 0">€'+fmt(fiTotal)+'</div>';
+    html+='<div style="font-size:9px;color:var(--muted)">Turnover: €'+fmt(fiSales)+'</div>';
+    if(fiSales>0) html+='<div style="font-size:9px;color:var(--muted)">Margin: '+Math.round(fiTotal/fiSales*100)+'%</div>';
+    html+='</div>';
+    html+='</div>';
 
-    html += '<div style="text-align:center;margin-bottom:20px">';
-    html += '<div style="font-size:9px;color:#333;letter-spacing:3px;margin-bottom:6px">ACTIVE OPERATORS</div>';
-    html += '<div style="font-family:Syne,sans-serif;font-size:56px;font-weight:900;color:#b4f040;line-height:1">'+activeOps+'</div>';
-    html += '<div style="font-size:10px;color:#333;margin-top:4px">verified on Devalor Track</div></div>';
-
-    html += '<div class="g2" style="margin-bottom:14px">';
-    html += '<div class="val-box" style="border-color:#1a3a1a;background:#060f06">';
-    html += '<div style="font-size:9px;color:#6bda6b;letter-spacing:2px;margin-bottom:8px">NETWORK 3–5x</div>';
-    html += '<div class="val-number" style="font-size:20px;color:#6bda6b">£/€'+fmtM(netConsLow)+'–'+fmtM(netConsHigh)+'</div>';
-    html += '</div>';
-    html += '<div class="val-box" style="border-color:#2a2a1a;background:#0a0a06">';
-    html += '<div style="font-size:9px;color:#b4f040;letter-spacing:2px;margin-bottom:8px">NETWORK 6–10x</div>';
-    html += '<div class="val-number" style="font-size:20px;color:#b4f040">£/€'+fmtM(netRealLow)+'–'+fmtM(netRealHigh)+'</div>';
-    html += '</div></div>';
-
-    html += '<div style="background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px">';
-    html += '<div class="ri"><div class="rl">Network margin this month</div><div class="rv ac">£/€'+fmt(netKe)+'</div></div>';
-    html += '<div class="ri" style="border:none"><div class="rl">Network annualised</div><div class="rv">£/€'+fmt(netAnnual)+'</div></div>';
-    html += '</div>';
-
-    html += '<div style="margin-top:12px;padding:12px;background:#06060f;border:1px solid #0d0d1e;border-radius:3px;text-align:center">';
-    html += '<div style="font-size:10px;color:#4ab0f0">💡 Every new operator grows everyone\'s exit value</div>';
-    html += '</div></div>';
-
-    // Principal Partner - locked
-    html += '<div class="card card-purple">';
-    html += '<span class="lbl">🏢 Full Ecosystem — Principal Partner</span>';
-    html += '<div style="font-size:10px;color:#222;margin-bottom:16px">Combined Devalor Network + Principal</div>';
-
-    html += '<div style="background:#06060f;border:1px solid #2a1a3a;border-radius:4px;padding:20px;text-align:center;margin-bottom:14px">';
-    html += '<div style="font-size:9px;color:#444;letter-spacing:3px;margin-bottom:12px">COMBINED ECOSYSTEM VALUE</div>';
-    html += '<div style="font-family:Syne,sans-serif;font-size:36px;font-weight:900;color:#6b5baa;filter:blur(3px);user-select:none">€1.5B – €2.1B</div>';
-    html += '<div style="margin-top:12px;font-size:11px;color:#333">🔒 Unlocks when Principal Partner joins Devalor</div>';
-    html += '</div>';
-
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:12px;background:#06060f;border:1px solid #0f0f1e;border-radius:3px">';
-    html += '<div style="width:8px;height:8px;border-radius:50%;background:#da6b6b;flex-shrink:0"></div>';
-    html += '<div style="font-size:10px;color:#333">Principal Partner: Not yet connected</div></div>';
-
-    html += '<div style="margin-top:10px;display:flex;align-items:center;gap:10px;padding:12px;background:#06060f;border:1px solid #0f0f1e;border-radius:3px">';
-    html += '<div style="width:8px;height:8px;border-radius:50%;background:#6bda6b;flex-shrink:0"></div>';
-    html += '<div style="font-size:10px;color:#333">Devalor Network: '+activeOps+' operators active</div></div>';
-    html += '</div>';
+    // ── Per operator ──
+    html+='<div class="card">';
+    html+='<span class="lbl">Per Operator — '+MO_LABEL[selMonth]+'</span>';
+    opTotals.forEach((x,i)=>{
+      const cur = x.wk.country==="fi"?"€":"£";
+      const flag = x.wk.country==="fi"?"🇫🇮":"🇬🇧";
+      const pct = x.sales>0?Math.round(x.ke/x.sales*100):0;
+      const share = grandKe>0?Math.round(x.ke/grandKe*100):0;
+      const med = ["🥇","🥈","🥉"][i]||"";
+      html+='<div class="rank-row">';
+      html+='<div class="rank-header">';
+      html+='<div style="display:flex;align-items:center;gap:8px">';
+      html+='<span>'+med+' '+flag+' '+x.wk.name+' '+rb(x.wk.role)+'</span>';
+      html+='</div>';
+      html+='<div style="text-align:right">';
+      html+='<div style="font-family:Bebas Neue,sans-serif;font-size:18px;color:var(--lime)">'+cur+fmt(x.ke)+'</div>';
+      html+='<div style="font-size:9px;color:var(--muted)">'+x.days+'d · '+pct+'% · '+share+'% of total</div>';
+      html+='</div></div>';
+      const barW = grandKe>0?Math.round(x.ke/grandKe*100):0;
+      html+='<div class="rank-bar"><div class="rank-fill" style="width:'+barW+'%;background:'+(i===0?"var(--lime)":i===1?"var(--green)":"var(--blue)")+'"></div></div>';
+      html+='</div>';
+    });
+    html+='</div>';
   }
 
-  // ── OWNER / P&L ──
-  if(view==='owner' && isOwner) {
-    const tbar = l14.map((ds,i) => {
-      const dE = entries.filter(e => e.date===ds && (cFilter==='all'||WORKERS.find(wk=>wk.id===e.workerId)?.country===cFilter));
-      const dKe = sum(dE,'ke');
-      const mx = Math.max(1,...l14.map(d=>sum(entries.filter(e=>e.date===d&&(cFilter==='all'||WORKERS.find(wk=>wk.id===e.workerId)?.country===cFilter)),'ke')));
-      const h = Math.max(4, Math.round((dKe/mx)*60));
-      const isLast = i===l14.length-1;
-      return '<div class="bc"><div class="bf" style="height:'+h+'px;background:'+(isLast?'#b4f040':'#141428')+'"></div><div class="bd">'+ds.slice(5)+'</div></div>';
-    }).join('');
+  // ── VALUE ──────────────────────────────────────────────────────────────────
+  if(view==="value"){
+    const mn=new Date().getMonth()+1;
+    const ann=myKe*(12/mn);
+    const cur=w.country==="fi"?"€":"£";
+    const netMe=bM(entries,selMonth);
+    const netKe=sum(netMe,"ke");
+    const netAnn=netKe*(12/mn);
+    const actOps=[...new Set(netMe.map(e=>e.workerId))].length;
+    const myShare=netKe>0?(myKe/netKe*100).toFixed(1):"0";
+    html+="<div class=\"card card-glow\">";
+    html+="<span class=\"lbl\">📊 My Business Valuation — "+MO_LABEL[selMonth]+"</span>";
+    html+="<div style=\"font-size:10px;color:#777;margin-bottom:16px\">Based on verified Devalor Track data</div>";
+    html+="<div class=\"g2\" style=\"margin-bottom:14px\">";
+    html+="<div class=\"val-box\" style=\"border-color:#1a3a1a;background:#060f06\"><div style=\"font-size:9px;color:#6bda6b;letter-spacing:2px;margin-bottom:8px\">CONSERVATIVE 3–5x</div><div class=\"val-number\" style=\"font-size:24px;color:#6bda6b\">"+cur+fmtM(Math.round(ann*3))+"–"+cur+fmtM(Math.round(ann*5))+"</div><div style=\"font-size:9px;color:#777;margin-top:6px\">Standalone sale</div></div>";
+    html+="<div class=\"val-box\" style=\"border-color:#2a2a1a;background:#0a0a06\"><div style=\"font-size:9px;color:#b4f040;letter-spacing:2px;margin-bottom:8px\">REALISTIC 6–10x</div><div class=\"val-number\" style=\"font-size:24px;color:#b4f040\">"+cur+fmtM(Math.round(ann*6))+"–"+cur+fmtM(Math.round(ann*10))+"</div><div style=\"font-size:9px;color:#777;margin-top:6px\">Via Devalor network</div></div>";
+    html+="</div>";
+    html+="<div style=\"background:#06060f;border:1px solid #0f0f1e;border-radius:3px;padding:12px\">";
+    html+="<div class=\"ri\"><div class=\"rl\">Monthly margin</div><div class=\"rv ac\">"+fc(myKe,w.country)+"</div></div>";
+    html+="<div class=\"ri\"><div class=\"rl\">Annualised</div><div class=\"rv\">"+fc(ann,w.country)+"</div></div>";
+    html+="<div class=\"ri\" style=\"border:none\"><div class=\"rl\">Network share</div><div class=\"rv ac\">"+myShare+"%</div></div>";
+    html+="</div></div>";
+    html+="<div class=\"card card-blue\">";
+    html+="<div style=\"display:flex;align-items:center;gap:10px;margin-bottom:4px\"><span class=\"lbl\" style=\"margin-bottom:0\">🌐 Devalor Network</span><span style=\"font-size:9px;padding:2px 8px;border:1px solid #1a2a3a;border-radius:20px;color:#4ab0f0;letter-spacing:2px\">OPEN DATA</span></div>";
+    html+="<div style=\"text-align:center;margin:16px 0\"><div style=\"font-size:9px;color:#777;letter-spacing:3px;margin-bottom:6px\">ACTIVE OPERATORS</div><div style=\"font-family:Syne,sans-serif;font-size:56px;font-weight:900;color:#b4f040;line-height:1\">"+actOps+"</div></div>";
+    html+="<div class=\"g2\" style=\"margin-bottom:10px\">";
+    html+="<div class=\"val-box\" style=\"border-color:#1a3a1a;background:#060f06\"><div style=\"font-size:9px;color:#6bda6b;letter-spacing:2px;margin-bottom:6px\">NETWORK 3–5x</div><div class=\"val-number\" style=\"font-size:18px;color:#6bda6b\">£/€"+fmtM(Math.round(netAnn*3))+"–"+fmtM(Math.round(netAnn*5))+"</div></div>";
+    html+="<div class=\"val-box\" style=\"border-color:#2a2a1a;background:#0a0a06\"><div style=\"font-size:9px;color:#b4f040;letter-spacing:2px;margin-bottom:6px\">NETWORK 6–10x</div><div class=\"val-number\" style=\"font-size:18px;color:#b4f040\">£/€"+fmtM(Math.round(netAnn*6))+"–"+fmtM(Math.round(netAnn*10))+"</div></div>";
+    html+="</div></div>";
+    html+="<div class=\"card card-purple\">";
+    html+="<span class=\"lbl\">🏢 Full Ecosystem — Principal Partner</span>";
+    html+="<div style=\"background:#06060f;border:1px solid #2a1a3a;border-radius:4px;padding:20px;text-align:center;margin:16px 0\">";
+    html+="<div style=\"font-size:9px;color:#888;letter-spacing:3px;margin-bottom:12px\">COMBINED ECOSYSTEM VALUE</div>";
+    html+="<div style=\"font-family:Syne,sans-serif;font-size:36px;font-weight:900;color:#6b5baa;filter:blur(3px);user-select:none\">€1.5B – €2.1B</div>";
+    html+="<div style=\"margin-top:12px;font-size:11px;color:#666\">🔒 Unlocks when Principal Partner joins</div>";
+    html+="</div></div>";
+  }
 
-    // Rankings
-    const allOps = WORKERS.filter(wk=>cFilter==='all'||wk.country===cFilter)
-      .map(wk => ({wk, ke:sum(bW(me,wk.id),'ke'), days:bW(me,wk.id).length}))
-      .filter(x=>x.ke>0)
-      .sort((a,b)=>b.ke-a.ke);
-    const maxRank = allOps.length>0 ? allOps[0].ke : 1;
+  // ── OWNER P&L ──────────────────────────────────────────────────────────────
+  if(view==="owner"&&isOwner){
+    const tbar=l14.map((ds,i)=>{
+      const dE=entries.filter(e=>e.date===ds&&(cFilter==="all"||WORKERS.find(wk=>wk.id===e.workerId)?.country===cFilter));
+      const dKe=sum(dE,"ke");
+      const mx=Math.max(1,...l14.map(d=>sum(entries.filter(e=>e.date===d&&(cFilter==="all"||WORKERS.find(wk=>wk.id===e.workerId)?.country===cFilter)),"ke")));
+      const h=Math.max(4,Math.round((dKe/mx)*60));
+      return "<div class=\"bc\"><div class=\"bf\" style=\"height:"+h+"px;background:"+(i===l14.length-1?"#b4f040":"#141428")+";\"></div><div class=\"bd\">"+ds.slice(5)+"</div></div>";
+    }).join("");
 
-    html += '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">';
-    html += '<button class="fb'+(cFilter==='all'?' on':'')+'" onclick="setFilter(\'all\')">All</button>';
-    html += '<button class="fb'+(cFilter==='uk'?' on':'')+'" onclick="setFilter(\'uk\')">🇬🇧 UK</button>';
-    html += '<button class="fb'+(cFilter==='fi'?' on':'')+'" onclick="setFilter(\'fi\')">🇫🇮 Finland</button>';
-    html += '</div>';
+    const allOps=WORKERS.filter(wk=>cFilter==="all"||wk.country===cFilter)
+      .map(wk=>({wk,ke:sum(bW(me,wk.id),"ke"),days:bW(me,wk.id).length}))
+      .filter(x=>x.ke>0).sort((a,b)=>b.ke-a.ke);
+    const maxRank=allOps.length>0?allOps[0].ke:1;
 
-    if(cFilter==='all') {
-      html += '<div class="tb">';
-      html += '<div class="tc"><span class="lbl">Income</span><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#b4f040">£/€'+fmt(P.tot.income)+'</div></div>';
-      html += '<div class="tc"><span class="lbl">Costs</span><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#da6b6b">-£/€'+fmt(P.tot.cost)+'</div></div>';
-      html += '<div class="tc"><span class="lbl">Net to Kimmo</span><div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#6bda6b">£/€'+fmt(P.tot.net)+'</div></div>';
-      html += '</div>';
+    html+="<div style=\"display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap\">";
+    html+="<button class=\"fb"+(cFilter==="all"?" on":"")+"\" onclick=\"setFilter(\'all\')\">All</button>";
+    html+="<button class=\"fb"+(cFilter==="uk"?" on":"")+"\" onclick=\"setFilter(\'uk\')\">🇬🇧 UK</button>";
+    html+="<button class=\"fb"+(cFilter==="fi"?" on":"")+"\" onclick=\"setFilter(\'fi\')\">🇫🇮 Finland</button></div>";
+
+    if(cFilter==="all"){
+      html+="<div class=\"tb\"><div class=\"tc\"><span class=\"lbl\">Income</span><div style=\"font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#b4f040\">£/€"+fmt(P.tot.income)+"</div></div>";
+      html+="<div class=\"tc\"><span class=\"lbl\">Costs</span><div style=\"font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#da6b6b\">-£/€"+fmt(P.tot.cost)+"</div></div>";
+      html+="<div class=\"tc\"><span class=\"lbl\">Net</span><div style=\"font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:#6bda6b\">£/€"+fmt(P.tot.net)+"</div></div></div>";
     }
 
-    // Rankings card
-    if(allOps.length>0) {
-      html += '<div class="card">';
-      html += '<span class="lbl">🏆 Rankings — '+MO_LABEL[selMonth]+'</span>';
-      allOps.forEach((x,i) => {
-        const pctW = Math.round((x.ke/maxRank)*100);
-        const col = pctW>70?'#6bda6b':pctW>40?'#b4f040':'#4ab0f0';
-        const medal = ['🥇','🥈','🥉'][i]||'';
-        html += '<div style="margin-top:12px">';
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">';
-        html += '<span style="font-size:12px">'+medal+' '+x.wk.name+' '+rb(x.wk.role)+'</span>';
-        html += '<span style="font-family:Syne,sans-serif;font-weight:800;font-size:13px;color:'+col+'">'+fc(x.ke,x.wk.country)+' <span style="font-size:10px;color:#333">/ '+x.days+'d</span></span></div>';
-        html += '<div class="rank-bar"><div class="rank-fill" style="width:'+pctW+'%;background:'+col+'"></div></div>';
-        html += '</div>';
+    if(allOps.length>0){
+      html+="<div class=\"card\"><span class=\"lbl\">🏆 Rankings — "+MO_LABEL[selMonth]+"</span>";
+      allOps.forEach((x,i)=>{
+        const pw=Math.round((x.ke/maxRank)*100);
+        const col=pw>70?"#6bda6b":pw>40?"#b4f040":"#4ab0f0";
+        const med=["🥇","🥈","🥉"][i]||"";
+        html+="<div style=\"margin-top:12px\"><div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:5px\"><span style=\"font-size:12px\">"+med+" "+x.wk.name+" "+rb(x.wk.role)+"</span><span style=\"font-family:Syne,sans-serif;font-weight:800;font-size:13px;color:"+col+"\">"+fc(x.ke,x.wk.country)+" <span style=\"font-size:10px;color:#666\">/ "+x.days+"d</span></span></div>";
+        html+="<div class=\"rank-bar\"><div class=\"rank-fill\" style=\"width:"+pw+"%;background:"+col+"\"></div></div></div>";
       });
-      html += '</div>';
+      html+="</div>";
     }
 
-    // UK P&L
-    if(cFilter==='all'||cFilter==='uk') {
-      html += '<div class="card card-blue">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
-      html += '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">🇬🇧 United Kingdom</div>';
-      html += '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:'+(P.uk.net>=0?'#6bda6b':'#da6b6b')+'">£'+fmt(P.uk.net)+'</div></div>';
-      html += '<div class="g2">';
-      // Income
-      html += '<div><div class="st" style="color:#b4f040">INCOME</div>';
-      html += '<div class="ri"><div><div class="rl">Kimmo × 10%</div><div class="rl-sub">£'+fmt(P.uk.kK)+'</div></div><div class="rv">£'+fmt(P.uk.kK*0.10)+'</div></div>';
-      html += '<div class="ri"><div><div class="rl">Shohid × 10%</div><div class="rl-sub">£'+fmt(P.uk.sK)+'</div></div><div class="rv">£'+fmt(P.uk.sK*0.10)+'</div></div>';
-      html += '<div class="ri"><div><div class="rl">Hannan × 10%</div><div class="rl-sub">£'+fmt(P.uk.hK)+'</div></div><div class="rv">£'+fmt(P.uk.hK*0.10)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Rizwan × 10%</div><div class="rv">£'+fmt(P.uk.rK*0.10)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Paige ('+P.uk.pd+'d × £150)</div><div class="rv">£'+fmt(P.uk.pR)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Rizwan ('+P.uk.rd+'d × £150)</div><div class="rv">£'+fmt(P.uk.rR)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Mira ('+P.uk.md+'d × £150)</div><div class="rv">£'+fmt(P.uk.mR)+'</div></div>';
-      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#b4f040">£'+fmt(P.uk.income)+'</span></div>';
-      html += '</div>';
-      // Costs
-      html += '<div><div class="st" style="color:#da6b6b">COSTS</div>';
-      html += '<div class="ri"><div class="rl">Shohid ('+P.uk.sd+'d×£140)</div><div class="rv dn">-£'+fmt(P.uk.sB)+'</div></div>';
-      if(P.uk.sBo>0) html += '<div class="ri"><div class="rl">Shohid bonus</div><div class="rv dn">-£'+fmt(P.uk.sBo)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Hannan ('+P.uk.hd+'d×£100)</div><div class="rv dn">-£'+fmt(P.uk.hB)+'</div></div>';
-      if(P.uk.hBo>0) html += '<div class="ri"><div class="rl">Hannan bonus</div><div class="rv dn">-£'+fmt(P.uk.hBo)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Paige ('+P.uk.pd+'d×£80)</div><div class="rv dn">-£'+fmt(P.uk.pC)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Rizwan ('+P.uk.rd+'d×£100)</div><div class="rv dn">-£'+fmt(P.uk.rC)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Mira ('+P.uk.md+'d×£130)</div><div class="rv dn">-£'+fmt(P.uk.mC)+'</div></div>';
-      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#da6b6b">-£'+fmt(P.uk.cost)+'</span></div>';
-      html += '</div></div></div>';
+    if(cFilter==="all"||cFilter==="uk"){
+      html+="<div class=\"card card-blue\">";
+      html+="<div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\"><div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:800\">🇬🇧 United Kingdom</div><div style=\"font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:"+(P.uk.net>=0?"#6bda6b":"#da6b6b")+"\">£"+fmt(P.uk.net)+"</div></div>";
+      html+="<div class=\"g2\">";
+      html+="<div><div style=\"font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b4f040;margin-bottom:7px\">INCOME</div>";
+      html+="<div class=\"ri\"><div><div class=\"rl\">Kimmo×10%</div><div style=\"font-size:9px;color:#666\">£"+fmt(P.uk.kK)+"</div></div><div class=\"rv\">£"+fmt(P.uk.kK*0.10)+"</div></div>";
+      html+="<div class=\"ri\"><div><div class=\"rl\">Shohid×10%</div></div><div class=\"rv\">£"+fmt(P.uk.sK*0.10)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Hannan×10%</div><div class=\"rv\">£"+fmt(P.uk.hK*0.10)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Rizwan×10%</div><div class=\"rv\">£"+fmt(P.uk.rK*0.10)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Paige ("+P.uk.pd+"d×£150)</div><div class=\"rv\">£"+fmt(P.uk.pR)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Rizwan ("+P.uk.rd+"d×£150)</div><div class=\"rv\">£"+fmt(P.uk.rR)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Mira ("+P.uk.md+"d×£150)</div><div class=\"rv\">£"+fmt(P.uk.mR)+"</div></div>";
+      html+="<div style=\"display:flex;justify-content:space-between;padding:8px 0\"><span style=\"font-size:11px;font-weight:700\">Total</span><span style=\"font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#b4f040\">£"+fmt(P.uk.income)+"</span></div></div>";
+      html+="<div><div style=\"font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#da6b6b;margin-bottom:7px\">COSTS</div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Shohid ("+P.uk.sd+"d×£140)</div><div class=\"rv dn\">-£"+fmt(P.uk.sB)+"</div></div>";
+      if(P.uk.sBo>0) html+="<div class=\"ri\"><div class=\"rl\">Shohid bonus</div><div class=\"rv dn\">-£"+fmt(P.uk.sBo)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Hannan ("+P.uk.hd+"d×£100)</div><div class=\"rv dn\">-£"+fmt(P.uk.hB)+"</div></div>";
+      if(P.uk.hBo>0) html+="<div class=\"ri\"><div class=\"rl\">Hannan bonus</div><div class=\"rv dn\">-£"+fmt(P.uk.hBo)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Paige ("+P.uk.pd+"d×£80)</div><div class=\"rv dn\">-£"+fmt(P.uk.pC)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Rizwan ("+P.uk.rd+"d×£100)</div><div class=\"rv dn\">-£"+fmt(P.uk.rC)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Mira ("+P.uk.md+"d×£130)</div><div class=\"rv dn\">-£"+fmt(P.uk.mC)+"</div></div>";
+      html+="<div style=\"display:flex;justify-content:space-between;padding:8px 0\"><span style=\"font-size:11px;font-weight:700\">Total</span><span style=\"font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#da6b6b\">-£"+fmt(P.uk.cost)+"</span></div>";
+      html+="</div></div></div>";
     }
 
-    // Finland P&L
-    if(cFilter==='all'||cFilter==='fi') {
-      html += '<div class="card" style="border-color:#1a0a0a">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
-      html += '<div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800">🇫🇮 Finland</div>';
-      html += '<div style="font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:'+(P.fi.net>=0?'#6bda6b':'#da6b6b')+'">€'+fmt(P.fi.net)+'</div></div>';
-      html += '<div class="g2">';
-      html += '<div><div class="st" style="color:#b4f040">INCOME</div>';
-      html += '<div class="ri"><div><div class="rl">Aki × 10%</div><div class="rl-sub">€'+fmt(P.fi.aK)+'</div></div><div class="rv">€'+fmt(P.fi.aK*0.10)+'</div></div>';
-      html += '<div class="ri"><div><div class="rl">Julius × 10%</div><div class="rl-sub">€'+fmt(P.fi.jK)+'</div></div><div class="rv">€'+fmt(P.fi.jK*0.10)+'</div></div>';
-      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#b4f040">€'+fmt(P.fi.income)+'</span></div>';
-      html += '</div>';
-      html += '<div><div class="st" style="color:#da6b6b">COSTS</div>';
-      html += '<div class="ri"><div class="rl">Aki (7.5%)</div><div class="rv dn">-€'+fmt(P.fi.aC)+'</div></div>';
-      html += '<div class="ri"><div class="rl">Julius (5.0%)</div><div class="rv dn">-€'+fmt(P.fi.jC)+'</div></div>';
-      html += '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="font-size:11px;font-weight:700">Total</span><span style="font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#da6b6b">-€'+fmt(P.fi.cost)+'</span></div>';
-      html += '</div></div></div>';
+    if(cFilter==="all"||cFilter==="fi"){
+      html+="<div class=\"card\" style=\"border-color:#1a0a0a\">";
+      html+="<div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:14px\"><div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:800\">🇫🇮 Finland</div><div style=\"font-family:Syne,sans-serif;font-size:18px;font-weight:900;color:"+(P.fi.net>=0?"#6bda6b":"#da6b6b")+"\">€"+fmt(P.fi.net)+"</div></div>";
+      html+="<div class=\"g2\">";
+      html+="<div><div style=\"font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b4f040;margin-bottom:7px\">INCOME</div>";
+      html+="<div class=\"ri\"><div><div class=\"rl\">Aki×10%</div><div style=\"font-size:9px;color:#666\">€"+fmt(P.fi.aK)+"</div></div><div class=\"rv\">€"+fmt(P.fi.aK*0.10)+"</div></div>";
+      html+="<div class=\"ri\"><div><div class=\"rl\">Julius×10%</div></div><div class=\"rv\">€"+fmt(P.fi.jK*0.10)+"</div></div>";
+      html+="<div style=\"display:flex;justify-content:space-between;padding:8px 0\"><span style=\"font-size:11px;font-weight:700\">Total</span><span style=\"font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#b4f040\">€"+fmt(P.fi.income)+"</span></div></div>";
+      html+="<div><div style=\"font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#da6b6b;margin-bottom:7px\">COSTS</div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Aki (7.5%)</div><div class=\"rv dn\">-€"+fmt(P.fi.aC)+"</div></div>";
+      html+="<div class=\"ri\"><div class=\"rl\">Julius (5.0%)</div><div class=\"rv dn\">-€"+fmt(P.fi.jC)+"</div></div>";
+      html+="<div style=\"display:flex;justify-content:space-between;padding:8px 0\"><span style=\"font-size:11px;font-weight:700\">Total</span><span style=\"font-family:Syne,sans-serif;font-weight:900;font-size:14px;color:#da6b6b\">-€"+fmt(P.fi.cost)+"</span></div>";
+      html+="</div></div></div>";
     }
 
-    // Trend chart
-    html += '<div class="card"><span class="lbl">Daily Margin — Last 14 Active Days</span>';
-    html += '<div class="bw">'+tbar+'</div></div>';
+    html+="<div class=\"card\"><span class=\"lbl\">Daily Margin — Last 14 Active Days</span><div class=\"bw\">"+tbar+"</div></div>";
   }
 
-  // ── MANAGE ──
-  if(view==='manage' && isOwner) {
-    html += '<div class="card card-blue">';
-    html += '<span class="lbl">➕ Add New Operator</span>';
-    html += '<div style="font-size:10px;color:#222;margin-bottom:14px">Add operator, assistant, or trainee to the platform</div>';
+  // ── MANAGE ─────────────────────────────────────────────────────────────────
+  if(view==="manage"&&isOwner){
+    // ── Add member form ──
+    html+="<div class=\"card card-blue\">";
+    html+="<span class=\"lbl\">➕ Add Team Member</span>";
 
-    html += '<div class="g2" style="margin-bottom:10px">';
-    html += '<div><span class="lbl">Full Name</span><input type="text" class="inp" style="font-size:14px" id="m-name" placeholder="Name" oninput="mState.name=this.value"></div>';
-    html += '<div><span class="lbl">Company (optional)</span><input type="text" class="inp" style="font-size:14px" id="m-company" placeholder="Company Ltd" oninput="mState.company=this.value"></div>';
-    html += '</div>';
+    // Name + PIN on same row
+    html+="<div class=\"g2\" style=\"margin-bottom:10px\">";
+    html+="<div><span class=\"lbl\">Full Name</span><input type=\"text\" class=\"inp\" style=\"font-size:15px\" placeholder=\"Name\" oninput=\"mState.name=this.value\"></div>";
+    html+="<div><span class=\"lbl\">PIN (4 digits)</span><input type=\"number\" class=\"inp\" style=\"font-size:15px\" placeholder=\"2006\" maxlength=\"4\" oninput=\"mState.pin=this.value\"></div></div>";
 
-    html += '<div class="g2" style="margin-bottom:10px">';
-    html += '<div><span class="lbl">Role</span><select class="sel" onchange="mState.role=this.value;render()">';
-    ['operator','assistant','trainee'].forEach(r => {
-      html += '<option value="'+r+'"'+(mState.role===r?' selected':'')+'>'+r.charAt(0).toUpperCase()+r.slice(1)+'</option>';
+    // Role + Country
+    html+="<div class=\"g2\" style=\"margin-bottom:10px\">";
+    html+="<div><span class=\"lbl\">Role</span><select class=\"sel\" onchange=\"mState.role=this.value;render()\">";
+    ["operator","assistant","trainee"].forEach(r=>{
+      html+="<option value=\""+r+"\""+( mState.role===r?" selected":"")+">"+r.charAt(0).toUpperCase()+r.slice(1)+"</option>";
     });
-    html += '</select></div>';
-    html += '<div><span class="lbl">Country</span><select class="sel" onchange="mState.country=this.value">';
-    html += '<option value="uk"'+(mState.country==='uk'?' selected':'')+'>🇬🇧 United Kingdom</option>';
-    html += '<option value="fi"'+(mState.country==='fi'?' selected':'')+'>🇫🇮 Finland</option>';
-    html += '</select></div>';
-    html += '</div>';
+    html+="</select></div>";
+    html+="<div><span class=\"lbl\">Country</span><select class=\"sel\" onchange=\"mState.country=this.value\">";
+    html+="<option value=\"uk\""+( mState.country==="uk"?" selected":"")+">🇬🇧 UK</option>";
+    html+="<option value=\"fi\""+( mState.country==="fi"?" selected":"")+">🇫🇮 Finland</option>";
+    html+="</select></div></div>";
 
-    html += '<div class="g2" style="margin-bottom:10px">';
-    html += '<div><span class="lbl">Vehicle / Car reg</span><input type="text" class="inp" style="font-size:14px" id="m-car" placeholder="AB12CDE" oninput="mState.car=this.value"></div>';
-    html += '<div><span class="lbl">PIN Code</span><input type="text" class="inp" style="font-size:14px" id="m-pin" placeholder="4-digit PIN" maxlength="4" oninput="mState.pin=this.value"></div>';
-    html += '</div>';
-
-    if(mState.role==='operator') {
-      html += '<div class="g2" style="margin-bottom:10px">';
-      html += '<div><span class="lbl">Daily Rate (£/€)</span><input type="number" class="inp" style="font-size:16px" placeholder="0" oninput="mState.dailyRate=parseInt(this.value)||0"></div>';
-      html += '<div><span class="lbl">Commission % (FI subcontractors)</span><input type="number" class="inp" style="font-size:16px" placeholder="0" oninput="mState.commRate=parseFloat(this.value)||0"></div>';
-      html += '</div>';
-    }
-    if(mState.role==='assistant'||mState.role==='trainee') {
-      html += '<div class="g2" style="margin-bottom:10px">';
-      html += '<div><span class="lbl">Billed to client (£/€/day)</span><input type="number" class="inp" style="font-size:16px" placeholder="150" oninput="mState.billedRate=parseInt(this.value)||0"></div>';
-      html += '<div><span class="lbl">Paid to worker (£/€/day)</span><input type="number" class="inp" style="font-size:16px" placeholder="80" oninput="mState.dailyRate=parseInt(this.value)||0"></div>';
-      html += '</div>';
-    }
-
-    html += '<div style="margin-bottom:10px">';
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px;background:#06060f;border:1px solid #0f0f1e;border-radius:3px">';
-    html += '<input type="checkbox" id="m-ea" onchange="mState.earlyAdopter=this.checked" style="width:16px;height:16px">';
-    html += '<label for="m-ea" style="font-size:12px;cursor:pointer">⭐ Early Adopter — €50/month locked, 5% exit fee, 500 founding points</label>';
-    html += '</div></div>';
-
-    html += '<div id="m-status" style="min-height:20px;margin-bottom:8px;font-size:11px;text-align:center"></div>';
-    html += '<button class="btn-save" onclick="addMember()">ADD TO PLATFORM</button>';
-    html += '</div>';
-
-    // Current members list
-    html += '<div class="card" style="margin-top:10px">';
-    html += '<span class="lbl">Current Platform Members</span>';
-    WORKERS.forEach(wk => {
-      html += '<div class="ri">';
-      html += '<div><div style="font-family:Syne,sans-serif;font-size:13px;font-weight:700">'+wk.name+' '+rb(wk.role)+'</div>';
-      html += '<div style="font-size:10px;color:#333;margin-top:2px">'+wk.country.toUpperCase()+' · '+wk.car+(wk.earlyAdopter?' · ⭐ EA':'')+'</div></div>';
-      html += '<div style="text-align:right">';
-      if(wk.role==='assistant'||wk.role==='trainee') {
-        html += '<div style="font-size:11px;color:#b4f040">£'+wk.billedRate+'/day billed</div>';
-        html += '<div style="font-size:10px;color:#444">£'+wk.dailyRate+'/day paid</div>';
-      } else if(wk.dailyRate>0) {
-        html += '<div style="font-size:11px;color:#b4f040">£'+wk.dailyRate+'/day</div>';
-      } else if(wk.rate>0) {
-        html += '<div style="font-size:11px;color:#b4f040">'+(wk.rate*100)+'% commission</div>';
+    // Rates depending on role
+    if(mState.role==="assistant"||mState.role==="trainee"){
+      html+="<div class=\"g2\" style=\"margin-bottom:10px\">";
+      html+="<div><span class=\"lbl\">Billed to client (£/€/day)</span><input type=\"number\" class=\"inp\" placeholder=\"150\" oninput=\"mState.billedRate=parseInt(this.value)||0\"></div>";
+      html+="<div><span class=\"lbl\">Paid to worker (£/€/day)</span><input type=\"number\" class=\"inp\" placeholder=\"80\" oninput=\"mState.dailyRate=parseInt(this.value)||0\"></div></div>";
+      if(mState.billedRate>0&&mState.dailyRate>0){
+        html+="<div style=\"padding:8px 12px;background:#0a180a;border:1px solid #1a3a1a;border-radius:3px;margin-bottom:10px;font-size:12px\">Devalor profit: <span style=\"color:#6bda6b;font-weight:700\">£"+(mState.billedRate-mState.dailyRate)+"/day</span></div>";
       }
-      html += '</div></div>';
+    } else {
+      html+="<div style=\"margin-bottom:10px\">";
+      html+="<span class=\"lbl\">Daily Rate (£/€ — 0 for commission-only)</span>";
+      html+="<input type=\"number\" class=\"inp\" placeholder=\"100\" oninput=\"mState.dailyRate=parseInt(this.value)||0\"></div>";
+    }
+
+    // Early Adopter toggle
+    html+="<div style=\"margin-bottom:12px;padding:10px 12px;background:#06060f;border:1px solid #0f0f1e;border-radius:3px;display:flex;align-items:center;gap:12px\">";
+    html+="<input type=\"checkbox\" id=\"m-ea\" "+(mState.earlyAdopter?"checked":"")+"\" onchange=\"mState.earlyAdopter=this.checked\" style=\"width:18px;height:18px;accent-color:#b4f040\">";
+    html+="<label for=\"m-ea\" style=\"font-size:12px;cursor:pointer\">⭐ Early Adopter — €50/month locked + 500 founding points</label></div>";
+
+    html+="<div id=\"m-status\" style=\"min-height:22px;margin-bottom:8px;font-size:12px;text-align:center\"></div>";
+    html+="<button class=\"btn-save\" onclick=\"addMember()\">ADD TO PLATFORM</button></div>";
+
+    // ── Pay Overview ──
+    html+="<div class=\"card\" style=\"margin-top:10px\">";
+    html+="<span class=\"lbl\">Pay Overview — "+MO_LABEL[selMonth]+"</span>";
+    html+="<div style=\"font-size:10px;color:#777;margin-bottom:12px\">All team members · "+WORKERS.length+" people</div>";
+
+    WORKERS.forEach(wk=>{
+      const country=wk.country==="fi"?"🇫🇮":"🇬🇧";
+      const wkMe=bW(me,wk.id);
+      const wkDays=wkMe.length;
+      const wkKe=sum(wkMe,"ke");
+      const basePay=wkDays*(wk.dailyRate||0);
+      const bonus=mBonus(wkKe,wk.bonusTiers||[]);
+      const totalPay=basePay+bonus;
+      const billed=wkDays*(wk.billedRate||0);
+      const profit=billed-totalPay;
+      const cur=wk.country==="fi"?"€":"£";
+      const isAssist=wk.role==="assistant"||wk.role==="trainee";
+
+      html+="<div style=\"border:1px solid #1a1a2a;border-radius:3px;padding:12px;margin-bottom:8px;background:#080810\">";
+
+      // Header row
+      html+="<div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:10px\">";
+      html+="<div><div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:800\">"+country+" "+wk.name+" "+rb(wk.role)+"</div>";
+      html+="<div style=\"font-size:10px;color:#777;margin-top:2px\">"+wkDays+" days worked</div></div>";
+      html+="<div style=\"text-align:right\">";
+      html+="<div style=\"font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:"+(totalPay>0?"#e8e4d9":"#555")+"\">"+(totalPay>0?cur+fmt(totalPay):"—")+"</div>";
+      html+="<div style=\"font-size:9px;color:#777\">total pay</div></div></div>";
+
+      if(wkDays>0){
+        // Pay breakdown
+        html+="<div style=\"display:grid;grid-template-columns:1fr 1fr"+(isAssist?" 1fr":"");
+        html+=(isAssist||bonus>0?" 1fr":"");
+        html+=";gap:8px\">";
+
+        // Days × rate
+        html+="<div style=\"background:#06060f;border-radius:2px;padding:8px\">";
+        html+="<div style=\"font-size:9px;color:#777\">Days × rate</div>";
+        html+="<div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:700;margin-top:2px\">";
+        html+=wkDays+" × "+cur+(wk.dailyRate||0)+"</div></div>";
+
+        // Base pay
+        html+="<div style=\"background:#06060f;border-radius:2px;padding:8px\">";
+        html+="<div style=\"font-size:9px;color:#777\">Base pay</div>";
+        html+="<div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#e8e4d9;margin-top:2px\">"+cur+fmt(basePay)+"</div></div>";
+
+        // Bonus (if any)
+        if(bonus>0){
+          html+="<div style=\"background:#060f06;border:1px solid #1a3a1a;border-radius:2px;padding:8px\">";
+          html+="<div style=\"font-size:9px;color:#6bda6b\">Bonus</div>";
+          html+="<div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#6bda6b;margin-top:2px\">+"+cur+fmt(bonus)+"</div></div>";
+        }
+
+        // Billed / profit for assistants
+        if(isAssist&&wk.billedRate>0){
+          html+="<div style=\"background:#06060f;border-radius:2px;padding:8px\">";
+          html+="<div style=\"font-size:9px;color:#777\">Billed</div>";
+          html+="<div style=\"font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#b4f040;margin-top:2px\">"+cur+fmt(billed)+"</div></div>";
+        }
+
+        html+="</div>";
+
+        // Devalor profit for assistants
+        if(isAssist&&billed>0){
+          html+="<div style=\"display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid #1a1a2a\">";
+          html+="<div style=\"font-size:11px;color:#777\">Devalor profit</div>";
+          html+="<div style=\"font-family:Syne,sans-serif;font-size:13px;font-weight:800;color:"+(profit>=0?"#6bda6b":"#da6b6b")+"\">"+(profit>=0?"+":"")+cur+fmt(profit)+"</div></div>";
+        }
+      } else {
+        html+="<div style=\"font-size:11px;color:#555;padding:4px 0\">No entries this month</div>";
+      }
+
+      html+="</div>";
     });
-    html += '</div>';
+    html+="</div>";
   }
 
-  html += '</div>';
-  document.getElementById('root').innerHTML = html;
+  html+="</div>";
+  document.getElementById("root").innerHTML=html;
+} // end render
+
+// ─── HELPER FUNCTIONS ───────────────────────────────────────────────────────
+function addMissingDay(date) {
+  fDate = date;
+  showBackdate = true;
+  setView('entry');
 }
 
 // ─── MANAGE STATE ─────────────────────────────────────────────────────────────
-let mState = {name:'',company:'',role:'operator',country:'uk',car:'',pin:'',
-               dailyRate:0,billedRate:0,commRate:0,earlyAdopter:false};
+let mState = {name:'',role:'operator',country:'uk',pin:'',dailyRate:0,billedRate:0,earlyAdopter:false};
 
 async function addMember() {
   const status = document.getElementById('m-status');
-  if(!mState.name) { status.innerHTML='<span style="color:#da6b6b">Name is required</span>'; return; }
-  if(!mState.pin||mState.pin.length<4) { status.innerHTML='<span style="color:#da6b6b">PIN must be 4 digits</span>'; return; }
-  if(USERS.find(u=>u.pin===mState.pin)) { status.innerHTML='<span style="color:#da6b6b">PIN already in use</span>'; return; }
+  const setStatus = (msg, col) => { if(status) status.innerHTML='<span style="color:'+col+'">'+msg+'</span>'; };
 
-  status.innerHTML='<span style="color:#b4f040">Saving...</span>';
+  if(!mState.name.trim()) { setStatus('⚠ Name is required','#da6b6b'); return; }
+  if(!mState.pin || mState.pin.length < 4) { setStatus('⚠ PIN must be 4 digits','#da6b6b'); return; }
+  if(USERS.find(u => u.pin === mState.pin)) { setStatus('⚠ PIN already in use — choose another','#da6b6b'); return; }
 
-  const id = mState.name.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,12)+Date.now().toString().slice(-4);
+  setStatus('Saving...','#b4f040');
 
-  const opData = {
-    id, name:mState.name, company:mState.company||null,
-    country:mState.country, car:mState.car||null, role:mState.role,
-    billed_rate:mState.billedRate||0, daily_rate:mState.dailyRate||0,
-    commission_rate:mState.commRate||0, bonus_tiers:[],
-    note:mState.role==='assistant'?'Assistant — £'+mState.billedRate+' billed / £'+mState.dailyRate+' paid':
-         mState.role==='trainee'?'Trainee — 10-day programme':
-         'Operator — £'+mState.dailyRate+'/day',
-    active:true, early_adopter:mState.earlyAdopter,
-    joined_date:new Date().toISOString().slice(0,10)
-  };
+  const id = mState.name.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,10) + Date.now().toString().slice(-4);
 
-  const userdata = {
-    id: id+'-user', operator_id:id, pin:mState.pin, role:'worker'
-  };
-
-  const ok1 = await supa.upsert("operators", opData);
-  const ok2 = await supa.upsert("users", userdata);
+  // Save to Supabase
+  const ok1 = await supa.upsert("operators", {
+    id, name:mState.name, country:mState.country, role:mState.role,
+    billed_rate: mState.billedRate||0,
+    daily_rate: mState.dailyRate||0,
+    commission_rate: 0, bonus_tiers: [],
+    active: true, early_adopter: mState.earlyAdopter,
+    joined_date: new Date().toISOString().slice(0,10)
+  });
+  const ok2 = await supa.upsert("users", {
+    id: id+'-u', operator_id: id, pin: mState.pin, role: 'worker'
+  });
 
   if(ok1 && ok2) {
-    // Add to local state
+    // Add to local state immediately
     WORKERS.push({
-      id, name:mState.name, country:mState.country, car:mState.car||'',
-      role:mState.role, billedRate:mState.billedRate||0, dailyRate:mState.dailyRate||0,
-      rate:mState.commRate||0, bonusTiers:[], note:opData.note,
+      id, name:mState.name, country:mState.country, car:'',
+      role:mState.role, billedRate:mState.billedRate||0,
+      dailyRate:mState.dailyRate||0, rate:0, bonusTiers:[],
       earlyAdopter:mState.earlyAdopter
     });
     USERS.push({pin:mState.pin, workerId:id, role:'worker'});
-
-    // Reset state
-    mState = {name:'',company:'',role:'operator',country:'uk',car:'',pin:'',
-              dailyRate:0,billedRate:0,commRate:0,earlyAdopter:false};
-    status.innerHTML='<span style="color:#6bda6b">✓ Member added successfully!</span>';
-    setTimeout(()=>render(), 1500);
+    setStatus('✓ '+mState.name+' added! PIN: '+mState.pin,'#6bda6b');
+    mState = {name:'',role:'operator',country:'uk',pin:'',dailyRate:0,billedRate:0,earlyAdopter:false};
+    setTimeout(()=>render(), 2000);
   } else {
-    status.innerHTML='<span style="color:#da6b6b">Error saving — check Supabase connection</span>';
+    // Still add locally even if Supabase fails
+    WORKERS.push({
+      id, name:mState.name, country:mState.country, car:'',
+      role:mState.role, billedRate:mState.billedRate||0,
+      dailyRate:mState.dailyRate||0, rate:0, bonusTiers:[],
+      earlyAdopter:mState.earlyAdopter
+    });
+    USERS.push({pin:mState.pin, workerId:id, role:'worker'});
+    setStatus('✓ Added locally (Supabase sync failed)','#f0a04a');
+    mState = {name:'',role:'operator',country:'uk',pin:'',dailyRate:0,billedRate:0,earlyAdopter:false};
+    setTimeout(()=>render(), 2000);
   }
 }
 
